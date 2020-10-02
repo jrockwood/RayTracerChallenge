@@ -15,12 +15,6 @@
         "printWidth": 100,
         "proseWrap": "always"
       }
-    },
-    {
-      "files": "*.cs",
-      "options": {
-        "tabWidth": 4
-      }
     }
   ]
 }
