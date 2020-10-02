@@ -45,3 +45,23 @@ describe('vector()', () => {
     expect(vector(4, -4, 3)).toEqual(tuple(4, -4, 3, 0));
   });
 });
+
+describe('areTuplesEqual()', () => {
+  it('should be equal with exact numbers', () => {
+    const a = tuple(1, 2, 3, 4);
+    const b = tuple(1, 2, 3, 4);
+    expect(areTuplesEqual(a, b)).toBe(true);
+  });
+
+  it('should equal if the numbers are within an epsilon', () => {
+    const a = tuple(1, 2, 3, 4);
+    const b = tuple(1.000009, 1.999999, 3.000001, 3.999999);
+    expect(areTuplesEqual(a, b)).toBe(true);
+  });
+
+  it('should not equal if the numbers do not match', () => {
+    const a = tuple(1, 2, 3, 4);
+    const b = tuple(4, 3, 2, 1);
+    expect(areTuplesEqual(a, b)).toBe(false);
+  });
+});
