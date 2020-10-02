@@ -1,0 +1,27 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
+  "files.eol": "\n",
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true
+  },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "rewrap.doubleSentenceSpacing": false,
+  "rewrap.reformat": false,
+  "rewrap.wholeComment": true,
+  "rewrap.wrappingColumn": 100,
+  "search.exclude": {
+    "**/.pnp.*": true,
+    "**/.yarn": true,
+    "**/node_modules": true
+  }
+}
