@@ -1,4 +1,4 @@
-import { areTuplesEqual, isPoint, isVector, point, tuple, vector } from '../src/tuples';
+import { areTuplesEqual, isPoint, isVector, point, tuple, tupleAdd, tupleSubtract, vector } from '../src/tuples';
 
 describe('tuple()', () => {
   it('should store x, y, z, and w', () => {
@@ -63,5 +63,33 @@ describe('areTuplesEqual()', () => {
     const a = tuple(1, 2, 3, 4);
     const b = tuple(4, 3, 2, 1);
     expect(areTuplesEqual(a, b)).toBe(false);
+  });
+});
+
+describe('tupleAdd()', () => {
+  it('should add two tuples', () => {
+    const a = tuple(3, -2, 5, 1);
+    const b = tuple(-2, 3, 1, 0);
+    expect(tupleAdd(a, b)).toEqual(tuple(1, 1, 6, 1));
+  });
+});
+
+describe('tupleSubtract()', () => {
+  it('should subtract two points', () => {
+    const p1 = point(3, 2, 1);
+    const p2 = point(5, 6, 7);
+    expect(tupleSubtract(p1, p2)).toEqual(vector(-2, -4, -6));
+  });
+
+  it('should subract a vector from a point', () => {
+    const p = point(3, 2, 1);
+    const v = vector(5, 6, 7);
+    expect(tupleSubtract(p, v)).toEqual(point(-2, -4, -6));
+  });
+
+  it('should subtract two vectors', () => {
+    const v1 = vector(3, 2, 1);
+    const v2 = vector(5, 6, 7);
+    expect(tupleSubtract(v1, v2)).toEqual(vector(-2, -4, -6));
   });
 });

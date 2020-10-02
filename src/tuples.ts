@@ -34,3 +34,11 @@ function floatEqual(a: number, b: number): boolean {
 export function areTuplesEqual(a: Tuple, b: Tuple): boolean {
   return floatEqual(a.x, b.x) && floatEqual(a.y, b.y) && floatEqual(a.z, b.z) && floatEqual(a.w, b.w);
 }
+
+export function tupleAdd(a: Tuple, b: Tuple): Tuple {
+  return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z, w: a.w + b.w };
+}
+
+export function tupleSubtract(a: Tuple, b: Tuple): Tuple {
+  return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z, w: a.w - b.w };
+}
