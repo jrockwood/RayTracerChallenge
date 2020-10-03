@@ -1,5 +1,6 @@
 import { Color } from './Color';
 import { clamp } from './Math';
+import * as fs from 'fs-extra';
 
 export class Canvas {
   public readonly width: number;
@@ -48,6 +49,11 @@ export class Canvas {
     }
 
     return builder.toPpmFormat();
+  }
+
+  public saveToPpmFile(fileName: string): void {
+    const contents = this.toPpm();
+    fs.writeFileSync(fileName, contents);
   }
 
   private verifyIndex(x: number, y: number): void {
