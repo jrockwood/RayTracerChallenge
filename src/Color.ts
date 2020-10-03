@@ -5,6 +5,12 @@ export class Color {
   public readonly green: number;
   public readonly blue: number;
 
+  public static Black: Color = new Color(0, 0, 0);
+  public static White: Color = new Color(1, 1, 1);
+  public static Red: Color = new Color(1, 0, 0);
+  public static Green: Color = new Color(0, 1, 0);
+  public static Blue: Color = new Color(0, 0, 1);
+
   public constructor(red: number, green: number, blue: number) {
     this.red = red;
     this.green = green;
