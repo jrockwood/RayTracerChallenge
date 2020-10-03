@@ -132,4 +132,53 @@ describe('Vector', () => {
       expect(v.divide(2)).toEqual(new Vector(0.5, -1, 1.5));
     });
   });
+
+  describe('magnitude()', () => {
+    it('should return the length of a unit vector', () => {
+      let v = new Vector(1, 0, 0);
+      expect(v.magnitude()).toBe(1);
+
+      v = new Vector(0, 1, 0);
+      expect(v.magnitude()).toBe(1);
+
+      v = new Vector(0, 0, 1);
+      expect(v.magnitude()).toBe(1);
+    });
+
+    it('should return the length of a non-unit vector', () => {
+      let v = new Vector(1, 2, 3);
+      expect(v.magnitude()).toBe(Math.sqrt(1 + 4 + 9));
+
+      v = new Vector(-1, -2, -3);
+      expect(v.magnitude()).toBe(Math.sqrt(1 + 4 + 9));
+    });
+  });
+
+  describe('normalize()', () => {
+    it('should not change unit vectors', () => {
+      let v = new Vector(1, 0, 0);
+      expect(v.normalize()).toEqual(v);
+
+      v = new Vector(0, 1, 0);
+      expect(v.normalize()).toEqual(v);
+
+      v = new Vector(0, 0, 1);
+      expect(v.normalize()).toEqual(v);
+    });
+
+    it('should normalize non-unit vectors', () => {
+      let v = new Vector(4, 0, 0);
+      expect(v.normalize()).toEqual(new Vector(1, 0, 0));
+
+      v = new Vector(1, 2, 3);
+      const length = Math.sqrt(1 + 4 + 9);
+      expect(v.normalize()).toEqual(new Vector(1 / length, 2 / length, 3 / length));
+    });
+
+    it('should return 1 for the magnitude of a normalized vector', () => {
+      const v = new Vector(1, 2, 3);
+      const normalized = v.normalize();
+      expect(normalized.magnitude()).toBe(1);
+    });
+  });
 });

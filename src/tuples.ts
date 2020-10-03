@@ -3,6 +3,7 @@ const Epsilon = 0.00001;
 function floatEqual(a: number, b: number): boolean {
   return Math.abs(a - b) < Epsilon;
 }
+
 export class Point {
   public constructor(public readonly x: number, public readonly y: number, public readonly z: number) {}
 
@@ -52,5 +53,13 @@ export class Vector {
 
   public divide(scalar: number): Vector {
     return new Vector(this.x / scalar, this.y / scalar, this.z / scalar);
+  }
+
+  public magnitude(): number {
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+  }
+
+  public normalize(): Vector {
+    return this.divide(this.magnitude());
   }
 }
