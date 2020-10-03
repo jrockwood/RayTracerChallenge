@@ -5,7 +5,15 @@ function floatEqual(a: number, b: number): boolean {
 }
 
 export class Point {
-  public constructor(public readonly x: number, public readonly y: number, public readonly z: number) {}
+  public readonly x: number;
+  public readonly y: number;
+  public readonly z: number;
+
+  public constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
 
   public isEqualTo(other: Point): boolean {
     return floatEqual(this.x, other.x) && floatEqual(this.y, other.y) && floatEqual(this.z, other.z);
@@ -25,7 +33,15 @@ export class Point {
 }
 
 export class Vector {
-  public constructor(public readonly x: number, public readonly y: number, public readonly z: number) {}
+  public readonly x: number;
+  public readonly y: number;
+  public readonly z: number;
+
+  public constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
 
   public isEqualTo(other: Vector): boolean {
     return floatEqual(this.x, other.x) && floatEqual(this.y, other.y) && floatEqual(this.z, other.z);
