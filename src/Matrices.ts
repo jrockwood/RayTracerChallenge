@@ -2,8 +2,6 @@ import { floatEqual } from './Math';
 import { Point, Tuple, Vector } from './PointVector';
 
 export class Matrix2x2 {
-  public static identiry: Matrix2x2 = new Matrix2x2(0, 0, 0, 0);
-
   public constructor(
     public readonly m00: number,
     public readonly m01: number,
@@ -22,8 +20,6 @@ export class Matrix2x2 {
 }
 
 export class Matrix3x3 {
-  public static identiry: Matrix3x3 = new Matrix3x3(0, 0, 0, 0, 0, 0, 0, 0, 0);
-
   public constructor(
     public readonly m00: number,
     public readonly m01: number,
@@ -52,7 +48,12 @@ export class Matrix3x3 {
 }
 
 export class Matrix4x4 {
-  public static identiry: Matrix4x4 = new Matrix4x4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  // prettier-ignore
+  public static identity: Matrix4x4 = new Matrix4x4(
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1);
 
   public constructor(
     public readonly m00: number,

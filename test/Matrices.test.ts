@@ -197,5 +197,26 @@ describe('Matrix4x4', () => {
       const vector = new Vector(1, 2, 3);
       expect(matrix.multiplyByVector(vector)).toEqual(new Vector(14, 22, 32));
     });
+
+    it('should multiply a matrix by the identity matrix and return the same matrix', () => {
+      // prettier-ignore
+      const matrix = new Matrix4x4(
+        0, 1, 2,  4,
+        1, 2, 4,  8,
+        2, 4, 8,  16,
+        4, 8, 16, 32);
+
+      expect(matrix.multiply(Matrix4x4.identity)).toEqual(matrix);
+    });
+
+    it('should multiply the identity matrix by a point and return the same point', () => {
+      const p = new Point(1, 2, 3);
+      expect(Matrix4x4.identity.multiplyByPoint(p)).toEqual(p);
+    });
+
+    it('should multiply the identity matrix by a vector and return the same vector', () => {
+      const v = new Vector(1, 2, 3);
+      expect(Matrix4x4.identity.multiplyByVector(v)).toEqual(v);
+    });
   });
 });
