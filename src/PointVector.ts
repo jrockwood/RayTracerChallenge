@@ -1,8 +1,4 @@
-const Epsilon = 0.00001;
-
-function floatEqual(a: number, b: number): boolean {
-  return Math.abs(a - b) < Epsilon;
-}
+import { floatEqual } from './Math';
 
 export class Point {
   public readonly x: number;
