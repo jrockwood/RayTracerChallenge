@@ -1,11 +1,15 @@
-const Epsilon = 0.00001;
-
-function floatEqual(a: number, b: number): boolean {
-  return Math.abs(a - b) < Epsilon;
-}
+import { floatEqual } from './Math';
 
 export class Point {
-  public constructor(public readonly x: number, public readonly y: number, public readonly z: number) {}
+  public readonly x: number;
+  public readonly y: number;
+  public readonly z: number;
+
+  public constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
 
   public isEqualTo(other: Point): boolean {
     return floatEqual(this.x, other.x) && floatEqual(this.y, other.y) && floatEqual(this.z, other.z);
@@ -22,10 +26,22 @@ export class Point {
   public subtractVector(vector: Vector): Point {
     return new Point(this.x - vector.x, this.y - vector.y, this.z - vector.z);
   }
+
+  public roundToInt(): Point {
+    return new Point(Math.round(this.x), Math.round(this.y), Math.round(this.z));
+  }
 }
 
 export class Vector {
-  public constructor(public readonly x: number, public readonly y: number, public readonly z: number) {}
+  public readonly x: number;
+  public readonly y: number;
+  public readonly z: number;
+
+  public constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
 
   public isEqualTo(other: Vector): boolean {
     return floatEqual(this.x, other.x) && floatEqual(this.y, other.y) && floatEqual(this.z, other.z);
