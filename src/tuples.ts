@@ -46,3 +46,11 @@ export function tupleSubtract(a: Tuple, b: Tuple): Tuple {
 export function tupleNegate(a: Tuple): Tuple {
   return { x: -a.x, y: -a.y, z: -a.z, w: -a.w };
 }
+
+export function tupleMultiply(a: Tuple, scalar: number): Tuple {
+  return { x: a.x * scalar, y: a.y * scalar, z: a.z * scalar, w: a.w * scalar };
+}
+
+export function tupleDivide(a: Tuple, scalar: number): Tuple {
+  return { x: a.x / scalar, y: a.y / scalar, z: a.z / scalar, w: a.w / scalar };
+}

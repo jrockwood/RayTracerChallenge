@@ -5,6 +5,8 @@ import {
   point,
   tuple,
   tupleAdd,
+  tupleDivide,
+  tupleMultiply,
   tupleNegate,
   tupleSubtract,
   vector,
@@ -114,5 +116,24 @@ describe('tupleNegate()', () => {
   it('should negate the tuple', () => {
     const a = tuple(1, -2, 3, -4);
     expect(tupleNegate(a)).toEqual(tuple(-1, 2, -3, 4));
+  });
+});
+
+describe('tupleMultiply()', () => {
+  it('mutliply a tuple by a scalar', () => {
+    const a = tuple(1, -2, 3, -4);
+    expect(tupleMultiply(a, 3.5)).toEqual(tuple(3.5, -7, 10.5, -14));
+  });
+
+  it('should multiply a tuple by a fraction', () => {
+    const a = tuple(1, -2, 3, -4);
+    expect(tupleMultiply(a, 0.5)).toEqual(tuple(0.5, -1, 1.5, -2));
+  });
+});
+
+describe('tupleDivide()', () => {
+  it('should divide a tuple by a scalar', () => {
+    const a = tuple(1, -2, 3, -4);
+    expect(tupleDivide(a, 2)).toEqual(tuple(0.5, -1, 1.5, -2));
   });
 });
