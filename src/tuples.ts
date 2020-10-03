@@ -1,56 +1,56 @@
-export interface Tuple {
-  readonly x: number;
-  readonly y: number;
-  readonly z: number;
-  readonly w: number;
-}
-
-export function tuple(x: number, y: number, z: number, w: number): Tuple {
-  return { x, y, z, w };
-}
-
-export function point(x: number, y: number, z: number): Tuple {
-  return { x, y, z, w: 1 };
-}
-
-export function vector(x: number, y: number, z: number): Tuple {
-  return { x, y, z, w: 0 };
-}
-
-export function isPoint(tuple: Tuple): boolean {
-  return tuple.w === 1;
-}
-
-export function isVector(tuple: Tuple): boolean {
-  return tuple.w === 0;
-}
-
 const Epsilon = 0.00001;
 
 function floatEqual(a: number, b: number): boolean {
   return Math.abs(a - b) < Epsilon;
 }
+export class Point {
+  public constructor(public readonly x: number, public readonly y: number, public readonly z: number) {}
 
-export function areTuplesEqual(a: Tuple, b: Tuple): boolean {
-  return floatEqual(a.x, b.x) && floatEqual(a.y, b.y) && floatEqual(a.z, b.z) && floatEqual(a.w, b.w);
+  public isEqualTo(other: Point): boolean {
+    return floatEqual(this.x, other.x) && floatEqual(this.y, other.y) && floatEqual(this.z, other.z);
+  }
+
+  public add(vector: Vector): Point {
+    return new Point(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+  }
+
+  public subtract(point: Point): Vector {
+    return new Vector(this.x - point.x, this.y - point.y, this.z - point.z);
+  }
+
+  public subtractVector(vector: Vector): Point {
+    return new Point(this.x - vector.x, this.y - vector.y, this.z - vector.z);
+  }
 }
 
-export function tupleAdd(a: Tuple, b: Tuple): Tuple {
-  return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z, w: a.w + b.w };
-}
+export class Vector {
+  public constructor(public readonly x: number, public readonly y: number, public readonly z: number) {}
 
-export function tupleSubtract(a: Tuple, b: Tuple): Tuple {
-  return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z, w: a.w - b.w };
-}
+  public isEqualTo(other: Vector): boolean {
+    return floatEqual(this.x, other.x) && floatEqual(this.y, other.y) && floatEqual(this.z, other.z);
+  }
 
-export function tupleNegate(a: Tuple): Tuple {
-  return { x: -a.x, y: -a.y, z: -a.z, w: -a.w };
-}
+  public add(vector: Vector): Vector {
+    return new Vector(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+  }
 
-export function tupleMultiply(a: Tuple, scalar: number): Tuple {
-  return { x: a.x * scalar, y: a.y * scalar, z: a.z * scalar, w: a.w * scalar };
-}
+  public addPoint(point: Point): Point {
+    return new Point(this.x + point.x, this.y + point.y, this.z + point.z);
+  }
 
-export function tupleDivide(a: Tuple, scalar: number): Tuple {
-  return { x: a.x / scalar, y: a.y / scalar, z: a.z / scalar, w: a.w / scalar };
+  public subtract(vector: Vector): Vector {
+    return new Vector(this.x - vector.x, this.y - vector.y, this.z - vector.z);
+  }
+
+  public negate(): Vector {
+    return new Vector(-this.x, -this.y, -this.z);
+  }
+
+  public multiply(scalar: number): Vector {
+    return new Vector(this.x * scalar, this.y * scalar, this.z * scalar);
+  }
+
+  public divide(scalar: number): Vector {
+    return new Vector(this.x / scalar, this.y / scalar, this.z / scalar);
+  }
 }
