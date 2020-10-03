@@ -1,4 +1,5 @@
 import { floatEqual } from './Math';
+import { Point, Vector } from './PointVector';
 
 export class Matrix2x2 {
   public static identiry: Matrix2x2 = new Matrix2x2(0, 0, 0, 0);
@@ -18,6 +19,13 @@ export class Matrix2x2 {
       floatEqual(this.m11, other.m11)
     );
   }
+}
+
+interface Tuple {
+  x: number;
+  y: number;
+  z: number;
+  w: number;
 }
 
 export class Matrix3x3 {
@@ -91,5 +99,51 @@ export class Matrix4x4 {
       floatEqual(this.m32, other.m32) &&
       floatEqual(this.m33, other.m33)
     );
+  }
+
+  public multiply(matrix: Matrix4x4): Matrix4x4 {
+    return new Matrix4x4(
+      // First row
+      this.m00 * matrix.m00 + this.m01 * matrix.m10 + this.m02 * matrix.m20 + this.m03 * matrix.m30,
+      this.m00 * matrix.m01 + this.m01 * matrix.m11 + this.m02 * matrix.m21 + this.m03 * matrix.m31,
+      this.m00 * matrix.m02 + this.m01 * matrix.m12 + this.m02 * matrix.m22 + this.m03 * matrix.m32,
+      this.m00 * matrix.m03 + this.m01 * matrix.m13 + this.m02 * matrix.m23 + this.m03 * matrix.m33,
+
+      // Second row
+      this.m10 * matrix.m00 + this.m11 * matrix.m10 + this.m12 * matrix.m20 + this.m13 * matrix.m30,
+      this.m10 * matrix.m01 + this.m11 * matrix.m11 + this.m12 * matrix.m21 + this.m13 * matrix.m31,
+      this.m10 * matrix.m02 + this.m11 * matrix.m12 + this.m12 * matrix.m22 + this.m13 * matrix.m32,
+      this.m10 * matrix.m03 + this.m11 * matrix.m13 + this.m12 * matrix.m23 + this.m13 * matrix.m33,
+
+      // Third row
+      this.m20 * matrix.m00 + this.m21 * matrix.m10 + this.m22 * matrix.m20 + this.m23 * matrix.m30,
+      this.m20 * matrix.m01 + this.m21 * matrix.m11 + this.m22 * matrix.m21 + this.m23 * matrix.m31,
+      this.m20 * matrix.m02 + this.m21 * matrix.m12 + this.m22 * matrix.m22 + this.m23 * matrix.m32,
+      this.m20 * matrix.m03 + this.m21 * matrix.m13 + this.m22 * matrix.m23 + this.m23 * matrix.m33,
+
+      // Fourth row
+      this.m30 * matrix.m00 + this.m31 * matrix.m10 + this.m32 * matrix.m20 + this.m33 * matrix.m30,
+      this.m30 * matrix.m01 + this.m31 * matrix.m11 + this.m32 * matrix.m21 + this.m33 * matrix.m31,
+      this.m30 * matrix.m02 + this.m31 * matrix.m12 + this.m32 * matrix.m22 + this.m33 * matrix.m32,
+      this.m30 * matrix.m03 + this.m31 * matrix.m13 + this.m32 * matrix.m23 + this.m33 * matrix.m33,
+    );
+  }
+
+  public multiplyByPoint(point: Point): Point {
+    const tuple = this.multiplyTuple({ ...point, w: 1 });
+    return new Point(tuple.x, tuple.y, tuple.z);
+  }
+
+  public multiplyByVector(vector: Vector): Vector {
+    const tuple = this.multiplyTuple({ ...vector, w: 0 });
+    return new Vector(tuple.x, tuple.y, tuple.z);
+  }
+
+  private multiplyTuple(tuple: Tuple): Tuple {
+    const x = this.m00 * tuple.x + this.m01 * tuple.y + this.m02 * tuple.z + this.m03 * tuple.w;
+    const y = this.m10 * tuple.x + this.m11 * tuple.y + this.m12 * tuple.z + this.m13 * tuple.w;
+    const z = this.m20 * tuple.x + this.m21 * tuple.y + this.m22 * tuple.z + this.m23 * tuple.w;
+    const w = this.m30 * tuple.x + this.m31 * tuple.y + this.m23 * tuple.z + this.m33 * tuple.w;
+    return { x, y, z, w };
   }
 }
