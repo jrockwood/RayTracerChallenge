@@ -1,5 +1,5 @@
 import { floatEqual } from './Math';
-import { Point, Vector } from './PointVector';
+import { Point, Tuple, Vector } from './PointVector';
 
 export class Matrix2x2 {
   public static identiry: Matrix2x2 = new Matrix2x2(0, 0, 0, 0);
@@ -19,13 +19,6 @@ export class Matrix2x2 {
       floatEqual(this.m11, other.m11)
     );
   }
-}
-
-interface Tuple {
-  x: number;
-  y: number;
-  z: number;
-  w: number;
 }
 
 export class Matrix3x3 {
@@ -130,12 +123,12 @@ export class Matrix4x4 {
   }
 
   public multiplyByPoint(point: Point): Point {
-    const tuple = this.multiplyTuple({ ...point, w: 1 });
+    const tuple = this.multiplyTuple(point.toTuple());
     return new Point(tuple.x, tuple.y, tuple.z);
   }
 
   public multiplyByVector(vector: Vector): Vector {
-    const tuple = this.multiplyTuple({ ...vector, w: 0 });
+    const tuple = this.multiplyTuple(vector.toTuple());
     return new Vector(tuple.x, tuple.y, tuple.z);
   }
 
