@@ -62,4 +62,16 @@ export class Vector {
   public normalize(): Vector {
     return this.divide(this.magnitude());
   }
+
+  public dot(vector: Vector): number {
+    return this.x * vector.x + this.y * vector.y + this.z * vector.z;
+  }
+
+  public cross(vector: Vector): Vector {
+    return new Vector(
+      this.y * vector.z - this.z * vector.y,
+      this.z * vector.x - this.x * vector.z,
+      this.x * vector.y - this.y * vector.x,
+    );
+  }
 }

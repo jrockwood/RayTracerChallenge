@@ -181,4 +181,21 @@ describe('Vector', () => {
       expect(normalized.magnitude()).toBe(1);
     });
   });
+
+  describe('dot()', () => {
+    it('should compute the dot product of two vectors', () => {
+      const a = new Vector(1, 2, 3);
+      const b = new Vector(2, 3, 4);
+      expect(a.dot(b)).toBe(20);
+    });
+  });
+
+  describe('cross()', () => {
+    it('should compute the cross product of two vectors', () => {
+      const a = new Vector(1, 2, 3);
+      const b = new Vector(2, 3, 4);
+      expect(a.cross(b)).toEqual(new Vector(-1, 2, -1));
+      expect(b.cross(a)).toEqual(new Vector(1, -2, 1));
+    });
+  });
 });
