@@ -1,4 +1,4 @@
-import { Point, Vector } from '../src/tuples';
+import { Point, Vector } from '../src/PointVector';
 
 describe('Point', () => {
   it('ctor should store x, y, and z', () => {
