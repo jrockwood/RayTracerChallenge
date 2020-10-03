@@ -1,6 +1,8 @@
-import { Color } from './Color';
-import { clamp } from './Math';
 import * as fs from 'fs-extra';
+import * as path from 'path';
+import { clamp } from './Math';
+import { Color } from './Color';
+import { Rect } from './Rect';
 
 export class Canvas {
   public readonly width: number;
@@ -38,6 +40,14 @@ export class Canvas {
     this._pixels[y][x] = color;
   }
 
+  public fillRect(rect: Rect, color: Color): void {
+    for (let x = Math.max(0, rect.left); x <= Math.min(rect.right, this.width - 1); x++) {
+      for (let y = Math.max(0, rect.top); y <= Math.min(rect.bottom, this.height - 1); y++) {
+        this.setPixel(x, y, color);
+      }
+    }
+  }
+
   public toPpm(): string {
     const builder = new PortablePixmapBuilder(this.width, this.height);
 
@@ -53,12 +63,13 @@ export class Canvas {
 
   public saveToPpmFile(fileName: string): void {
     const contents = this.toPpm();
+    fs.ensureDirSync(path.dirname(fileName));
     fs.writeFileSync(fileName, contents);
   }
 
   private verifyIndex(x: number, y: number): void {
     if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
-      throw new Error('Index out of bounds');
+      throw new Error(`Index out of bounds: x=${x}, y=${y}`);
     }
   }
 }

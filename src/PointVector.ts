@@ -26,6 +26,10 @@ export class Point {
   public subtractVector(vector: Vector): Point {
     return new Point(this.x - vector.x, this.y - vector.y, this.z - vector.z);
   }
+
+  public roundToInt(): Point {
+    return new Point(Math.round(this.x), Math.round(this.y), Math.round(this.z));
+  }
 }
 
 export class Vector {
