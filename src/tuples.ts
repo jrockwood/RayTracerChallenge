@@ -42,3 +42,7 @@ export function tupleAdd(a: Tuple, b: Tuple): Tuple {
 export function tupleSubtract(a: Tuple, b: Tuple): Tuple {
   return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z, w: a.w - b.w };
 }
+
+export function tupleNegate(a: Tuple): Tuple {
+  return { x: -a.x, y: -a.y, z: -a.z, w: -a.w };
+}
