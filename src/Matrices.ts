@@ -376,6 +376,10 @@ export class Matrix4x4 {
       0, 0, 0, 1);
   }
 
+  public translate(x: number, y: number, z: number): Matrix4x4 {
+    return Matrix4x4.translation(x, y, z).multiply(this);
+  }
+
   public static scaling(x: number, y: number, z: number): Matrix4x4 {
     // prettier-ignore
     return new Matrix4x4(
@@ -383,6 +387,10 @@ export class Matrix4x4 {
       0, y, 0, 0,
       0, 0, z, 0,
       0, 0, 0, 1);
+  }
+
+  public scale(x: number, y: number, z: number): Matrix4x4 {
+    return Matrix4x4.scaling(x, y, z).multiply(this);
   }
 
   public static rotationX(radians: number): Matrix4x4 {
@@ -421,6 +429,18 @@ export class Matrix4x4 {
        0,    0,   0, 1);
   }
 
+  public rotateX(radians: number): Matrix4x4 {
+    return Matrix4x4.rotationX(radians).multiply(this);
+  }
+
+  public rotateY(radians: number): Matrix4x4 {
+    return Matrix4x4.rotationY(radians).multiply(this);
+  }
+
+  public rotateZ(radians: number): Matrix4x4 {
+    return Matrix4x4.rotationZ(radians).multiply(this);
+  }
+
   public static shearing(xy: number, xz: number, yx: number, yz: number, zx: number, zy: number): Matrix4x4 {
     // prettier-ignore
     return new Matrix4x4(
@@ -428,5 +448,9 @@ export class Matrix4x4 {
       yx, 1,  yz, 0,
       zx, zy, 1,  0,
       0,  0,  0,  1);
+  }
+
+  public shear(xy: number, xz: number, yx: number, yz: number, zx: number, zy: number): Matrix4x4 {
+    return Matrix4x4.shearing(xy, xz, yx, yz, zx, zy).multiply(this);
   }
 }

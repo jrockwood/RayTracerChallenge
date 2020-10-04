@@ -670,4 +670,44 @@ describe('Matrix4x4', () => {
       expect(transform.multiplyByPoint(p)).toEqual(new Point(2, 3, 7));
     });
   });
+
+  describe('Transformations', () => {
+    it('should apply individual transformations in sequence', () => {
+      const p = new Point(1, 0, 1);
+      const rotation = Matrix4x4.rotationX(Math.PI / 2);
+      const scaling = Matrix4x4.scaling(5, 5, 5);
+      const translation = Matrix4x4.translation(10, 5, 7);
+
+      // apply rotation first
+      const p2 = rotation.multiplyByPoint(p);
+      expect(p2.isEqualTo(new Point(1, -1, 0))).toBeTrue();
+
+      // then apply scaling
+      const p3 = scaling.multiplyByPoint(p2);
+      expect(p3.isEqualTo(new Point(5, -5, 0))).toBeTrue();
+
+      // then apply translation
+      const p4 = translation.multiplyByPoint(p3);
+      expect(p4.isEqualTo(new Point(15, 0, 7))).toBeTrue();
+    });
+
+    it('should apply chained transformations in reverse order', () => {
+      const p = new Point(1, 0, 1);
+      const rotation = Matrix4x4.rotationX(Math.PI / 2);
+      const scaling = Matrix4x4.scaling(5, 5, 5);
+      const translation = Matrix4x4.translation(10, 5, 7);
+
+      const transform = translation.multiply(scaling).multiply(rotation);
+      expect(transform.multiplyByPoint(p).isEqualTo(new Point(15, 0, 7))).toBeTrue();
+    });
+
+    it('should correctly chain transformations using the fluent API', () => {
+      const p = new Point(1, 0, 1);
+      const transform = Matrix4x4.identity
+        .rotateX(Math.PI / 2)
+        .scale(5, 5, 5)
+        .translate(10, 5, 7);
+      expect(transform.multiplyByPoint(p).isEqualTo(new Point(15, 0, 7))).toBeTrue();
+    });
+  });
 });
