@@ -1,4 +1,4 @@
-import { dir } from 'console';
+import { Matrix4x4 } from './Matrices';
 import { Point, Vector } from './PointVector';
 import { Shape } from './Shapes';
 
@@ -13,6 +13,12 @@ export class Ray {
 
   public position(t: number): Point {
     return this.origin.add(this.direction.multiply(t));
+  }
+
+  public transform(matrix: Matrix4x4): Ray {
+    const newOrigin = matrix.multiplyByPoint(this.origin);
+    const newDirection = matrix.multiplyByVector(this.direction);
+    return new Ray(newOrigin, newDirection);
   }
 }
 
@@ -39,6 +45,14 @@ export class IntersectionList {
 
   public get values(): Intersection[] {
     return [...this._intersections];
+  }
+
+  public get ts(): number[] {
+    return this._intersections.map((x) => x.t);
+  }
+
+  public get shapes(): Shape[] {
+    return this._intersections.map((x) => x.shape);
   }
 
   public get(index: number): Intersection {

@@ -1,3 +1,4 @@
+import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
 import { hit, Intersection, IntersectionList, Ray } from '../src/Ray';
 import { Sphere } from '../src/Shapes';
@@ -20,6 +21,24 @@ describe('Ray', () => {
       expect(ray.position(1)).toEqual(new Point(3, 3, 4));
       expect(ray.position(-1)).toEqual(new Point(1, 3, 4));
       expect(ray.position(2.5)).toEqual(new Point(4.5, 3, 4));
+    });
+  });
+
+  describe('transform()', () => {
+    it('should translate a ray', () => {
+      const ray = new Ray(new Point(1, 2, 3), new Vector(0, 1, 0));
+      const matrix = Matrix4x4.translation(3, 4, 5);
+      const translatedRay = ray.transform(matrix);
+      expect(translatedRay.origin).toEqual(new Point(4, 6, 8));
+      expect(translatedRay.direction).toEqual(new Vector(0, 1, 0));
+    });
+
+    it('should scale a ray', () => {
+      const ray = new Ray(new Point(1, 2, 3), new Vector(0, 1, 0));
+      const matrix = Matrix4x4.scaling(2, 3, 4);
+      const translatedRay = ray.transform(matrix);
+      expect(translatedRay.origin).toEqual(new Point(2, 6, 12));
+      expect(translatedRay.direction).toEqual(new Vector(0, 3, 0));
     });
   });
 });
