@@ -7,6 +7,8 @@ import { Point, Vector } from '../src/PointVector';
 import { Rect } from '../src/Rect';
 import * as path from 'path';
 import { Matrix4x4 } from '../src/Matrices';
+import { Sphere } from '../src/Shapes';
+import { hit, Ray } from '../src/Ray';
 
 interface Projectile {
   position: Point;
@@ -86,5 +88,43 @@ describe('Chapter Tests', () => {
     }
 
     saveCanvas(canvas, 'clock-face.ppm');
+  });
+
+  it('Render a red sphere', () => {
+    const canvas = new Canvas(400, 400);
+    const color = Color.Red;
+    const sphere = new Sphere();
+
+    const rayOrigin = new Point(0, 0, -5);
+    const wallZ = 10;
+    const wallSize = 7.0;
+
+    const pixelSize = wallSize / canvas.width;
+    const halfWallSize = wallSize / 2;
+
+    // For each row of pixels in the canvas...
+    for (let y = 0; y < canvas.height; y++) {
+      // Compute the world y coordinate (top = +half, bottom = -half).
+      const worldY = halfWallSize - pixelSize * y;
+
+      // For each pixel in the row...
+      for (let x = 0; x < canvas.width; x++) {
+        // Compute the world x coordinate (left = -half, right = +half).
+        const worldX = -halfWallSize + pixelSize * x;
+
+        // Describe the point on the wall that the ray will target.
+        const position = new Point(worldX, worldY, wallZ);
+
+        // Cast the ray into the scene to see what it hits.
+        const ray = new Ray(rayOrigin, position.subtract(rayOrigin).normalize());
+        const intersections = sphere.intersect(ray);
+
+        if (hit(intersections)) {
+          canvas.setPixel(x, y, color);
+        }
+      }
+    }
+
+    saveCanvas(canvas, 'red-sphere.ppm');
   });
 });
