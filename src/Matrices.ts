@@ -1,6 +1,9 @@
 import { floatEqual } from './Math';
 import { Point, Tuple, Vector } from './PointVector';
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Matrix2x2
+
 export class Matrix2x2 {
   public constructor(
     public readonly m00: number,
@@ -22,6 +25,9 @@ export class Matrix2x2 {
     return this.m00 * this.m11 - this.m01 * this.m10;
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Matrix3x3
 
 export class Matrix3x3 {
   public constructor(
@@ -97,7 +103,35 @@ export class Matrix3x3 {
       this.get(row0, col0), this.get(row0, col1),
       this.get(row1, col0), this.get(row1, col1));
   }
+
+  public minor(row: number, column: number): number {
+    const submatrix = this.submatrix(row, column);
+    return submatrix.determinant();
+  }
+
+  public cofactor(row: number, column: number): number {
+    let minor = this.minor(row, column);
+
+    // If row + column is odd, then we need to negate the minor
+    if ((row + column) % 2 === 1) {
+      minor = -minor;
+    }
+
+    return minor;
+  }
+
+  public determinant(): number {
+    let result = 0;
+    for (let column = 0; column <= 2; column++) {
+      result += this.get(0, column) * this.cofactor(0, column);
+    }
+
+    return result;
+  }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Matrix4x4
 
 export class Matrix4x4 {
   // prettier-ignore
@@ -269,5 +303,30 @@ export class Matrix4x4 {
       this.get(row0, col0), this.get(row0, col1), this.get(row0, col2),
       this.get(row1, col0), this.get(row1, col1), this.get(row1, col2),
       this.get(row2, col0), this.get(row2, col1), this.get(row2, col2));
+  }
+
+  public minor(row: number, column: number): number {
+    const submatrix = this.submatrix(row, column);
+    return submatrix.determinant();
+  }
+
+  public cofactor(row: number, column: number): number {
+    let minor = this.minor(row, column);
+
+    // If row + column is odd, then we need to negate the minor
+    if ((row + column) % 2 === 1) {
+      minor = -minor;
+    }
+
+    return minor;
+  }
+
+  public determinant(): number {
+    let result = 0;
+    for (let column = 0; column <= 3; column++) {
+      result += this.get(0, column) * this.cofactor(0, column);
+    }
+
+    return result;
   }
 }

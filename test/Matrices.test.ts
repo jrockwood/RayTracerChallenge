@@ -1,6 +1,9 @@
 import { Matrix2x2, Matrix3x3, Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Matrix2x2
+
 describe('Matrix2x2', () => {
   describe('ctor()', () => {
     it('should store the rows and columns', () => {
@@ -40,6 +43,9 @@ describe('Matrix2x2', () => {
     });
   });
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Matrix3x3
 
 describe('Matrix3x3', () => {
   describe('ctor()', () => {
@@ -111,7 +117,66 @@ describe('Matrix3x3', () => {
       expect(matrix.submatrix(2, 2)).toEqual(new Matrix2x2(1, 5, -3, 2));
     });
   });
+
+  describe('minor()', () => {
+    it('should return the minor of the matrix, which is the determinant of the submatrix', () => {
+      // prettier-ignore
+      const matrix = new Matrix3x3(
+        3, 5, 0,
+        2, -1, -7,
+        6, -1, 5);
+
+      expect(matrix.minor(0, 0)).toBe(-12);
+      expect(matrix.minor(0, 1)).toBe(52);
+      expect(matrix.minor(0, 2)).toBe(4);
+
+      expect(matrix.minor(1, 0)).toBe(25);
+      expect(matrix.minor(1, 1)).toBe(15);
+      expect(matrix.minor(1, 2)).toBe(-33);
+
+      expect(matrix.minor(2, 0)).toBe(-35);
+      expect(matrix.minor(2, 1)).toBe(-21);
+      expect(matrix.minor(2, 2)).toBe(-13);
+    });
+  });
+
+  describe('cofactor()', () => {
+    it('should return the cofactor of the matrix', () => {
+      // prettier-ignore
+      const matrix = new Matrix3x3(
+        3, 5, 0,
+        2, -1, -7,
+        6, -1, 5);
+
+      expect(matrix.cofactor(0, 0)).toBe(-12);
+      expect(matrix.cofactor(0, 1)).toBe(-52);
+      expect(matrix.cofactor(0, 2)).toBe(4);
+
+      expect(matrix.cofactor(1, 0)).toBe(-25);
+      expect(matrix.cofactor(1, 1)).toBe(15);
+      expect(matrix.cofactor(1, 2)).toBe(33);
+
+      expect(matrix.cofactor(2, 0)).toBe(-35);
+      expect(matrix.cofactor(2, 1)).toBe(21);
+      expect(matrix.cofactor(2, 2)).toBe(-13);
+    });
+
+    describe('determinant()', () => {
+      it('should return the determinant of the matrix', () => {
+        // prettier-ignore
+        const matrix = new Matrix3x3(
+          1, 2, 6,
+          -5, 8, -4,
+          2, 6, 4);
+
+        expect(matrix.determinant()).toBe(-196);
+      });
+    });
+  });
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Matrix4x4
 
 describe('Matrix4x4', () => {
   describe('ctor()', () => {
@@ -300,6 +365,71 @@ describe('Matrix4x4', () => {
       expect(matrix.submatrix(3, 1)).toEqual(new Matrix3x3(-6, 1, 6, -8, 8, 6, -1, 8, 2));
       expect(matrix.submatrix(3, 2)).toEqual(new Matrix3x3(-6, 1, 6, -8, 5, 6, -1, 0, 2));
       expect(matrix.submatrix(3, 3)).toEqual(new Matrix3x3(-6, 1, 1, -8, 5, 8, -1, 0, 8));
+    });
+  });
+
+  describe('minor()', () => {
+    it('should return the minor of the matrix, which is the determinant of the submatrix', () => {
+      // prettier-ignore
+      const matrix = new Matrix4x4(
+        3, 5, 0, 4,
+        2, -1, -7, 9,
+        6, -1, 5, 2,
+        3, 7, -4, 6);
+
+      expect(matrix.minor(0, 0)).toBe(-457);
+      expect(matrix.minor(0, 1)).toBe(-65);
+      expect(matrix.minor(0, 2)).toBe(395);
+      expect(matrix.minor(0, 3)).toBe(-416);
+
+      expect(matrix.minor(1, 0)).toBe(66);
+      expect(matrix.minor(1, 1)).toBe(-42);
+      expect(matrix.minor(1, 2)).toBe(-30);
+      expect(matrix.minor(1, 3)).toBe(102);
+
+      expect(matrix.minor(2, 0)).toBe(182);
+      expect(matrix.minor(2, 1)).toBe(34);
+      expect(matrix.minor(2, 2)).toBe(-64);
+      expect(matrix.minor(2, 3)).toBe(94);
+    });
+  });
+
+  describe('cofactor()', () => {
+    it('should return the cofactor of the matrix', () => {
+      // prettier-ignore
+      const matrix = new Matrix4x4(
+        3, 5, 0, 4,
+        2, -1, -7, 9,
+        6, -1, 5, 2,
+        3, 7, -4, 6);
+
+      expect(matrix.cofactor(0, 0)).toBe(-457);
+      expect(matrix.cofactor(0, 1)).toBe(65);
+      expect(matrix.cofactor(0, 2)).toBe(395);
+      expect(matrix.cofactor(0, 3)).toBe(416);
+
+      expect(matrix.cofactor(1, 0)).toBe(-66);
+      expect(matrix.cofactor(1, 1)).toBe(-42);
+      expect(matrix.cofactor(1, 2)).toBe(30);
+      expect(matrix.cofactor(1, 3)).toBe(102);
+
+      expect(matrix.cofactor(2, 0)).toBe(182);
+      expect(matrix.cofactor(2, 1)).toBe(-34);
+      expect(matrix.cofactor(2, 2)).toBe(-64);
+      expect(matrix.cofactor(2, 3)).toBe(-94);
+    });
+  });
+
+  describe('determinant()', () => {
+    it('should return the determinant of the matrix', () => {
+      // prettier-ignore
+      const matrix = new Matrix4x4(
+        -2, -8, 3, 5,
+        -3, 1, 7, 3,
+        1, 2, -9, 6,
+        -6, 7, 7, -9);
+
+      expect(matrix.determinant()).toBe(-4071);
     });
   });
 });
