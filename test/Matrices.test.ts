@@ -544,4 +544,170 @@ describe('Matrix4x4', () => {
       expect(c.multiply(b.inverse()).isEqualTo(a)).toBeTrue();
     });
   });
+
+  describe('translation()', () => {
+    it('should translate a point', () => {
+      const transform = Matrix4x4.translation(5, -3, 2);
+      const point = new Point(-3, 4, 5);
+      expect(transform.multiplyByPoint(point)).toEqual(new Point(2, 1, 7));
+    });
+
+    it('should translate a point in reverse by multiplying the inverse of the translation matrix', () => {
+      const transform = Matrix4x4.translation(5, -3, 2);
+      const inverse = transform.inverse();
+      const point = new Point(-3, 4, 5);
+      expect(inverse.multiplyByPoint(point)).toEqual(new Point(-8, 7, 3));
+    });
+
+    it('should not affect vectors', () => {
+      const transform = Matrix4x4.translation(5, -3, 2);
+      const vector = new Vector(-3, 4, 5);
+      expect(transform.multiplyByVector(vector)).toEqual(vector);
+    });
+  });
+
+  describe('scaling()', () => {
+    it('should scale a point', () => {
+      const transform = Matrix4x4.scaling(2, 3, 4);
+      const point = new Point(-4, 6, 8);
+      expect(transform.multiplyByPoint(point)).toEqual(new Point(-8, 18, 32));
+    });
+
+    it('should scale a vector', () => {
+      const transform = Matrix4x4.scaling(2, 3, 4);
+      const vector = new Vector(-4, 6, 8);
+      expect(transform.multiplyByVector(vector)).toEqual(new Vector(-8, 18, 32));
+    });
+
+    it('should scale in the reverse direction by multiplying by the inverse of the scaling matrix', () => {
+      const transform = Matrix4x4.scaling(2, 3, 4);
+      const inverse = transform.inverse();
+      const vector = new Vector(-4, 6, 8);
+      expect(inverse.multiplyByVector(vector)).toEqual(new Vector(-2, 2, 2));
+    });
+
+    it('should reflect along an axis by scaling a negative value', () => {
+      const transform = Matrix4x4.scaling(-1, 1, 1);
+      const point = new Point(2, 3, 4);
+      expect(transform.multiplyByPoint(point)).toEqual(new Point(-2, 3, 4));
+    });
+  });
+
+  describe('rotationX()', () => {
+    it('should rotate a point around the x axis', () => {
+      const point = new Point(0, 1, 0);
+      const halfQuarter = Matrix4x4.rotationX(Math.PI / 4);
+      const fullQuarter = Matrix4x4.rotationX(Math.PI / 2);
+
+      expect(halfQuarter.multiplyByPoint(point).isEqualTo(new Point(0, Math.SQRT2 / 2, Math.SQRT2 / 2))).toBeTrue();
+      expect(fullQuarter.multiplyByPoint(point).isEqualTo(new Point(0, 0, 1))).toBeTrue();
+    });
+
+    it('should rotate a point around the x axis in the opposite direction by multiplying by the inverse matrix', () => {
+      const point = new Point(0, 1, 0);
+      const halfQuarter = Matrix4x4.rotationX(Math.PI / 4);
+      const inverse = halfQuarter.inverse();
+      expect(inverse.multiplyByPoint(point).isEqualTo(new Point(0, Math.SQRT2 / 2, -Math.SQRT2 / 2))).toBeTrue();
+    });
+  });
+
+  describe('rotationY()', () => {
+    it('should rotate a point around the y axis', () => {
+      const point = new Point(0, 0, 1);
+      const halfQuarter = Matrix4x4.rotationY(Math.PI / 4);
+      const fullQuarter = Matrix4x4.rotationY(Math.PI / 2);
+
+      expect(halfQuarter.multiplyByPoint(point).isEqualTo(new Point(Math.SQRT2 / 2, 0, Math.SQRT2 / 2))).toBeTrue();
+      expect(fullQuarter.multiplyByPoint(point).isEqualTo(new Point(1, 0, 0))).toBeTrue();
+    });
+  });
+
+  describe('rotationZ()', () => {
+    it('should rotate a point around the z axis', () => {
+      const point = new Point(0, 1, 0);
+      const halfQuarter = Matrix4x4.rotationZ(Math.PI / 4);
+      const fullQuarter = Matrix4x4.rotationZ(Math.PI / 2);
+
+      expect(halfQuarter.multiplyByPoint(point).isEqualTo(new Point(-Math.SQRT2 / 2, Math.SQRT2 / 2, 0))).toBeTrue();
+      expect(fullQuarter.multiplyByPoint(point).isEqualTo(new Point(-1, 0, 0))).toBeTrue();
+    });
+  });
+
+  describe('shearing()', () => {
+    it('should move x in proportion to y', () => {
+      const transform = Matrix4x4.shearing(1, 0, 0, 0, 0, 0);
+      const p = new Point(2, 3, 4);
+      expect(transform.multiplyByPoint(p)).toEqual(new Point(5, 3, 4));
+    });
+
+    it('should move x in proportion to z', () => {
+      const transform = Matrix4x4.shearing(0, 1, 0, 0, 0, 0);
+      const p = new Point(2, 3, 4);
+      expect(transform.multiplyByPoint(p)).toEqual(new Point(6, 3, 4));
+    });
+
+    it('should move y in proportion to x', () => {
+      const transform = Matrix4x4.shearing(0, 0, 1, 0, 0, 0);
+      const p = new Point(2, 3, 4);
+      expect(transform.multiplyByPoint(p)).toEqual(new Point(2, 5, 4));
+    });
+
+    it('should move y in proportion to z', () => {
+      const transform = Matrix4x4.shearing(0, 0, 0, 1, 0, 0);
+      const p = new Point(2, 3, 4);
+      expect(transform.multiplyByPoint(p)).toEqual(new Point(2, 7, 4));
+    });
+
+    it('should move z in proportion to x', () => {
+      const transform = Matrix4x4.shearing(0, 0, 0, 0, 1, 0);
+      const p = new Point(2, 3, 4);
+      expect(transform.multiplyByPoint(p)).toEqual(new Point(2, 3, 6));
+    });
+
+    it('should move z in proportion to y', () => {
+      const transform = Matrix4x4.shearing(0, 0, 0, 0, 0, 1);
+      const p = new Point(2, 3, 4);
+      expect(transform.multiplyByPoint(p)).toEqual(new Point(2, 3, 7));
+    });
+  });
+
+  describe('Transformations', () => {
+    it('should apply individual transformations in sequence', () => {
+      const p = new Point(1, 0, 1);
+      const rotation = Matrix4x4.rotationX(Math.PI / 2);
+      const scaling = Matrix4x4.scaling(5, 5, 5);
+      const translation = Matrix4x4.translation(10, 5, 7);
+
+      // apply rotation first
+      const p2 = rotation.multiplyByPoint(p);
+      expect(p2.isEqualTo(new Point(1, -1, 0))).toBeTrue();
+
+      // then apply scaling
+      const p3 = scaling.multiplyByPoint(p2);
+      expect(p3.isEqualTo(new Point(5, -5, 0))).toBeTrue();
+
+      // then apply translation
+      const p4 = translation.multiplyByPoint(p3);
+      expect(p4.isEqualTo(new Point(15, 0, 7))).toBeTrue();
+    });
+
+    it('should apply chained transformations in reverse order', () => {
+      const p = new Point(1, 0, 1);
+      const rotation = Matrix4x4.rotationX(Math.PI / 2);
+      const scaling = Matrix4x4.scaling(5, 5, 5);
+      const translation = Matrix4x4.translation(10, 5, 7);
+
+      const transform = translation.multiply(scaling).multiply(rotation);
+      expect(transform.multiplyByPoint(p).isEqualTo(new Point(15, 0, 7))).toBeTrue();
+    });
+
+    it('should correctly chain transformations using the fluent API', () => {
+      const p = new Point(1, 0, 1);
+      const transform = Matrix4x4.identity
+        .rotateX(Math.PI / 2)
+        .scale(5, 5, 5)
+        .translate(10, 5, 7);
+      expect(transform.multiplyByPoint(p).isEqualTo(new Point(15, 0, 7))).toBeTrue();
+    });
+  });
 });

@@ -68,6 +68,10 @@ export class Canvas {
   }
 
   private verifyIndex(x: number, y: number): void {
+    if (!Number.isInteger(x) || !Number.isInteger(y)) {
+      throw new Error(`Index must be an integer: x=${x}, y=${y}`);
+    }
+
     if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
       throw new Error(`Index out of bounds: x=${x}, y=${y}`);
     }

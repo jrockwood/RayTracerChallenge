@@ -366,4 +366,91 @@ export class Matrix4x4 {
       newMatrix[3][0], newMatrix[3][1], newMatrix[3][2], newMatrix[3][3],
     );
   }
+
+  public static translation(x: number, y: number, z: number): Matrix4x4 {
+    // prettier-ignore
+    return new Matrix4x4(
+      1, 0, 0, x,
+      0, 1, 0, y,
+      0, 0, 1, z,
+      0, 0, 0, 1);
+  }
+
+  public translate(x: number, y: number, z: number): Matrix4x4 {
+    return Matrix4x4.translation(x, y, z).multiply(this);
+  }
+
+  public static scaling(x: number, y: number, z: number): Matrix4x4 {
+    // prettier-ignore
+    return new Matrix4x4(
+      x, 0, 0, 0,
+      0, y, 0, 0,
+      0, 0, z, 0,
+      0, 0, 0, 1);
+  }
+
+  public scale(x: number, y: number, z: number): Matrix4x4 {
+    return Matrix4x4.scaling(x, y, z).multiply(this);
+  }
+
+  public static rotationX(radians: number): Matrix4x4 {
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+
+    // prettier-ignore
+    return new Matrix4x4(
+      1, 0,   0,    0,
+      0, cos, -sin, 0,
+      0, sin,  cos, 0,
+      0, 0,   0,    1);
+  }
+
+  public static rotationY(radians: number): Matrix4x4 {
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+
+    // prettier-ignore
+    return new Matrix4x4(
+       cos, 0, sin, 0,
+       0,   1, 0,   0,
+      -sin, 0, cos, 0,
+       0,   0, 0,   1);
+  }
+
+  public static rotationZ(radians: number): Matrix4x4 {
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+
+    // prettier-ignore
+    return new Matrix4x4(
+       cos, -sin, 0, 0,
+       sin,  cos, 0, 0,
+       0,    0,   1, 0,
+       0,    0,   0, 1);
+  }
+
+  public rotateX(radians: number): Matrix4x4 {
+    return Matrix4x4.rotationX(radians).multiply(this);
+  }
+
+  public rotateY(radians: number): Matrix4x4 {
+    return Matrix4x4.rotationY(radians).multiply(this);
+  }
+
+  public rotateZ(radians: number): Matrix4x4 {
+    return Matrix4x4.rotationZ(radians).multiply(this);
+  }
+
+  public static shearing(xy: number, xz: number, yx: number, yz: number, zx: number, zy: number): Matrix4x4 {
+    // prettier-ignore
+    return new Matrix4x4(
+      1,  xy, xz, 0,
+      yx, 1,  yz, 0,
+      zx, zy, 1,  0,
+      0,  0,  0,  1);
+  }
+
+  public shear(xy: number, xz: number, yx: number, yz: number, zx: number, zy: number): Matrix4x4 {
+    return Matrix4x4.shearing(xy, xz, yx, yz, zx, zy).multiply(this);
+  }
 }
