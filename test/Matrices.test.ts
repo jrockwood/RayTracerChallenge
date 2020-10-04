@@ -32,6 +32,13 @@ describe('Matrix2x2', () => {
       expect(matrix1.isEqualTo(matrix2)).toBe(false);
     });
   });
+
+  describe('determinant()', () => {
+    it('should return the determinant', () => {
+      const matrix = new Matrix2x2(1, 5, -3, 2);
+      expect(matrix.determinant()).toBe(17);
+    });
+  });
 });
 
 describe('Matrix3x3', () => {
@@ -81,6 +88,27 @@ describe('Matrix3x3', () => {
       const matrix1 = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
       const matrix2 = new Matrix3x3(10, 20, 30, 40, 50, 60, 70, 80, 90);
       expect(matrix1.isEqualTo(matrix2)).toBe(false);
+    });
+  });
+
+  describe('submatrix()', () => {
+    it('should remove the specified row and column and return a 2x2 matrix', () => {
+      // prettier-ignore
+      const matrix = new Matrix3x3(
+        1, 5, 0,
+        -3, 2, 7,
+        0, 6, -3);
+      expect(matrix.submatrix(0, 0)).toEqual(new Matrix2x2(2, 7, 6, -3));
+      expect(matrix.submatrix(0, 1)).toEqual(new Matrix2x2(-3, 7, 0, -3));
+      expect(matrix.submatrix(0, 2)).toEqual(new Matrix2x2(-3, 2, 0, 6));
+
+      expect(matrix.submatrix(1, 0)).toEqual(new Matrix2x2(5, 0, 6, -3));
+      expect(matrix.submatrix(1, 1)).toEqual(new Matrix2x2(1, 0, 0, -3));
+      expect(matrix.submatrix(1, 2)).toEqual(new Matrix2x2(1, 5, 0, 6));
+
+      expect(matrix.submatrix(2, 0)).toEqual(new Matrix2x2(5, 0, 2, 7));
+      expect(matrix.submatrix(2, 1)).toEqual(new Matrix2x2(1, 0, -3, 7));
+      expect(matrix.submatrix(2, 2)).toEqual(new Matrix2x2(1, 5, -3, 2));
     });
   });
 });
@@ -217,6 +245,61 @@ describe('Matrix4x4', () => {
     it('should multiply the identity matrix by a vector and return the same vector', () => {
       const v = new Vector(1, 2, 3);
       expect(Matrix4x4.identity.multiplyByVector(v)).toEqual(v);
+    });
+  });
+
+  describe('transpose()', () => {
+    it('should swap the rows and columns', () => {
+      // prettier-ignore
+      const matrix = new Matrix4x4(
+        0, 9, 3, 0,
+        9, 8, 0, 8,
+        1, 8, 5, 3,
+        0, 0, 5, 8);
+
+      // prettier-ignore
+      const expectedTransposed = new Matrix4x4(
+        0, 9, 1, 0,
+        9, 8, 8, 0,
+        3, 0, 5, 5,
+        0, 8, 3, 8);
+
+      expect(matrix.transpose()).toEqual(expectedTransposed);
+    });
+
+    it('should return the identity matrix when the identity is transposed', () => {
+      expect(Matrix4x4.identity.transpose()).toEqual(Matrix4x4.identity);
+    });
+  });
+
+  describe('submatrix()', () => {
+    it('should remove the specified row and column and return a 3x3 matrix ', () => {
+      // prettier-ignore
+      const matrix = new Matrix4x4(
+        -6, 1, 1, 6,
+        -8, 5, 8, 6,
+        -1, 0, 8, 2,
+        -7, 1, -1, 1);
+
+      expect(matrix.submatrix(0, 0)).toEqual(new Matrix3x3(5, 8, 6, 0, 8, 2, 1, -1, 1));
+      expect(matrix.submatrix(0, 1)).toEqual(new Matrix3x3(-8, 8, 6, -1, 8, 2, -7, -1, 1));
+      expect(matrix.submatrix(0, 2)).toEqual(new Matrix3x3(-8, 5, 6, -1, 0, 2, -7, 1, 1));
+      expect(matrix.submatrix(0, 3)).toEqual(new Matrix3x3(-8, 5, 8, -1, 0, 8, -7, 1, -1));
+
+      expect(matrix.submatrix(1, 0)).toEqual(new Matrix3x3(1, 1, 6, 0, 8, 2, 1, -1, 1));
+      expect(matrix.submatrix(1, 1)).toEqual(new Matrix3x3(-6, 1, 6, -1, 8, 2, -7, -1, 1));
+      expect(matrix.submatrix(1, 2)).toEqual(new Matrix3x3(-6, 1, 6, -1, 0, 2, -7, 1, 1));
+      expect(matrix.submatrix(1, 3)).toEqual(new Matrix3x3(-6, 1, 1, -1, 0, 8, -7, 1, -1));
+
+      expect(matrix.submatrix(2, 0)).toEqual(new Matrix3x3(1, 1, 6, 5, 8, 6, 1, -1, 1));
+      expect(matrix.submatrix(2, 1)).toEqual(new Matrix3x3(-6, 1, 6, -8, 8, 6, -7, -1, 1));
+      expect(matrix.submatrix(2, 2)).toEqual(new Matrix3x3(-6, 1, 6, -8, 5, 6, -7, 1, 1));
+      expect(matrix.submatrix(2, 3)).toEqual(new Matrix3x3(-6, 1, 1, -8, 5, 8, -7, 1, -1));
+
+      expect(matrix.submatrix(3, 0)).toEqual(new Matrix3x3(1, 1, 6, 5, 8, 6, 0, 8, 2));
+      expect(matrix.submatrix(3, 1)).toEqual(new Matrix3x3(-6, 1, 6, -8, 8, 6, -1, 8, 2));
+      expect(matrix.submatrix(3, 2)).toEqual(new Matrix3x3(-6, 1, 6, -8, 5, 6, -1, 0, 2));
+      expect(matrix.submatrix(3, 3)).toEqual(new Matrix3x3(-6, 1, 1, -8, 5, 8, -1, 0, 8));
     });
   });
 });

@@ -17,6 +17,10 @@ export class Matrix2x2 {
       floatEqual(this.m11, other.m11)
     );
   }
+
+  public determinant(): number {
+    return this.m00 * this.m11 - this.m01 * this.m10;
+  }
 }
 
 export class Matrix3x3 {
@@ -32,6 +36,42 @@ export class Matrix3x3 {
     public readonly m22: number,
   ) {}
 
+  public get(row: number, column: number): number {
+    switch (row) {
+      case 0:
+        switch (column) {
+          case 0:
+            return this.m00;
+          case 1:
+            return this.m01;
+          case 2:
+            return this.m02;
+        }
+
+      case 1:
+        switch (column) {
+          case 0:
+            return this.m10;
+          case 1:
+            return this.m11;
+          case 2:
+            return this.m12;
+        }
+
+      case 2:
+        switch (column) {
+          case 0:
+            return this.m20;
+          case 1:
+            return this.m21;
+          case 2:
+            return this.m22;
+        }
+    }
+
+    throw new Error(`Index out of bounds: row=${row}, column=${column}`);
+  }
+
   public isEqualTo(other: Matrix3x3): boolean {
     return (
       floatEqual(this.m00, other.m00) &&
@@ -44,6 +84,18 @@ export class Matrix3x3 {
       floatEqual(this.m21, other.m21) &&
       floatEqual(this.m22, other.m22)
     );
+  }
+
+  public submatrix(rowToRemove: number, columnToRemove: number): Matrix2x2 {
+    const row0 = rowToRemove === 0 ? 1 : 0;
+    const row1 = rowToRemove < 2 ? 2 : 1;
+    const col0 = columnToRemove === 0 ? 1 : 0;
+    const col1 = columnToRemove < 2 ? 2 : 1;
+
+    // prettier-ignore
+    return new Matrix2x2(
+      this.get(row0, col0), this.get(row0, col1),
+      this.get(row1, col0), this.get(row1, col1));
   }
 }
 
@@ -73,6 +125,60 @@ export class Matrix4x4 {
     public readonly m32: number,
     public readonly m33: number,
   ) {}
+
+  public get(row: number, column: number): number {
+    switch (row) {
+      case 0:
+        switch (column) {
+          case 0:
+            return this.m00;
+          case 1:
+            return this.m01;
+          case 2:
+            return this.m02;
+          case 3:
+            return this.m03;
+        }
+
+      case 1:
+        switch (column) {
+          case 0:
+            return this.m10;
+          case 1:
+            return this.m11;
+          case 2:
+            return this.m12;
+          case 3:
+            return this.m13;
+        }
+
+      case 2:
+        switch (column) {
+          case 0:
+            return this.m20;
+          case 1:
+            return this.m21;
+          case 2:
+            return this.m22;
+          case 3:
+            return this.m23;
+        }
+
+      case 3:
+        switch (column) {
+          case 0:
+            return this.m30;
+          case 1:
+            return this.m31;
+          case 2:
+            return this.m32;
+          case 3:
+            return this.m33;
+        }
+    }
+
+    throw new Error(`Index out of bounds: row=${row}, column=${column}`);
+  }
 
   public isEqualTo(other: Matrix4x4): boolean {
     return (
@@ -139,5 +245,29 @@ export class Matrix4x4 {
     const z = this.m20 * tuple.x + this.m21 * tuple.y + this.m22 * tuple.z + this.m23 * tuple.w;
     const w = this.m30 * tuple.x + this.m31 * tuple.y + this.m23 * tuple.z + this.m33 * tuple.w;
     return { x, y, z, w };
+  }
+
+  public transpose(): Matrix4x4 {
+    // prettier-ignore
+    return new Matrix4x4(
+      this.m00, this.m10, this.m20, this.m30,
+      this.m01, this.m11, this.m21, this.m31,
+      this.m02, this.m12, this.m22, this.m32,
+      this.m03, this.m13, this.m23, this.m33);
+  }
+
+  public submatrix(rowToRemove: number, columnToRemove: number): Matrix3x3 {
+    const row0 = rowToRemove === 0 ? 1 : 0;
+    const row1 = rowToRemove <= 1 ? 2 : 1;
+    const row2 = rowToRemove <= 2 ? 3 : 2;
+    const col0 = columnToRemove === 0 ? 1 : 0;
+    const col1 = columnToRemove <= 1 ? 2 : 1;
+    const col2 = columnToRemove <= 2 ? 3 : 2;
+
+    // prettier-ignore
+    return new Matrix3x3(
+      this.get(row0, col0), this.get(row0, col1), this.get(row0, col2),
+      this.get(row1, col0), this.get(row1, col1), this.get(row1, col2),
+      this.get(row2, col0), this.get(row2, col1), this.get(row2, col2));
   }
 }
