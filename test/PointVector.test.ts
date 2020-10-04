@@ -12,19 +12,26 @@ describe('Point', () => {
     it('should be equal with exact numbers', () => {
       const a = new Point(1, 2, 3);
       const b = new Point(1, 2, 3);
-      expect(a.isEqualTo(b)).toBe(true);
+      expect(a.isEqualTo(b)).toBeTrue();
     });
 
     it('should equal if the numbers are within an epsilon', () => {
       const a = new Point(1, 2, 3);
       const b = new Point(1.000009, 1.999999, 3.000001);
-      expect(a.isEqualTo(b)).toBe(true);
+      expect(a.isEqualTo(b)).toBeTrue();
     });
 
     it('should not equal if the numbers do not match', () => {
       const a = new Point(1, 2, 3);
       const b = new Point(4, 3, 2);
-      expect(a.isEqualTo(b)).toBe(false);
+      expect(a.isEqualTo(b)).toBeFalse();
+    });
+  });
+
+  describe('toTuple()', () => {
+    it('should return with w=1', () => {
+      const p = new Point(7, 8, 9);
+      expect(p.toTuple()).toEqual({ x: 7, y: 8, z: 9, w: 1 });
     });
   });
 
@@ -63,19 +70,26 @@ describe('Vector', () => {
     it('should be equal with exact numbers', () => {
       const a = new Vector(1, 2, 3);
       const b = new Vector(1, 2, 3);
-      expect(a.isEqualTo(b)).toBe(true);
+      expect(a.isEqualTo(b)).toBeTrue();
     });
 
     it('should equal if the numbers are within an epsilon', () => {
       const a = new Vector(1, 2, 3);
       const b = new Vector(1.000009, 1.999999, 3.000001);
-      expect(a.isEqualTo(b)).toBe(true);
+      expect(a.isEqualTo(b)).toBeTrue();
     });
 
     it('should not equal if the numbers do not match', () => {
       const a = new Vector(1, 2, 3);
       const b = new Vector(4, 3, 2);
-      expect(a.isEqualTo(b)).toBe(false);
+      expect(a.isEqualTo(b)).toBeFalse();
+    });
+  });
+
+  describe('toTuple()', () => {
+    it('should return with w=0', () => {
+      const v = new Vector(7, 8, 9);
+      expect(v.toTuple()).toEqual({ x: 7, y: 8, z: 9, w: 0 });
     });
   });
 

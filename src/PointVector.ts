@@ -1,5 +1,12 @@
 import { floatEqual } from './Math';
 
+export interface Tuple {
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
 export class Point {
   public readonly x: number;
   public readonly y: number;
@@ -13,6 +20,10 @@ export class Point {
 
   public isEqualTo(other: Point): boolean {
     return floatEqual(this.x, other.x) && floatEqual(this.y, other.y) && floatEqual(this.z, other.z);
+  }
+
+  public toTuple(): Tuple {
+    return { x: this.x, y: this.y, z: this.z, w: 1 };
   }
 
   public add(vector: Vector): Point {
@@ -45,6 +56,10 @@ export class Vector {
 
   public isEqualTo(other: Vector): boolean {
     return floatEqual(this.x, other.x) && floatEqual(this.y, other.y) && floatEqual(this.z, other.z);
+  }
+
+  public toTuple(): Tuple {
+    return { x: this.x, y: this.y, z: this.z, w: 0 };
   }
 
   public add(vector: Vector): Vector {
