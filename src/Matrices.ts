@@ -329,4 +329,41 @@ export class Matrix4x4 {
 
     return result;
   }
+
+  public isInvertible(): boolean {
+    const determinant = this.determinant();
+    return determinant !== 0;
+  }
+
+  public inverse(): Matrix4x4 {
+    if (!this.isInvertible()) {
+      throw new Error('The matrix is not invertible');
+    }
+
+    // Initialize the new matrix.
+    const newMatrix: number[][] = [];
+    for (let row = 0; row < 4; row++) {
+      newMatrix[row] = [];
+    }
+
+    // Calculate the determinant outside of the loop.
+    const determinant = this.determinant();
+
+    for (let row = 0; row < 4; row++) {
+      for (let col = 0; col < 4; col++) {
+        const c = this.cofactor(row, col);
+
+        // Note the "col, row" here instead of "row, col", which transposes the matrix.
+        newMatrix[col][row] = c / determinant;
+      }
+    }
+
+    // prettier-ignore
+    return new Matrix4x4(
+      newMatrix[0][0], newMatrix[0][1], newMatrix[0][2], newMatrix[0][3],
+      newMatrix[1][0], newMatrix[1][1], newMatrix[1][2], newMatrix[1][3],
+      newMatrix[2][0], newMatrix[2][1], newMatrix[2][2], newMatrix[2][3],
+      newMatrix[3][0], newMatrix[3][1], newMatrix[3][2], newMatrix[3][3],
+    );
+  }
 }
