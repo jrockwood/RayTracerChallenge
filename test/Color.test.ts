@@ -22,7 +22,7 @@ describe('Color', () => {
     it('should subtract two colors', () => {
       const c1 = new Color(0.9, 0.6, 0.75);
       const c2 = new Color(0.7, 0.1, 0.25);
-      expect(c1.subtract(c2).isEqualTo(new Color(0.2, 0.5, 0.5))).toBe(true);
+      expect(c1.subtract(c2).isEqualTo(new Color(0.2, 0.5, 0.5))).toBeTrue();
     });
   });
 
@@ -35,7 +35,7 @@ describe('Color', () => {
     it('should multiple two colors', () => {
       const c1 = new Color(1, 0.2, 0.4);
       const c2 = new Color(0.9, 1, 0.1);
-      expect(c1.multiply(c2).isEqualTo(new Color(0.9, 0.2, 0.04))).toBe(true);
+      expect(c1.multiply(c2).isEqualTo(new Color(0.9, 0.2, 0.04))).toBeTrue();
     });
   });
 });
