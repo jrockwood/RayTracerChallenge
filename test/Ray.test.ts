@@ -81,8 +81,8 @@ describe('IntersectionList', () => {
   describe('add()', () => {
     it('should add to the existing list in sorted order', () => {
       const sphere = new Sphere();
-      const list = new IntersectionList(new Intersection(30, sphere), new Intersection(-1, sphere));
-      list.add(new Intersection(10, sphere), new Intersection(-300, sphere));
+      let list = new IntersectionList(new Intersection(30, sphere), new Intersection(-1, sphere));
+      list = list.add(new Intersection(10, sphere), new Intersection(-300, sphere));
       expect(list.length).toBe(4);
       expect(list.values.map((x) => x.t)).toEqual([-300, -1, 10, 30]);
     });

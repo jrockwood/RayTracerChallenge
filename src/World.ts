@@ -12,11 +12,11 @@ export class World {
   }
 
   public intersect(ray: Ray): IntersectionList {
-    const hits = new IntersectionList();
+    let hits = new IntersectionList();
 
     this.shapes.forEach((shape) => {
       const shapeHits = shape.intersect(ray);
-      hits.add(...shapeHits.values);
+      hits = hits.add(...shapeHits.values);
     });
 
     return hits;

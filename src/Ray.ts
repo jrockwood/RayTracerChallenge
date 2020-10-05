@@ -33,7 +33,7 @@ export class Intersection {
 }
 
 export class IntersectionList {
-  private _intersections: Intersection[];
+  private _intersections: ReadonlyArray<Intersection>;
 
   public constructor(...intersections: Intersection[]) {
     this._intersections = intersections.sort((a, b) => a.t - b.t);
@@ -63,8 +63,8 @@ export class IntersectionList {
     return this._intersections[index];
   }
 
-  public add(...intersctions: Intersection[]): void {
-    this._intersections = [...this._intersections, ...intersctions].sort((a, b) => a.t - b.t);
+  public add(...intersctions: Intersection[]): IntersectionList {
+    return new IntersectionList(...[...this._intersections, ...intersctions]);
   }
 
   public hit(): Intersection | null {
