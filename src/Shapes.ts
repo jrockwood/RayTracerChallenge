@@ -11,6 +11,9 @@ export abstract class Shape {
     this.transform = transform;
     this.material = material;
   }
+
+  public abstract intersect(ray: Ray): IntersectionList;
+  public abstract normalAt(worldPoint: Point): Vector;
 }
 
 export class Sphere extends Shape {

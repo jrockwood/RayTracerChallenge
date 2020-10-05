@@ -1,6 +1,6 @@
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
-import { hit, Intersection, IntersectionList, Ray } from '../src/Ray';
+import { Intersection, IntersectionList, Ray } from '../src/Ray';
 import { Sphere } from '../src/Shapes';
 
 describe('Ray', () => {
@@ -87,40 +87,40 @@ describe('IntersectionList', () => {
       expect(list.values.map((x) => x.t)).toEqual([-300, -1, 10, 30]);
     });
   });
-});
 
-describe('hit()', () => {
-  it('should return the smallest t when all intersections have positive t', () => {
-    const sphere = new Sphere();
-    const i1 = new Intersection(1, sphere);
-    const i2 = new Intersection(2, sphere);
-    const list = new IntersectionList(i1, i2);
-    expect(hit(list)).toBe(i1);
-  });
+  describe('hit()', () => {
+    it('should return the smallest t when all intersections have positive t', () => {
+      const sphere = new Sphere();
+      const i1 = new Intersection(1, sphere);
+      const i2 = new Intersection(2, sphere);
+      const list = new IntersectionList(i1, i2);
+      expect(list.hit()).toBe(i1);
+    });
 
-  it('should return the smallest non-negative t when some intersections have negative t', () => {
-    const sphere = new Sphere();
-    const i1 = new Intersection(-1, sphere);
-    const i2 = new Intersection(1, sphere);
-    const list = new IntersectionList(i1, i2);
-    expect(hit(list)).toBe(i2);
-  });
+    it('should return the smallest non-negative t when some intersections have negative t', () => {
+      const sphere = new Sphere();
+      const i1 = new Intersection(-1, sphere);
+      const i2 = new Intersection(1, sphere);
+      const list = new IntersectionList(i1, i2);
+      expect(list.hit()).toBe(i2);
+    });
 
-  it('should return null when all intersections have negative t', () => {
-    const sphere = new Sphere();
-    const i1 = new Intersection(-2, sphere);
-    const i2 = new Intersection(-1, sphere);
-    const list = new IntersectionList(i1, i2);
-    expect(hit(list)).toBeNull();
-  });
+    it('should return null when all intersections have negative t', () => {
+      const sphere = new Sphere();
+      const i1 = new Intersection(-2, sphere);
+      const i2 = new Intersection(-1, sphere);
+      const list = new IntersectionList(i1, i2);
+      expect(list.hit()).toBeNull();
+    });
 
-  it('should return the lowest non-negative intersection', () => {
-    const sphere = new Sphere();
-    const i1 = new Intersection(5, sphere);
-    const i2 = new Intersection(7, sphere);
-    const i3 = new Intersection(-3, sphere);
-    const i4 = new Intersection(2, sphere);
-    const list = new IntersectionList(i1, i2, i3, i4);
-    expect(hit(list)).toBe(i4);
+    it('should return the lowest non-negative intersection', () => {
+      const sphere = new Sphere();
+      const i1 = new Intersection(5, sphere);
+      const i2 = new Intersection(7, sphere);
+      const i3 = new Intersection(-3, sphere);
+      const i4 = new Intersection(2, sphere);
+      const list = new IntersectionList(i1, i2, i3, i4);
+      expect(list.hit()).toBe(i4);
+    });
   });
 });
