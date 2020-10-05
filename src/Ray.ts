@@ -66,9 +66,9 @@ export class IntersectionList {
   public add(...intersctions: Intersection[]): void {
     this._intersections = [...this._intersections, ...intersctions].sort((a, b) => a.t - b.t);
   }
-}
 
-export function hit(intersctions: IntersectionList): Intersection | null {
-  const nonNegativeTs = intersctions.values.filter((x) => x.t >= 0);
-  return nonNegativeTs.length > 0 ? nonNegativeTs[0] : null;
+  public hit(): Intersection | null {
+    const nonNegativeTs = this._intersections.filter((x) => x.t >= 0);
+    return nonNegativeTs.length > 0 ? nonNegativeTs[0] : null;
+  }
 }

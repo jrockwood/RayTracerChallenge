@@ -8,7 +8,9 @@ import { Rect } from '../src/Rect';
 import * as path from 'path';
 import { Matrix4x4 } from '../src/Matrices';
 import { Sphere } from '../src/Shapes';
-import { hit, Ray } from '../src/Ray';
+import { Ray } from '../src/Ray';
+import { Material } from '../src/Materials';
+import { PointLight } from '../src/Lights';
 
 interface Projectile {
   position: Point;
@@ -37,7 +39,7 @@ function saveCanvas(canvas: Canvas, fileName: string): void {
 }
 
 describe('Chapter Tests', () => {
-  it('Firing a cannon', () => {
+  it('Chapter 1-2 - Firing a cannon', () => {
     const start = new Point(0, 1, 0);
     const velocity = new Vector(1, 1.8, 0).normalize().multiply(11.25);
     let cannonball = { position: start, velocity };
@@ -47,7 +49,7 @@ describe('Chapter Tests', () => {
     const wind = new Vector(-0.01, 0, 0);
     const environment = { gravity, wind };
 
-    const color = Color.White;
+    const color = Color.Magenta;
     const borderSize = 2;
     const canvas = new Canvas(900, 550);
 
@@ -58,16 +60,16 @@ describe('Chapter Tests', () => {
       canvas.fillRect(rect, color);
     }
 
-    saveCanvas(canvas, 'cannon.ppm');
+    saveCanvas(canvas, 'ch02-cannon.ppm');
   });
 
-  it('Draw a clock face', () => {
-    const canvas = new Canvas(800, 800);
+  it('Chapter 4 - Draw a clock face', () => {
+    const canvas = new Canvas(400, 400);
     const centerX = Math.round(canvas.width / 2);
     const centerY = Math.round(canvas.height / 2);
     const clockRadius = Math.min(canvas.width * (3 / 8), canvas.height * (3 / 8));
 
-    const color = Color.White;
+    const color = Color.Cyan;
     const borderSize = 4;
 
     // The clock is oriented along the y axis, which means when looking at it face-on you're looking
@@ -87,10 +89,10 @@ describe('Chapter Tests', () => {
       canvas.fillRect(rect, color);
     }
 
-    saveCanvas(canvas, 'clock-face.ppm');
+    saveCanvas(canvas, 'ch04-clock-face.ppm');
   });
 
-  it('Render a red sphere', () => {
+  it('Chapter 5 - Render a red sphere', () => {
     const canvas = new Canvas(400, 400);
     const color = Color.Red;
     const sphere = new Sphere();
@@ -119,12 +121,57 @@ describe('Chapter Tests', () => {
         const ray = new Ray(rayOrigin, position.subtract(rayOrigin).normalize());
         const intersections = sphere.intersect(ray);
 
-        if (hit(intersections)) {
+        if (intersections.hit()) {
           canvas.setPixel(x, y, color);
         }
       }
     }
 
-    saveCanvas(canvas, 'red-sphere.ppm');
+    saveCanvas(canvas, 'ch05-red-sphere.ppm');
+  });
+
+  it('Chapter 6 - Fully shaded sphere', () => {
+    const canvas = new Canvas(400, 400);
+    const sphere = new Sphere(undefined, new Material(new Color(1, 0.2, 1)));
+    const lightPosition = new Point(-10, 10, -10);
+    const lightColor = Color.White;
+    const light = new PointLight(lightPosition, lightColor);
+
+    const rayOrigin = new Point(0, 0, -5);
+    const wallZ = 10;
+    const wallSize = 7.0;
+
+    const pixelSize = wallSize / canvas.width;
+    const halfWallSize = wallSize / 2;
+
+    // For each row of pixels in the canvas...
+    for (let y = 0; y < canvas.height; y++) {
+      // Compute the world y coordinate (top = +half, bottom = -half).
+      const worldY = halfWallSize - pixelSize * y;
+
+      // For each pixel in the row...
+      for (let x = 0; x < canvas.width; x++) {
+        // Compute the world x coordinate (left = -half, right = +half).
+        const worldX = -halfWallSize + pixelSize * x;
+
+        // Describe the point on the wall that the ray will target.
+        const position = new Point(worldX, worldY, wallZ);
+
+        // Cast the ray into the scene to see what it hits.
+        const ray = new Ray(rayOrigin, position.subtract(rayOrigin).normalize());
+        const intersections = sphere.intersect(ray);
+        const hit = intersections.hit();
+
+        if (hit) {
+          const point = ray.position(hit.t);
+          const normal = hit.shape.normalAt(point);
+          const eye = ray.direction.negate();
+          const color = hit.shape.material.lighting(light, point, eye, normal);
+          canvas.setPixel(x, y, color);
+        }
+      }
+    }
+
+    saveCanvas(canvas, 'ch06-shaded-sphere.ppm');
   });
 });
