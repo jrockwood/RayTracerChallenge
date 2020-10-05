@@ -52,6 +52,41 @@ describe('Intersection', () => {
       expect(intersection.shape).toBe(sphere);
     });
   });
+
+  describe('prepareComputations()', () => {
+    it('should store the precalculated results of an intersection', () => {
+      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+      const sphere = new Sphere();
+      const intersection = new Intersection(4, sphere);
+      const comps = intersection.prepareComputations(ray);
+      expect(comps.t).toBe(4);
+      expect(comps.shape).toBe(sphere);
+      expect(comps.point).toEqual(new Point(0, 0, -1));
+      expect(comps.eye.isEqualTo(new Vector(0, 0, -1))).toBeTrue();
+      expect(comps.normal).toEqual(new Vector(0, 0, -1));
+    });
+
+    it('should calculate the hit when an intersection occurs on the outside', () => {
+      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+      const sphere = new Sphere();
+      const intersection = new Intersection(4, sphere);
+      const comps = intersection.prepareComputations(ray);
+      expect(comps.isInside).toBeFalse();
+    });
+
+    it('should calculate the hit when an intersection occurs on the inside', () => {
+      const ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+      const sphere = new Sphere();
+      const intersection = new Intersection(1, sphere);
+      const comps = intersection.prepareComputations(ray);
+      expect(comps.point).toEqual(new Point(0, 0, 1));
+      expect(comps.eye.isEqualTo(new Vector(0, 0, -1))).toBeTrue();
+      expect(comps.isInside).toBeTrue();
+
+      // The normal would have been (0, 0, 1) but it's inverted!
+      expect(comps.normal.isEqualTo(new Vector(0, 0, -1))).toBeTrue();
+    });
+  });
 });
 
 describe('IntersectionList', () => {
@@ -81,8 +116,8 @@ describe('IntersectionList', () => {
   describe('add()', () => {
     it('should add to the existing list in sorted order', () => {
       const sphere = new Sphere();
-      const list = new IntersectionList(new Intersection(30, sphere), new Intersection(-1, sphere));
-      list.add(new Intersection(10, sphere), new Intersection(-300, sphere));
+      let list = new IntersectionList(new Intersection(30, sphere), new Intersection(-1, sphere));
+      list = list.add(new Intersection(10, sphere), new Intersection(-300, sphere));
       expect(list.length).toBe(4);
       expect(list.values.map((x) => x.t)).toEqual([-300, -1, 10, 30]);
     });

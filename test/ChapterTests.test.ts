@@ -1,16 +1,20 @@
 // file.skip
 // Tell Wallaby to skip this file
 
+import * as path from 'path';
+import { Camera } from '../src/Camera';
 import { Canvas } from '../src/Canvas';
 import { Color } from '../src/Color';
-import { Point, Vector } from '../src/PointVector';
-import { Rect } from '../src/Rect';
-import * as path from 'path';
-import { Matrix4x4 } from '../src/Matrices';
-import { Sphere } from '../src/Shapes';
-import { Ray } from '../src/Ray';
 import { Material } from '../src/Materials';
+import { Matrix4x4 } from '../src/Matrices';
+import { Point, Vector } from '../src/PointVector';
 import { PointLight } from '../src/Lights';
+import { Ray } from '../src/Ray';
+import { Rect } from '../src/Rect';
+import { render } from '../src/Render';
+import { Sphere } from '../src/Shapes';
+import { viewTransform } from '../src/Transformations';
+import { World } from '../src/World';
 
 interface Projectile {
   position: Point;
@@ -20,12 +24,6 @@ interface Projectile {
 interface Environment {
   gravity: Vector;
   wind: Vector;
-}
-
-function tick(environment: Environment, projectile: Projectile): Projectile {
-  const position = projectile.position.add(projectile.velocity);
-  const velocity = projectile.velocity.add(environment.gravity).add(environment.wind);
-  return { position, velocity };
 }
 
 function makeRect(x: number, y: number, borderSize: number): Rect {
@@ -40,6 +38,12 @@ function saveCanvas(canvas: Canvas, fileName: string): void {
 
 describe('Chapter Tests', () => {
   it('Chapter 1-2 - Firing a cannon', () => {
+    function tick(environment: Environment, projectile: Projectile): Projectile {
+      const position = projectile.position.add(projectile.velocity);
+      const velocity = projectile.velocity.add(environment.gravity).add(environment.wind);
+      return { position, velocity };
+    }
+
     const start = new Point(0, 1, 0);
     const velocity = new Vector(1, 1.8, 0).normalize().multiply(11.25);
     let cannonball = { position: start, velocity };
@@ -131,7 +135,7 @@ describe('Chapter Tests', () => {
   });
 
   it('Chapter 6 - Fully shaded sphere', () => {
-    const canvas = new Canvas(400, 400);
+    const canvas = new Canvas(200, 200);
     const sphere = new Sphere(undefined, new Material(new Color(1, 0.2, 1)));
     const lightPosition = new Point(-10, 10, -10);
     const lightColor = Color.White;
@@ -173,5 +177,50 @@ describe('Chapter Tests', () => {
     }
 
     saveCanvas(canvas, 'ch06-shaded-sphere.ppm');
+  });
+
+  it('Chapter 7 - Six Spheres', () => {
+    const floor = new Sphere(Matrix4x4.scaling(10, 0.01, 10), new Material(new Color(1, 0.9, 0.9)).withSpecular(0));
+
+    const leftWall = new Sphere(
+      Matrix4x4.scaling(10, 0.01, 10)
+        .rotateX(Math.PI / 2)
+        .rotateY(-Math.PI / 4)
+        .translate(0, 0, 5),
+      floor.material,
+    );
+
+    const rightWall = new Sphere(
+      Matrix4x4.scaling(10, 0.01, 10)
+        .rotateX(Math.PI / 2)
+        .rotateY(Math.PI / 4)
+        .translate(0, 0, 5),
+      floor.material,
+    );
+
+    const middle = new Sphere(
+      Matrix4x4.translation(-0.5, 1, 0.5),
+      new Material(new Color(0.1, 1, 0.5), undefined, 0.7, 0.3),
+    );
+
+    const right = new Sphere(
+      Matrix4x4.scaling(0.5, 0.5, 0.5).translate(1.5, 0.5, -0.5),
+      new Material(new Color(0.5, 1, 0.1), undefined, 0.7, 0.3),
+    );
+
+    const left = new Sphere(
+      Matrix4x4.scaling(0.33, 0.33, 0.33).translate(-1.5, 0.33, -0.75),
+      new Material(new Color(1, 0.8, 0.1), undefined, 0.7, 0.3),
+    );
+
+    const light = new PointLight(new Point(-10, 10, -10), Color.White);
+    const world = new World(light, [floor, leftWall, rightWall, middle, right, left]);
+
+    const cameraTransform = viewTransform(new Point(0, 1.5, -5), new Point(0, 1, 0), new Vector(0, 1, 0));
+    const camera = new Camera(100, 50, Math.PI / 3, cameraTransform);
+
+    const canvas = render(camera, world);
+
+    saveCanvas(canvas, 'ch07-six-spheres.ppm');
   });
 });

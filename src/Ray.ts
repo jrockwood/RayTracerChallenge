@@ -22,6 +22,15 @@ export class Ray {
   }
 }
 
+export interface PrecomputedIntersectionState {
+  t: number;
+  shape: Shape;
+  point: Point;
+  eye: Vector;
+  normal: Vector;
+  isInside: boolean;
+}
+
 export class Intersection {
   public readonly t: number;
   public readonly shape: Shape;
@@ -30,10 +39,31 @@ export class Intersection {
     this.t = t;
     this.shape = shape;
   }
+
+  public prepareComputations(ray: Ray): PrecomputedIntersectionState {
+    const point = ray.position(this.t);
+    const eye = ray.direction.negate();
+    let normal = this.shape.normalAt(point);
+    let isInside = false;
+
+    if (normal.dot(eye) < 0) {
+      isInside = true;
+      normal = normal.negate();
+    }
+
+    return {
+      t: this.t,
+      shape: this.shape,
+      point,
+      eye,
+      normal,
+      isInside,
+    };
+  }
 }
 
 export class IntersectionList {
-  private _intersections: Intersection[];
+  private _intersections: ReadonlyArray<Intersection>;
 
   public constructor(...intersections: Intersection[]) {
     this._intersections = intersections.sort((a, b) => a.t - b.t);
@@ -63,8 +93,8 @@ export class IntersectionList {
     return this._intersections[index];
   }
 
-  public add(...intersctions: Intersection[]): void {
-    this._intersections = [...this._intersections, ...intersctions].sort((a, b) => a.t - b.t);
+  public add(...intersctions: Intersection[]): IntersectionList {
+    return new IntersectionList(...[...this._intersections, ...intersctions]);
   }
 
   public hit(): Intersection | null {
