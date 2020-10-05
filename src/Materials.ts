@@ -36,6 +36,26 @@ export class Material {
     return value;
   }
 
+  public withColor(value: Color): Material {
+    return new Material(value, this.ambient, this.diffuse, this.specular, this.shininess);
+  }
+
+  public withAmbient(value: number): Material {
+    return new Material(this.color, value, this.diffuse, this.specular, this.shininess);
+  }
+
+  public withDiffuse(value: number): Material {
+    return new Material(this.color, this.ambient, value, this.specular, this.shininess);
+  }
+
+  public withSpecular(value: number): Material {
+    return new Material(this.color, this.ambient, this.diffuse, value, this.shininess);
+  }
+
+  public withShininess(value: number): Material {
+    return new Material(this.color, this.ambient, this.diffuse, this.specular, value);
+  }
+
   public lighting(light: Light, position: Point, eye: Vector, normal: Vector): Color {
     // Combine the surface color with the light's color/intensity.
     const effectiveColor = this.color.multiply(light.intensity);

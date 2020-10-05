@@ -14,11 +14,22 @@ export abstract class Shape {
 
   public abstract intersect(ray: Ray): IntersectionList;
   public abstract normalAt(worldPoint: Point): Vector;
+
+  public abstract withTransform(value: Matrix4x4): Shape;
+  public abstract withMaterial(value: Material): Shape;
 }
 
 export class Sphere extends Shape {
   public constructor(transform: Matrix4x4 = Matrix4x4.identity, material: Material = new Material()) {
     super(transform, material);
+  }
+
+  public withTransform(value: Matrix4x4): Shape {
+    return new Sphere(value, this.material);
+  }
+
+  public withMaterial(value: Material): Shape {
+    return new Sphere(this.transform, value);
   }
 
   public intersect(ray: Ray): IntersectionList {

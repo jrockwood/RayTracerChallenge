@@ -1,5 +1,6 @@
+import { Color } from './Color';
 import { Light } from './Lights';
-import { IntersectionList, Ray } from './Ray';
+import { IntersectionList, PrecomputedIntersectionState, Ray } from './Ray';
 import { Shape } from './Shapes';
 
 export class World {
@@ -9,6 +10,14 @@ export class World {
   public constructor(light: Light, shapes: ReadonlyArray<Shape>) {
     this.light = light;
     this.shapes = shapes;
+  }
+
+  public withLight(value: Light): World {
+    return new World(value, this.shapes);
+  }
+
+  public withShapes(value: ReadonlyArray<Shape>): World {
+    return new World(this.light, value);
   }
 
   public intersect(ray: Ray): IntersectionList {
@@ -21,17 +30,22 @@ export class World {
 
     return hits;
   }
-}
 
-export class WorldBuilder {
-  public light?: Light;
-  public shapes: Shape[] = [];
+  public shadeHit(comps: PrecomputedIntersectionState): Color {
+    const color = comps.shape.material.lighting(this.light, comps.point, comps.eye, comps.normal);
+    return color;
+  }
 
-  public build(): World {
-    if (!this.light) {
-      throw new Error('No light has been added to the world');
+  public colorAt(ray: Ray): Color {
+    const intersections = this.intersect(ray);
+    const hit = intersections.hit();
+
+    if (!hit) {
+      return Color.Black;
     }
 
-    return new World(this.light, this.shapes);
+    const comps = hit.prepareComputations(ray);
+    const color = this.shadeHit(comps);
+    return color;
   }
 }

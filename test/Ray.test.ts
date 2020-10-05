@@ -52,6 +52,41 @@ describe('Intersection', () => {
       expect(intersection.shape).toBe(sphere);
     });
   });
+
+  describe('prepareComputations()', () => {
+    it('should store the precalculated results of an intersection', () => {
+      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+      const sphere = new Sphere();
+      const intersection = new Intersection(4, sphere);
+      const comps = intersection.prepareComputations(ray);
+      expect(comps.t).toBe(4);
+      expect(comps.shape).toBe(sphere);
+      expect(comps.point).toEqual(new Point(0, 0, -1));
+      expect(comps.eye.isEqualTo(new Vector(0, 0, -1))).toBeTrue();
+      expect(comps.normal).toEqual(new Vector(0, 0, -1));
+    });
+
+    it('should calculate the hit when an intersection occurs on the outside', () => {
+      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+      const sphere = new Sphere();
+      const intersection = new Intersection(4, sphere);
+      const comps = intersection.prepareComputations(ray);
+      expect(comps.isInside).toBeFalse();
+    });
+
+    it('should calculate the hit when an intersection occurs on the inside', () => {
+      const ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+      const sphere = new Sphere();
+      const intersection = new Intersection(1, sphere);
+      const comps = intersection.prepareComputations(ray);
+      expect(comps.point).toEqual(new Point(0, 0, 1));
+      expect(comps.eye.isEqualTo(new Vector(0, 0, -1))).toBeTrue();
+      expect(comps.isInside).toBeTrue();
+
+      // The normal would have been (0, 0, 1) but it's inverted!
+      expect(comps.normal.isEqualTo(new Vector(0, 0, -1))).toBeTrue();
+    });
+  });
 });
 
 describe('IntersectionList', () => {
