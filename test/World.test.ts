@@ -80,7 +80,7 @@ describe('World', () => {
   });
 });
 
-function createDefaultWorld(): World {
+export function createDefaultWorld(): World {
   const light = new PointLight(new Point(-10, 10, -10), Color.White);
   const sphere1 = new Sphere(undefined, new Material(new Color(0.8, 1.0, 0.6), undefined, 0.7, 0.2));
   const sphere2 = new Sphere(Matrix4x4.scaling(0.5, 0.5, 0.5));
