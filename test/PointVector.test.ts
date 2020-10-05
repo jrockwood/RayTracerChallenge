@@ -212,4 +212,20 @@ describe('Vector', () => {
       expect(b.cross(a)).toEqual(new Vector(1, -2, 1));
     });
   });
+
+  describe('reflect()', () => {
+    it('should reflect a vector approaching at 45 degrees', () => {
+      const vector = new Vector(1, -1, 0);
+      const normal = new Vector(0, 1, 0);
+      const reflection = vector.reflect(normal);
+      expect(reflection).toEqual(new Vector(1, 1, 0));
+    });
+
+    it('should reflect a vector off a slanted surface', () => {
+      const vector = new Vector(0, -1, 0);
+      const normal = new Vector(Math.SQRT2 / 2, Math.SQRT2 / 2, 0);
+      const reflection = vector.reflect(normal);
+      expect(reflection.isEqualTo(new Vector(1, 0, 0))).toBeTrue();
+    });
+  });
 });

@@ -1,18 +1,21 @@
+import { Material } from './Materials';
 import { Matrix4x4 } from './Matrices';
 import { Point, Vector } from './PointVector';
 import { Intersection, IntersectionList, Ray } from './Ray';
 
 export abstract class Shape {
   public readonly transform: Matrix4x4;
+  public readonly material: Material;
 
-  protected constructor(transform: Matrix4x4 = Matrix4x4.identity) {
+  protected constructor(transform: Matrix4x4, material: Material) {
     this.transform = transform;
+    this.material = material;
   }
 }
 
 export class Sphere extends Shape {
-  public constructor(transform: Matrix4x4 = Matrix4x4.identity) {
-    super(transform);
+  public constructor(transform: Matrix4x4 = Matrix4x4.identity, material: Material = new Material()) {
+    super(transform, material);
   }
 
   public intersect(ray: Ray): IntersectionList {
@@ -35,5 +38,12 @@ export class Sphere extends Shape {
     const t2 = (-b + sqrtOfDiscriminant) / (2 * a);
 
     return new IntersectionList(new Intersection(t1, this), new Intersection(t2, this));
+  }
+
+  public normalAt(worldPoint: Point): Vector {
+    const objectPoint = this.transform.inverse().multiplyByPoint(worldPoint);
+    const objectNormal = objectPoint.subtract(Point.zero);
+    const worldNormal = this.transform.inverse().transpose().multiplyByVector(objectNormal);
+    return worldNormal.normalize();
   }
 }

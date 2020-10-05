@@ -8,6 +8,8 @@ export interface Tuple {
 }
 
 export class Point {
+  public static readonly zero = new Point(0, 0, 0);
+
   public readonly x: number;
   public readonly y: number;
   public readonly z: number;
@@ -44,6 +46,8 @@ export class Point {
 }
 
 export class Vector {
+  public static readonly zero = new Vector(0, 0, 0);
+
   public readonly x: number;
   public readonly y: number;
   public readonly z: number;
@@ -104,5 +108,9 @@ export class Vector {
       this.z * vector.x - this.x * vector.z,
       this.x * vector.y - this.y * vector.x,
     );
+  }
+
+  public reflect(normal: Vector): Vector {
+    return this.subtract(normal.multiply(2 * this.dot(normal)));
   }
 }
