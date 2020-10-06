@@ -1,8 +1,8 @@
 import { Material } from '../src/Materials';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
-import { IntersectionList, Ray } from '../src/Ray';
-import { Shape, Sphere } from '../src/Shapes';
+import { Intersection, IntersectionList, Ray } from '../src/Ray';
+import { Plane, Shape, Sphere } from '../src/Shapes';
 
 class TestShape extends Shape {
   public savedLocalRay?: Ray;
@@ -31,6 +31,9 @@ class TestShape extends Shape {
     throw new Error('Method not implemented.');
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shape
 
 describe('Shape', () => {
   describe('ctor()', () => {
@@ -87,6 +90,9 @@ describe('Shape', () => {
     });
   });
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sphere
 
 describe('Sphere', () => {
   describe('intersect()', () => {
@@ -164,6 +170,51 @@ describe('Sphere', () => {
       const sqrt3Over3 = Math.sqrt(3) / 3;
       const normal = sphere.normalAt(new Point(sqrt3Over3, sqrt3Over3, sqrt3Over3));
       expect(normal).toEqual(normal.normalize());
+    });
+  });
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Plane
+
+describe('Plane', () => {
+  describe('localNormalAt()', () => {
+    it('should return the same normal at every point', () => {
+      const plane = new Plane();
+      const expectedNormal = new Vector(0, 1, 0);
+      expect(plane.normalAt(new Point(0, 0, 0))).toEqual(expectedNormal);
+      expect(plane.normalAt(new Point(10, 0, -10))).toEqual(expectedNormal);
+      expect(plane.normalAt(new Point(-5, 0, 150))).toEqual(expectedNormal);
+    });
+  });
+
+  describe('localIntersect()', () => {
+    it('should not intersect with a ray parallel to the plane', () => {
+      const plane = new Plane();
+      const ray = new Ray(new Point(0, 10, 0), new Vector(0, 0, 1));
+      const intersections = plane.intersect(ray);
+      expect(intersections.length).toBe(0);
+    });
+
+    it('should not intersect with a coplanar ray', () => {
+      const plane = new Plane();
+      const ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+      const intersections = plane.intersect(ray);
+      expect(intersections.length).toBe(0);
+    });
+
+    it('should intersect with a ray from above', () => {
+      const plane = new Plane();
+      const ray = new Ray(new Point(0, 1, 0), new Vector(0, -1, 0));
+      const intersections = plane.intersect(ray);
+      expect(intersections.values).toEqual([new Intersection(1, plane)]);
+    });
+
+    it('should intersect with a ray from below', () => {
+      const plane = new Plane();
+      const ray = new Ray(new Point(0, -1, 0), new Vector(0, 1, 0));
+      const intersections = plane.intersect(ray);
+      expect(intersections.values).toEqual([new Intersection(1, plane)]);
     });
   });
 });

@@ -1,7 +1,11 @@
 import { Material } from './Materials';
+import { EPSILON } from './Math';
 import { Matrix4x4 } from './Matrices';
 import { Point, Vector } from './PointVector';
 import { Intersection, IntersectionList, Ray } from './Ray';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shape
 
 export abstract class Shape {
   public readonly transform: Matrix4x4;
@@ -30,6 +34,9 @@ export abstract class Shape {
   public abstract withTransform(value: Matrix4x4): Shape;
   public abstract withMaterial(value: Material): Shape;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sphere
 
 export class Sphere extends Shape {
   public constructor(transform?: Matrix4x4, material?: Material) {
@@ -67,5 +74,37 @@ export class Sphere extends Shape {
   protected localNormalAt(localPoint: Point): Vector {
     const localNormal = localPoint.subtract(Point.zero);
     return localNormal;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Plane
+
+export class Plane extends Shape {
+  public constructor(transform?: Matrix4x4, material?: Material) {
+    super(transform, material);
+  }
+
+  protected localIntersect(localRay: Ray): IntersectionList {
+    // If the ray is parallel to the plane, there are no intersections.
+    if (Math.abs(localRay.direction.y) < EPSILON) {
+      return new IntersectionList();
+    }
+
+    const t = -localRay.origin.y / localRay.direction.y;
+    return new IntersectionList(new Intersection(t, this));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected localNormalAt(localPoint: Point): Vector {
+    return new Vector(0, 1, 0);
+  }
+
+  public withTransform(value: Matrix4x4): Shape {
+    return new Plane(value, this.material);
+  }
+
+  public withMaterial(value: Material): Shape {
+    return new Plane(this.transform, value);
   }
 }
