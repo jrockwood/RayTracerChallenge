@@ -1,26 +1,45 @@
 import { Material } from './Materials';
+import { EPSILON } from './Math';
 import { Matrix4x4 } from './Matrices';
 import { Point, Vector } from './PointVector';
 import { Intersection, IntersectionList, Ray } from './Ray';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shape
 
 export abstract class Shape {
   public readonly transform: Matrix4x4;
   public readonly material: Material;
 
-  protected constructor(transform: Matrix4x4, material: Material) {
+  protected constructor(transform: Matrix4x4 = Matrix4x4.identity, material: Material = new Material()) {
     this.transform = transform;
     this.material = material;
   }
 
-  public abstract intersect(ray: Ray): IntersectionList;
-  public abstract normalAt(worldPoint: Point): Vector;
+  public intersect(ray: Ray): IntersectionList {
+    const localRay = ray.transform(this.transform.inverse());
+    return this.localIntersect(localRay);
+  }
+  protected abstract localIntersect(localRay: Ray): IntersectionList;
+
+  public normalAt(worldPoint: Point): Vector {
+    const localPoint = this.transform.inverse().multiplyByPoint(worldPoint);
+    const localNormal = this.localNormalAt(localPoint);
+    const worldNormal = this.transform.inverse().transpose().multiplyByVector(localNormal);
+    return worldNormal.normalize();
+  }
+
+  protected abstract localNormalAt(localPoint: Point): Vector;
 
   public abstract withTransform(value: Matrix4x4): Shape;
   public abstract withMaterial(value: Material): Shape;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sphere
+
 export class Sphere extends Shape {
-  public constructor(transform: Matrix4x4 = Matrix4x4.identity, material: Material = new Material()) {
+  public constructor(transform?: Matrix4x4, material?: Material) {
     super(transform, material);
   }
 
@@ -32,14 +51,12 @@ export class Sphere extends Shape {
     return new Sphere(this.transform, value);
   }
 
-  public intersect(ray: Ray): IntersectionList {
-    const transformedRay = ray.transform(this.transform.inverse());
-
-    const sphereToRay: Vector = transformedRay.origin.subtract(new Point(0, 0, 0));
+  protected localIntersect(localRay: Ray): IntersectionList {
+    const sphereToRay: Vector = localRay.origin.subtract(new Point(0, 0, 0));
 
     // Calculate the discriminant using this formula: b^2 - 4ac
-    const a = transformedRay.direction.dot(transformedRay.direction);
-    const b = 2 * transformedRay.direction.dot(sphereToRay);
+    const a = localRay.direction.dot(localRay.direction);
+    const b = 2 * localRay.direction.dot(sphereToRay);
     const c = sphereToRay.dot(sphereToRay) - 1;
     const discriminant = b * b - 4 * a * c;
 
@@ -54,10 +71,40 @@ export class Sphere extends Shape {
     return new IntersectionList(new Intersection(t1, this), new Intersection(t2, this));
   }
 
-  public normalAt(worldPoint: Point): Vector {
-    const objectPoint = this.transform.inverse().multiplyByPoint(worldPoint);
-    const objectNormal = objectPoint.subtract(Point.zero);
-    const worldNormal = this.transform.inverse().transpose().multiplyByVector(objectNormal);
-    return worldNormal.normalize();
+  protected localNormalAt(localPoint: Point): Vector {
+    const localNormal = localPoint.subtract(Point.zero);
+    return localNormal;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Plane
+
+export class Plane extends Shape {
+  public constructor(transform?: Matrix4x4, material?: Material) {
+    super(transform, material);
+  }
+
+  protected localIntersect(localRay: Ray): IntersectionList {
+    // If the ray is parallel to the plane, there are no intersections.
+    if (Math.abs(localRay.direction.y) < EPSILON) {
+      return new IntersectionList();
+    }
+
+    const t = -localRay.origin.y / localRay.direction.y;
+    return new IntersectionList(new Intersection(t, this));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected localNormalAt(localPoint: Point): Vector {
+    return new Vector(0, 1, 0);
+  }
+
+  public withTransform(value: Matrix4x4): Shape {
+    return new Plane(value, this.material);
+  }
+
+  public withMaterial(value: Material): Shape {
+    return new Plane(this.transform, value);
   }
 }
