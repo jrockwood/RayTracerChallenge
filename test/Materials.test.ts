@@ -31,7 +31,7 @@ describe('Material', () => {
         const eye = new Vector(0, 0, -1);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 0, -10), Color.White);
-        const result = material.lighting(light, position, eye, normal);
+        const result = material.lighting(light, position, eye, normal, false);
         expect(result).toEqual(new Color(1.9, 1.9, 1.9));
       });
 
@@ -39,7 +39,7 @@ describe('Material', () => {
         const eye = new Vector(0, Math.SQRT2 / 2, -Math.SQRT2 / 2);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 0, -10), Color.White);
-        const result = material.lighting(light, position, eye, normal);
+        const result = material.lighting(light, position, eye, normal, false);
         expect(result).toEqual(new Color(1.0, 1.0, 1.0));
       });
 
@@ -47,7 +47,7 @@ describe('Material', () => {
         const eye = new Vector(0, 0, -1);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 10, -10), Color.White);
-        const result = material.lighting(light, position, eye, normal);
+        const result = material.lighting(light, position, eye, normal, false);
         expect(result.isEqualTo(new Color(0.7364, 0.7364, 0.7364))).toBeTrue();
       });
 
@@ -55,7 +55,7 @@ describe('Material', () => {
         const eye = new Vector(0, -Math.SQRT2 / 2, -Math.SQRT2 / 2);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 10, -10), Color.White);
-        const result = material.lighting(light, position, eye, normal);
+        const result = material.lighting(light, position, eye, normal, false);
         expect(result.isEqualTo(new Color(1.6364, 1.6364, 1.6364))).toBeTrue();
       });
 
@@ -63,7 +63,16 @@ describe('Material', () => {
         const eye = new Vector(0, 0, -1);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 0, 10), Color.White);
-        const result = material.lighting(light, position, eye, normal);
+        const result = material.lighting(light, position, eye, normal, false);
+        expect(result).toEqual(new Color(0.1, 0.1, 0.1));
+      });
+
+      it('with the surface in shadow', () => {
+        const eye = new Vector(0, 0, -1);
+        const normal = new Vector(0, 0, -1);
+        const light = new PointLight(new Point(0, 0, -10), Color.White);
+        const isInShadow = true;
+        const result = material.lighting(light, position, eye, normal, isInShadow);
         expect(result).toEqual(new Color(0.1, 0.1, 0.1));
       });
     });

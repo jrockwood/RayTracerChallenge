@@ -1,5 +1,6 @@
 import { Color } from './Color';
 import { Light } from './Lights';
+import { Point } from './PointVector';
 import { IntersectionList, PrecomputedIntersectionState, Ray } from './Ray';
 import { Shape } from './Shapes';
 
@@ -32,7 +33,8 @@ export class World {
   }
 
   public shadeHit(comps: PrecomputedIntersectionState): Color {
-    const color = comps.shape.material.lighting(this.light, comps.point, comps.eye, comps.normal);
+    const isShadowed = this.isShadowed(comps.overPoint);
+    const color = comps.shape.material.lighting(this.light, comps.point, comps.eye, comps.normal, isShadowed);
     return color;
   }
 
@@ -47,5 +49,18 @@ export class World {
     const comps = hit.prepareComputations(ray);
     const color = this.shadeHit(comps);
     return color;
+  }
+
+  public isShadowed(point: Point): boolean {
+    const pointToLightVector = this.light.position.subtract(point);
+    const distance = pointToLightVector.magnitude();
+    const direction = pointToLightVector.normalize();
+
+    const ray = new Ray(point, direction);
+    const intersections = this.intersect(ray);
+
+    const hit = intersections.hit();
+    const isShadowed = hit !== null && hit.t < distance;
+    return isShadowed;
   }
 }

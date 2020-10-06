@@ -170,7 +170,7 @@ describe('Chapter Tests', () => {
           const point = ray.position(hit.t);
           const normal = hit.shape.normalAt(point);
           const eye = ray.direction.negate();
-          const color = hit.shape.material.lighting(light, point, eye, normal);
+          const color = hit.shape.material.lighting(light, point, eye, normal, false);
           canvas.setPixel(x, y, color);
         }
       }
@@ -222,5 +222,9 @@ describe('Chapter Tests', () => {
     const canvas = render(camera, world);
 
     saveCanvas(canvas, 'ch07-six-spheres.ppm');
+  });
+
+  it('Chapter 8 - Shadows', () => {
+    // Same as last chapter, but with shadows now!
   });
 });

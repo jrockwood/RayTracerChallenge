@@ -48,6 +48,17 @@ describe('World', () => {
       const color = world.shadeHit(comps);
       expect(color.isEqualTo(new Color(0.90498, 0.90498, 0.90498))).toBeTrue();
     });
+
+    it('should shade an intersection in shadow', () => {
+      const sphere1 = new Sphere();
+      const sphere2 = new Sphere(Matrix4x4.translation(0, 0, 10));
+      const world = new World(new PointLight(new Point(0, 0, -10), Color.White), [sphere1, sphere2]);
+      const ray = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
+      const intersection = new Intersection(4, sphere2);
+      const comps = intersection.prepareComputations(ray);
+      const color = world.shadeHit(comps);
+      expect(color).toEqual(new Color(0.1, 0.1, 0.1));
+    });
   });
 
   describe('colorAt()', () => {
@@ -76,6 +87,32 @@ describe('World', () => {
       const ray = new Ray(new Point(0, 0, 0.75), new Vector(0, 0, -1));
       const color = world.colorAt(ray);
       expect(color).toEqual(inner.material.color);
+    });
+  });
+
+  describe('isShadowed()', () => {
+    it('should return false when nothing is colinear with the point and light', () => {
+      const world = createDefaultWorld();
+      const point = new Point(0, 10, 0);
+      expect(world.isShadowed(point)).toBeFalse();
+    });
+
+    it('should return true when an object is between the point and the light', () => {
+      const world = createDefaultWorld();
+      const point = new Point(10, -10, 10);
+      expect(world.isShadowed(point)).toBeTrue();
+    });
+
+    it('should return false when an object is behind the light', () => {
+      const world = createDefaultWorld();
+      const point = new Point(-20, 20, -20);
+      expect(world.isShadowed(point)).toBeFalse();
+    });
+
+    it('should return false when an object is behind the point', () => {
+      const world = createDefaultWorld();
+      const point = new Point(-2, 2, -2);
+      expect(world.isShadowed(point)).toBeFalse();
     });
   });
 });

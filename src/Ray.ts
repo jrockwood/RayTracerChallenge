@@ -1,3 +1,4 @@
+import { EPSILON } from './Math';
 import { Matrix4x4 } from './Matrices';
 import { Point, Vector } from './PointVector';
 import { Shape } from './Shapes';
@@ -29,6 +30,7 @@ export interface PrecomputedIntersectionState {
   eye: Vector;
   normal: Vector;
   isInside: boolean;
+  overPoint: Point;
 }
 
 export class Intersection {
@@ -51,6 +53,8 @@ export class Intersection {
       normal = normal.negate();
     }
 
+    const overPoint = point.add(normal.multiply(EPSILON));
+
     return {
       t: this.t,
       shape: this.shape,
@@ -58,6 +62,7 @@ export class Intersection {
       eye,
       normal,
       isInside,
+      overPoint,
     };
   }
 }

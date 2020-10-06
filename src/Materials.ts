@@ -56,7 +56,7 @@ export class Material {
     return new Material(this.color, this.ambient, this.diffuse, this.specular, value);
   }
 
-  public lighting(light: Light, position: Point, eye: Vector, normal: Vector): Color {
+  public lighting(light: Light, position: Point, eye: Vector, normal: Vector, isInShadow: boolean): Color {
     // Combine the surface color with the light's color/intensity.
     const effectiveColor = this.color.multiply(light.intensity);
 
@@ -95,7 +95,7 @@ export class Material {
     }
 
     // Add the three contributions together to get the final shading.
-    const result = ambient.add(diffuse).add(specular);
+    const result = isInShadow ? ambient : ambient.add(diffuse).add(specular);
     return result;
   }
 }

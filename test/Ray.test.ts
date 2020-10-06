@@ -1,3 +1,4 @@
+import { EPSILON } from '../src/Math';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
 import { Intersection, IntersectionList, Ray } from '../src/Ray';
@@ -85,6 +86,15 @@ describe('Intersection', () => {
 
       // The normal would have been (0, 0, 1) but it's inverted!
       expect(comps.normal.isEqualTo(new Vector(0, 0, -1))).toBeTrue();
+    });
+
+    it('the hit should offset the point', () => {
+      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+      const sphere = new Sphere(Matrix4x4.translation(0, 0, 1));
+      const intersection = new Intersection(5, sphere);
+      const comps = intersection.prepareComputations(ray);
+      expect(comps.overPoint.z).toBeLessThan(-EPSILON / 2);
+      expect(comps.point.z).toBeGreaterThan(comps.overPoint.z);
     });
   });
 });
