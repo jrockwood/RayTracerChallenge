@@ -1,32 +1,94 @@
 import { Material } from '../src/Materials';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
-import { Ray } from '../src/Ray';
-import { Sphere } from '../src/Shapes';
+import { IntersectionList, Ray } from '../src/Ray';
+import { Shape, Sphere } from '../src/Shapes';
 
-describe('Sphere', () => {
+class TestShape extends Shape {
+  public savedLocalRay?: Ray;
+  public savedLocalPoint?: Point;
+
+  public constructor(transform?: Matrix4x4, material?: Material) {
+    super(transform, material);
+  }
+
+  protected localIntersect(localRay: Ray): IntersectionList {
+    this.savedLocalRay = localRay;
+    return new IntersectionList();
+  }
+
+  protected localNormalAt(localPoint: Point): Vector {
+    this.savedLocalPoint = localPoint;
+    return new Vector(localPoint.x, localPoint.y, localPoint.z);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public withTransform(value: Matrix4x4): Shape {
+    throw new Error('Method not implemented.');
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public withMaterial(value: Material): Shape {
+    throw new Error('Method not implemented.');
+  }
+}
+
+describe('Shape', () => {
   describe('ctor()', () => {
     it('should default to the identity matrix for the transform', () => {
-      const sphere = new Sphere();
-      expect(sphere.transform).toEqual(Matrix4x4.identity);
+      const shape = new TestShape();
+      expect(shape.transform).toEqual(Matrix4x4.identity);
     });
 
     it('should store the transform', () => {
-      const sphere = new Sphere(Matrix4x4.translation(2, 3, 4));
-      expect(sphere.transform).toEqual(Matrix4x4.translation(2, 3, 4));
+      const shape = new TestShape(Matrix4x4.translation(2, 3, 4));
+      expect(shape.transform).toEqual(Matrix4x4.translation(2, 3, 4));
     });
 
     it('should have a default material', () => {
-      const sphere = new Sphere();
-      expect(sphere.material).toEqual(new Material());
+      const shape = new TestShape();
+      expect(shape.material).toEqual(new Material());
     });
 
     it('should store the material', () => {
-      const sphere = new Sphere(undefined, new Material(undefined, 1));
-      expect(sphere.material.ambient).toBe(1);
+      const shape = new TestShape(undefined, new Material(undefined, 1));
+      expect(shape.material.ambient).toBe(1);
     });
   });
 
+  describe('intersect()', () => {
+    it('should intersect a scaled shape', () => {
+      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+      const shape = new TestShape(Matrix4x4.scaling(2, 2, 2));
+      shape.intersect(ray);
+      expect(shape.savedLocalRay?.origin).toEqual(new Point(0, 0, -2.5));
+      expect(shape.savedLocalRay?.direction).toEqual(new Vector(0, 0, 0.5));
+    });
+
+    it('should intersect a translated sphere', () => {
+      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+      const shape = new TestShape(Matrix4x4.translation(5, 0, 0));
+      shape.intersect(ray);
+      expect(shape.savedLocalRay?.origin).toEqual(new Point(-5, 0, -5));
+      expect(shape.savedLocalRay?.direction).toEqual(new Vector(0, 0, 1));
+    });
+  });
+
+  describe('normalAt()', () => {
+    it('should calculate the normal on a translated shape', () => {
+      const shape = new TestShape(Matrix4x4.translation(0, 1, 0));
+      const normal = shape.normalAt(new Point(0, 1.70711, -0.70711));
+      expect(normal.isEqualTo(new Vector(0, 0.70711, -0.70711))).toBeTrue();
+    });
+
+    it('should calculate the normal on a transformed shape', () => {
+      const shape = new TestShape(Matrix4x4.rotationZ(Math.PI / 5).scale(1, 0.5, 1));
+      const normal = shape.normalAt(new Point(0, Math.SQRT2 / 2, -Math.SQRT2 / 2));
+      expect(normal.isEqualTo(new Vector(0, 0.97014, -0.24254))).toBeTrue();
+    });
+  });
+});
+
+describe('Sphere', () => {
   describe('intersect()', () => {
     it('should intersect at two points', () => {
       const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
@@ -69,20 +131,6 @@ describe('Sphere', () => {
       const points = sphere.intersect(ray);
       expect(points.ts).toEqual([-6.0, -4.0]);
     });
-
-    it('should intersect a scaled sphere', () => {
-      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
-      const sphere = new Sphere(Matrix4x4.scaling(2, 2, 2));
-      const points = sphere.intersect(ray);
-      expect(points.ts).toEqual([3, 7]);
-    });
-
-    it('should intersect a translated sphere', () => {
-      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
-      const sphere = new Sphere(Matrix4x4.translation(5, 0, 0));
-      const points = sphere.intersect(ray);
-      expect(points.length).toBe(0);
-    });
   });
 
   describe('normalAt()', () => {
@@ -116,18 +164,6 @@ describe('Sphere', () => {
       const sqrt3Over3 = Math.sqrt(3) / 3;
       const normal = sphere.normalAt(new Point(sqrt3Over3, sqrt3Over3, sqrt3Over3));
       expect(normal).toEqual(normal.normalize());
-    });
-
-    it('should calculate the normal on a translated sphere', () => {
-      const sphere = new Sphere(Matrix4x4.translation(0, 1, 0));
-      const normal = sphere.normalAt(new Point(0, 1.70711, -0.70711));
-      expect(normal.isEqualTo(new Vector(0, 0.70711, -0.70711))).toBeTrue();
-    });
-
-    it('should calculate the normal on a transformed sphere', () => {
-      const sphere = new Sphere(Matrix4x4.rotationZ(Math.PI / 5).scale(1, 0.5, 1));
-      const normal = sphere.normalAt(new Point(0, Math.SQRT2 / 2, -Math.SQRT2 / 2));
-      expect(normal.isEqualTo(new Vector(0, 0.97014, -0.24254))).toBeTrue();
     });
   });
 });
