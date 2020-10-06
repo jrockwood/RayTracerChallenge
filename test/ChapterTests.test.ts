@@ -12,7 +12,7 @@ import { PointLight } from '../src/Lights';
 import { Ray } from '../src/Ray';
 import { Rect } from '../src/Rect';
 import { render } from '../src/Render';
-import { Sphere } from '../src/Shapes';
+import { Plane, Sphere } from '../src/Shapes';
 import { viewTransform } from '../src/Transformations';
 import { World } from '../src/World';
 
@@ -226,5 +226,34 @@ describe('Chapter Tests', () => {
 
   it('Chapter 8 - Shadows', () => {
     // Same as last chapter, but with shadows now!
+  });
+
+  it('Chapter 9 - Planes', () => {
+    const floor = new Plane(undefined, new Material(new Color(1, 0.9, 0.9)).withSpecular(0));
+
+    const middle = new Sphere(
+      Matrix4x4.translation(-0.5, 1, 0.5),
+      new Material(new Color(0.1, 1, 0.5), undefined, 0.7, 0.3),
+    );
+
+    const right = new Sphere(
+      Matrix4x4.scaling(0.5, 0.5, 0.5).translate(1.5, 0.5, -0.5),
+      new Material(new Color(0.5, 1, 0.1), undefined, 0.7, 0.3),
+    );
+
+    const left = new Sphere(
+      Matrix4x4.scaling(0.33, 0.33, 0.33).translate(-1.5, 0.33, -0.75),
+      new Material(new Color(1, 0.8, 0.1), undefined, 0.7, 0.3),
+    );
+
+    const light = new PointLight(new Point(-10, 10, -10), Color.White);
+    const world = new World(light, [floor, middle, right, left]);
+
+    const cameraTransform = viewTransform(new Point(0, 1.5, -5), new Point(0, 1, 0), new Vector(0, 1, 0));
+    const camera = new Camera(100, 50, Math.PI / 3, cameraTransform);
+
+    const canvas = render(camera, world);
+
+    saveCanvas(canvas, 'ch09-planes.ppm');
   });
 });
