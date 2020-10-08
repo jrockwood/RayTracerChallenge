@@ -1,6 +1,8 @@
 import { Color } from './Color';
 import { Light } from './Lights';
+import { Pattern } from './Patterns';
 import { Point, Vector } from './PointVector';
+import { Shape } from './Shapes';
 
 export class Material {
   public static readonly defaultColor = Color.White;
@@ -14,6 +16,7 @@ export class Material {
   public readonly diffuse: number;
   public readonly specular: number;
   public readonly shininess: number;
+  public readonly pattern?: Pattern;
 
   public constructor(
     color = Material.defaultColor,
@@ -21,12 +24,14 @@ export class Material {
     diffuse = Material.defaultDiffuse,
     specular = Material.defaultSpecular,
     shininess = Material.defaultShininess,
+    pattern?: Pattern,
   ) {
     this.color = color;
     this.ambient = Material.verifyValue(ambient, 'ambient');
     this.diffuse = Material.verifyValue(diffuse, 'diffuse');
     this.specular = Material.verifyValue(specular, 'specular');
     this.shininess = Material.verifyValue(shininess, 'shininess');
+    this.pattern = pattern;
   }
 
   private static verifyValue(value: number, valueName: string): number {
@@ -37,31 +42,37 @@ export class Material {
   }
 
   public withColor(value: Color): Material {
-    return new Material(value, this.ambient, this.diffuse, this.specular, this.shininess);
+    return new Material(value, this.ambient, this.diffuse, this.specular, this.shininess, this.pattern);
   }
 
   public withAmbient(value: number): Material {
-    return new Material(this.color, value, this.diffuse, this.specular, this.shininess);
+    return new Material(this.color, value, this.diffuse, this.specular, this.shininess, this.pattern);
   }
 
   public withDiffuse(value: number): Material {
-    return new Material(this.color, this.ambient, value, this.specular, this.shininess);
+    return new Material(this.color, this.ambient, value, this.specular, this.shininess, this.pattern);
   }
 
   public withSpecular(value: number): Material {
-    return new Material(this.color, this.ambient, this.diffuse, value, this.shininess);
+    return new Material(this.color, this.ambient, this.diffuse, value, this.shininess, this.pattern);
   }
 
   public withShininess(value: number): Material {
-    return new Material(this.color, this.ambient, this.diffuse, this.specular, value);
+    return new Material(this.color, this.ambient, this.diffuse, this.specular, value, this.pattern);
   }
 
-  public lighting(light: Light, position: Point, eye: Vector, normal: Vector, isInShadow: boolean): Color {
+  public withPattern(value?: Pattern): Material {
+    return new Material(this.color, this.ambient, this.diffuse, this.specular, this.shininess, value);
+  }
+
+  public lighting(shape: Shape, light: Light, point: Point, eye: Vector, normal: Vector, isInShadow: boolean): Color {
+    const color = this.pattern?.colorOnShapeAt(shape, point) ?? this.color;
+
     // Combine the surface color with the light's color/intensity.
-    const effectiveColor = this.color.multiply(light.intensity);
+    const effectiveColor = color.multiply(light.intensity);
 
     // Find the direction to the light source.
-    const lightVector = light.position.subtract(position).normalize();
+    const lightVector = light.position.subtract(point).normalize();
 
     // Compute the ambient contribution.
     const ambient = effectiveColor.multiply(this.ambient);

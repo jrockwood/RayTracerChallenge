@@ -34,7 +34,14 @@ export class World {
 
   public shadeHit(comps: PrecomputedIntersectionState): Color {
     const isShadowed = this.isShadowed(comps.overPoint);
-    const color = comps.shape.material.lighting(this.light, comps.point, comps.eye, comps.normal, isShadowed);
+    const color = comps.shape.material.lighting(
+      comps.shape,
+      this.light,
+      comps.point,
+      comps.eye,
+      comps.normal,
+      isShadowed,
+    );
     return color;
   }
 
