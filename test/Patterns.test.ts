@@ -1,6 +1,6 @@
 import { Color } from '../src/Color';
 import { Matrix4x4 } from '../src/Matrices';
-import { Pattern, StripePattern } from '../src/Patterns';
+import { CheckerPattern, GradientPattern, Pattern, RingPattern, StripePattern } from '../src/Patterns';
 import { Point } from '../src/PointVector';
 import { Sphere } from '../src/Shapes';
 
@@ -17,6 +17,9 @@ class TestPattern extends Pattern {
     return new TestPattern(value);
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Pattern
 
 describe('Pattern', () => {
   describe('ctor()', () => {
@@ -54,6 +57,10 @@ describe('Pattern', () => {
     });
   });
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// StripePattern
+
 describe('StripePattern', () => {
   describe('ctor()', () => {
     it('should store the two colors for the stripe', () => {
@@ -101,6 +108,66 @@ describe('StripePattern', () => {
       const pattern = new StripePattern(Color.White, Color.Black, Matrix4x4.translation(0.5, 0, 0));
       const color = pattern.colorOnShapeAt(shape, new Point(2.5, 0, 0));
       expect(color).toEqual(Color.White);
+    });
+  });
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GradientPattern
+
+describe('GradientPattern', () => {
+  describe('colorAt()', () => {
+    it('should linearly interpolate between colors', () => {
+      const pattern = new GradientPattern(Color.White, Color.Black);
+      expect(pattern.colorAt(new Point(0, 0, 0))).toEqual(Color.White);
+      expect(pattern.colorAt(new Point(0.25, 0, 0))).toEqual(new Color(0.75, 0.75, 0.75));
+      expect(pattern.colorAt(new Point(0.5, 0, 0))).toEqual(new Color(0.5, 0.5, 0.5));
+      expect(pattern.colorAt(new Point(0.75, 0, 0))).toEqual(new Color(0.25, 0.25, 0.25));
+    });
+  });
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// RingPattern
+
+describe('RingPattern', () => {
+  describe('colorAt()', () => {
+    it('should extend in both x and z', () => {
+      const pattern = new RingPattern(Color.White, Color.Black);
+      expect(pattern.colorAt(new Point(0, 0, 0))).toEqual(Color.White);
+      expect(pattern.colorAt(new Point(1, 0, 0))).toEqual(Color.Black);
+      expect(pattern.colorAt(new Point(0, 0, 1))).toEqual(Color.Black);
+
+      // 0.708 is just slightly more than sqrt(2)/2
+      expect(pattern.colorAt(new Point(0.708, 0, 0.708))).toEqual(Color.Black);
+    });
+  });
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CheckerPattern
+
+describe('CheckerPattern', () => {
+  describe('colorAt()', () => {
+    it('should repeat in x', () => {
+      const pattern = new CheckerPattern(Color.White, Color.Black);
+      expect(pattern.colorAt(new Point(0, 0, 0))).toEqual(Color.White);
+      expect(pattern.colorAt(new Point(0.99, 0, 0))).toEqual(Color.White);
+      expect(pattern.colorAt(new Point(1.01, 0, 0))).toEqual(Color.Black);
+    });
+
+    it('should repeat in y', () => {
+      const pattern = new CheckerPattern(Color.White, Color.Black);
+      expect(pattern.colorAt(new Point(0, 0, 0))).toEqual(Color.White);
+      expect(pattern.colorAt(new Point(0, 0.99, 0))).toEqual(Color.White);
+      expect(pattern.colorAt(new Point(0, 1.01, 0))).toEqual(Color.Black);
+    });
+
+    it('should repeat in z', () => {
+      const pattern = new CheckerPattern(Color.White, Color.Black);
+      expect(pattern.colorAt(new Point(0, 0, 0))).toEqual(Color.White);
+      expect(pattern.colorAt(new Point(0, 0, 0.99))).toEqual(Color.White);
+      expect(pattern.colorAt(new Point(0, 0, 1.01))).toEqual(Color.Black);
     });
   });
 });
