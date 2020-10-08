@@ -15,6 +15,7 @@ import { render } from '../src/Render';
 import { Plane, Sphere } from '../src/Shapes';
 import { viewTransform } from '../src/Transformations';
 import { World } from '../src/World';
+import { StripePattern } from '../src/Patterns';
 
 interface Projectile {
   position: Point;
@@ -170,7 +171,7 @@ describe('Chapter Tests', () => {
           const point = ray.position(hit.t);
           const normal = hit.shape.normalAt(point);
           const eye = ray.direction.negate();
-          const color = hit.shape.material.lighting(light, point, eye, normal, false);
+          const color = hit.shape.material.lighting(hit.shape, light, point, eye, normal, false);
           canvas.setPixel(x, y, color);
         }
       }
@@ -255,5 +256,44 @@ describe('Chapter Tests', () => {
     const canvas = render(camera, world);
 
     saveCanvas(canvas, 'ch09-planes.ppm');
+  });
+
+  it('Chapter 10 - Stripes', () => {
+    const pattern = new StripePattern(Color.White, new Color(1, 0.7529, 0.796));
+    const stripedMaterial = new Material().withPattern(pattern);
+    const floor = new Plane(undefined, stripedMaterial);
+    const wall = new Plane(Matrix4x4.rotationX(Math.PI / 2).translate(0, 0, 5), stripedMaterial);
+
+    const middle = new Sphere(
+      Matrix4x4.translation(-0.5, 1, 0.5),
+      new Material(
+        new Color(0.1, 1, 0.5),
+        undefined,
+        0.7,
+        0.3,
+        undefined,
+        pattern.withTransform(Matrix4x4.scaling(0.25, 0.25, 0.25)),
+      ),
+    );
+
+    const right = new Sphere(
+      Matrix4x4.scaling(0.5, 0.5, 0.5).translate(1.5, 0.5, -0.5),
+      new Material(new Color(0.5, 1, 0.1), undefined, 0.7, 0.3, undefined, pattern),
+    );
+
+    const left = new Sphere(
+      Matrix4x4.scaling(0.33, 0.33, 0.33).translate(-1.5, 0.33, -0.75),
+      new Material(new Color(1, 0.8, 0.1), undefined, 0.7, 0.3, undefined, pattern),
+    );
+
+    const light = new PointLight(new Point(-10, 10, -10), Color.White);
+    const world = new World(light, [floor, wall, middle, right, left]);
+
+    const cameraTransform = viewTransform(new Point(-1.5, 1.5, -5), new Point(0, 1, 0), new Vector(0, 1, 0));
+    const camera = new Camera(100, 50, Math.PI / 3, cameraTransform);
+
+    const canvas = render(camera, world);
+
+    saveCanvas(canvas, 'ch10-stripes.ppm');
   });
 });

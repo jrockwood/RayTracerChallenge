@@ -1,7 +1,9 @@
 import { Color } from '../src/Color';
 import { PointLight } from '../src/Lights';
 import { Material } from '../src/Materials';
+import { StripePattern } from '../src/Patterns';
 import { Point, Vector } from '../src/PointVector';
+import { Sphere } from '../src/Shapes';
 
 describe('Material', () => {
   describe('ctor()', () => {
@@ -31,7 +33,7 @@ describe('Material', () => {
         const eye = new Vector(0, 0, -1);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 0, -10), Color.White);
-        const result = material.lighting(light, position, eye, normal, false);
+        const result = material.lighting(new Sphere(), light, position, eye, normal, false);
         expect(result).toEqual(new Color(1.9, 1.9, 1.9));
       });
 
@@ -39,7 +41,7 @@ describe('Material', () => {
         const eye = new Vector(0, Math.SQRT2 / 2, -Math.SQRT2 / 2);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 0, -10), Color.White);
-        const result = material.lighting(light, position, eye, normal, false);
+        const result = material.lighting(new Sphere(), light, position, eye, normal, false);
         expect(result).toEqual(new Color(1.0, 1.0, 1.0));
       });
 
@@ -47,7 +49,7 @@ describe('Material', () => {
         const eye = new Vector(0, 0, -1);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 10, -10), Color.White);
-        const result = material.lighting(light, position, eye, normal, false);
+        const result = material.lighting(new Sphere(), light, position, eye, normal, false);
         expect(result.isEqualTo(new Color(0.7364, 0.7364, 0.7364))).toBeTrue();
       });
 
@@ -55,7 +57,7 @@ describe('Material', () => {
         const eye = new Vector(0, -Math.SQRT2 / 2, -Math.SQRT2 / 2);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 10, -10), Color.White);
-        const result = material.lighting(light, position, eye, normal, false);
+        const result = material.lighting(new Sphere(), light, position, eye, normal, false);
         expect(result.isEqualTo(new Color(1.6364, 1.6364, 1.6364))).toBeTrue();
       });
 
@@ -63,7 +65,7 @@ describe('Material', () => {
         const eye = new Vector(0, 0, -1);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 0, 10), Color.White);
-        const result = material.lighting(light, position, eye, normal, false);
+        const result = material.lighting(new Sphere(), light, position, eye, normal, false);
         expect(result).toEqual(new Color(0.1, 0.1, 0.1));
       });
 
@@ -72,8 +74,20 @@ describe('Material', () => {
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 0, -10), Color.White);
         const isInShadow = true;
-        const result = material.lighting(light, position, eye, normal, isInShadow);
+        const result = material.lighting(new Sphere(), light, position, eye, normal, isInShadow);
         expect(result).toEqual(new Color(0.1, 0.1, 0.1));
+      });
+
+      it('should account for the pattern', () => {
+        const pattern = new StripePattern(Color.White, Color.Black);
+        const material = new Material(undefined, 1, 0, 0, undefined, pattern);
+        const eye = new Vector(0, 0, -1);
+        const normal = new Vector(0, 0, -1);
+        const light = new PointLight(new Point(0, 0, -10), Color.White);
+        const c1 = material.lighting(new Sphere(), light, new Point(0.9, 0, 0), eye, normal, false);
+        const c2 = material.lighting(new Sphere(), light, new Point(1.1, 0, 0), eye, normal, false);
+        expect(c1).toEqual(Color.White);
+        expect(c2).toEqual(Color.Black);
       });
     });
   });
