@@ -1,7 +1,8 @@
+import { IntersectionList, Intersection } from '../src/Intersections';
 import { Material } from '../src/Materials';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
-import { Intersection, IntersectionList, Ray } from '../src/Ray';
+import { Ray } from '../src/Ray';
 import { Plane, Shape, Sphere } from '../src/Shapes';
 
 class TestShape extends Shape {
@@ -30,6 +31,10 @@ class TestShape extends Shape {
   public withMaterial(value: Material): Shape {
     throw new Error('Method not implemented.');
   }
+}
+
+export function createGlassSphere(): Sphere {
+  return new Sphere(undefined, new Material().withTransparency(1.0).withRefractiveIndex(1.5));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

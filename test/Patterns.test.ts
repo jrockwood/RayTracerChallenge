@@ -4,7 +4,7 @@ import { CheckerPattern, GradientPattern, Pattern, RingPattern, StripePattern } 
 import { Point } from '../src/PointVector';
 import { Sphere } from '../src/Shapes';
 
-class TestPattern extends Pattern {
+export class TestPattern extends Pattern {
   public constructor(transform?: Matrix4x4) {
     super(transform);
   }

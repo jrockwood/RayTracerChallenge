@@ -15,7 +15,9 @@ import { render } from '../src/Render';
 import { Plane, Sphere } from '../src/Shapes';
 import { viewTransform } from '../src/Transformations';
 import { World } from '../src/World';
-import { StripePattern } from '../src/Patterns';
+import { CheckerPattern, StripePattern } from '../src/Patterns';
+import { createGlassSphere } from './Shapes.test';
+import { Transform } from 'stream';
 
 interface Projectile {
   position: Point;
@@ -37,7 +39,7 @@ function saveCanvas(canvas: Canvas, fileName: string): void {
   canvas.saveToPpmFile(resolvedPath);
 }
 
-describe('Chapter Tests', () => {
+xdescribe('Previous chapter Tests', () => {
   it('Chapter 1-2 - Firing a cannon', () => {
     function tick(environment: Environment, projectile: Projectile): Projectile {
       const position = projectile.position.add(projectile.velocity);
@@ -272,18 +274,21 @@ describe('Chapter Tests', () => {
         0.7,
         0.3,
         undefined,
+        undefined,
+        undefined,
+        undefined,
         pattern.withTransform(Matrix4x4.scaling(0.25, 0.25, 0.25)),
       ),
     );
 
     const right = new Sphere(
       Matrix4x4.scaling(0.5, 0.5, 0.5).translate(1.5, 0.5, -0.5),
-      new Material(new Color(0.5, 1, 0.1), undefined, 0.7, 0.3, undefined, pattern),
+      new Material(new Color(0.5, 1, 0.1), undefined, 0.7, 0.3, undefined, undefined, undefined, undefined, pattern),
     );
 
     const left = new Sphere(
       Matrix4x4.scaling(0.33, 0.33, 0.33).translate(-1.5, 0.33, -0.75),
-      new Material(new Color(1, 0.8, 0.1), undefined, 0.7, 0.3, undefined, pattern),
+      new Material(new Color(1, 0.8, 0.1), undefined, 0.7, 0.3, undefined, undefined, undefined, undefined, pattern),
     );
 
     const light = new PointLight(new Point(-10, 10, -10), Color.White);
@@ -295,5 +300,123 @@ describe('Chapter Tests', () => {
     const canvas = render(camera, world);
 
     saveCanvas(canvas, 'ch10-stripes.ppm');
+  });
+
+  it('Chapter 11 - Reflection', () => {
+    const floor = new Plane(
+      undefined,
+      new Material().withPattern(new CheckerPattern(Color.White, Color.Red)).withReflective(0.5),
+    );
+
+    const leftWall = new Plane(
+      Matrix4x4.rotationX(Math.PI / 2).rotateZ(Math.PI / 2),
+      new Material().withPattern(new StripePattern(Color.White, Color.Black)),
+    );
+
+    const rightWall = new Plane(
+      Matrix4x4.rotationZ(Math.PI / 2),
+      new Material().withPattern(new StripePattern(Color.White, Color.Black)),
+    );
+
+    const middle = new Sphere(
+      Matrix4x4.translation(-3, 1, -3),
+      new Material(new Color(0.1, 1, 0.5), undefined, 0.7, 0.3, 20, 0.25),
+    );
+
+    const right = new Sphere(
+      Matrix4x4.scaling(0.5, 0.5, 0.5).translate(-4.5, 0.5, -3.5),
+      new Material(new Color(0.5, 1, 0.1), undefined, 0.7, 0.3),
+    );
+
+    const left = new Sphere(
+      Matrix4x4.scaling(0.33, 0.33, 0.33).translate(-1.5, 0.33, -4.0),
+      new Material(new Color(1, 0.8, 0.1), undefined, 0.7, 0.3),
+    );
+
+    const light = new PointLight(new Point(-8, 6, -4), Color.White);
+    const world = new World(light, [floor, leftWall, rightWall, middle, right, left]);
+
+    const cameraTransform = viewTransform(new Point(-6, 1, -8), new Point(0, 1, 0), new Vector(0, 1, 0));
+    const camera = new Camera(100, 50, Math.PI / 3, cameraTransform);
+
+    const canvas = render(camera, world);
+    saveCanvas(canvas, 'ch11-reflection.ppm');
+  });
+
+  it('Chapter 11 - Refraction without Fresnel', () => {
+    const floor = new Plane(
+      Matrix4x4.translation(0, -1, 0),
+      new Material().withSpecular(0).withPattern(new CheckerPattern(Color.White, Color.Black)),
+    );
+
+    const wall = new Plane(
+      Matrix4x4.rotationX(Math.PI / 2).translate(0, 0, 2),
+      new Material().withSpecular(0).withPattern(new CheckerPattern(Color.White, Color.Black)),
+    );
+
+    const outerSphere = createGlassSphere();
+    const innerSphere = new Sphere(undefined, new Material().withRefractiveIndex(1)).withTransform(
+      Matrix4x4.translation(0, 0.0625, 0).scale(0.4, 0.4, 0.4),
+    );
+
+    const light = new PointLight(new Point(0, 6, 0), Color.White);
+    const world = new World(light, [floor, wall, outerSphere, innerSphere]);
+
+    // Look directly down
+    const cameraTransform = viewTransform(new Point(0, 0, -3), new Point(0, 0, 0), new Vector(0, 1, 0));
+    const camera = new Camera(50, 50, Math.PI / 3, cameraTransform);
+
+    const canvas = render(camera, world);
+    saveCanvas(canvas, 'ch11-refraction-no-fresnel.ppm');
+  });
+});
+
+describe('Current Chapter Test', () => {
+  it('Chapter 11 - Chapter head', () => {
+    const floor = new Plane(
+      Matrix4x4.translation(0, -1, 0),
+      new Material().withReflective(0.5).withPattern(new CheckerPattern(Color.White, Color.Black)),
+    );
+
+    const leftWall = new Plane(
+      Matrix4x4.rotationX(Math.PI / 2)
+        .rotateZ(Math.PI / 2)
+        .translate(0, 0, 4),
+      new Material()
+        .withReflective(0.5)
+        .withPattern(new StripePattern(Color.Gray, Color.DarkGray, Matrix4x4.scaling(0.75, 0.75, 0.75))),
+    );
+
+    const rightWall = new Plane(
+      Matrix4x4.rotationZ(Math.PI / 2).translate(7, 0, 0),
+      new Material()
+        .withReflective(0.5)
+        .withPattern(new StripePattern(Color.Gray, Color.DarkGray, Matrix4x4.scaling(0.75, 0.75, 0.75))),
+    );
+
+    const orangeBall = new Sphere(
+      Matrix4x4.scaling(1.25, 1.25, 1.25),
+      new Material(new Color(1.0, 0.25, 0)).withSpecular(0.3).withShininess(5),
+    );
+
+    const greenBall = new Sphere(
+      Matrix4x4.scaling(0.5, 0.5, 0.5).translate(-2, 0, 2),
+      new Material(new Color(0, 1, 0.75)),
+    );
+
+    const blueBall = new Sphere(
+      Matrix4x4.translation(-8.5, 0, 2).scale(0.33, 0.33, 0.33),
+      new Material(new Color(0, 0.75, 1)),
+    );
+
+    const light = new PointLight(new Point(-10, 6, -5), Color.White);
+    const world = new World(light, [floor, leftWall, rightWall, orangeBall, greenBall, blueBall]);
+
+    const cameraTransform = viewTransform(new Point(-3.0, 1.0, -6), new Point(0, 0, 0), new Vector(0, 1, 0));
+    const camera = new Camera(200, 100, Math.PI / 3, cameraTransform);
+
+    const canvas = render(camera, world);
+
+    saveCanvas(canvas, 'ch11-chapter-head.ppm');
   });
 });
