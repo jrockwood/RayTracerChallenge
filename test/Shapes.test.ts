@@ -3,7 +3,7 @@ import { Material } from '../src/Materials';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
 import { Ray } from '../src/Ray';
-import { Plane, Shape, Sphere } from '../src/Shapes';
+import { Cube, Plane, Shape, Sphere } from '../src/Shapes';
 
 class TestShape extends Shape {
   public savedLocalRay?: Ray;
@@ -29,6 +29,10 @@ class TestShape extends Shape {
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public withMaterial(value: Material): Shape {
+    throw new Error('Method not implemented.');
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public withIgnoreShadow(value: boolean): Shape {
     throw new Error('Method not implemented.');
   }
 }
@@ -220,6 +224,106 @@ describe('Plane', () => {
       const ray = new Ray(new Point(0, -1, 0), new Vector(0, 1, 0));
       const intersections = plane.intersect(ray);
       expect(intersections.values).toEqual([new Intersection(1, plane)]);
+    });
+  });
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cube
+
+describe('Cube', () => {
+  class TestCube extends Cube {
+    public localIntersect(localRay: Ray): IntersectionList {
+      return super.localIntersect(localRay);
+    }
+
+    public localNormalAt(localPoint: Point): Vector {
+      return super.localNormalAt(localPoint);
+    }
+  }
+
+  describe('localIntersect()', () => {
+    it('should intersect', () => {
+      interface TestData {
+        desc: string;
+        origin: Point;
+        direction: Vector;
+        t1: number;
+        t2: number;
+      }
+
+      const testCases: TestData[] = [
+        { desc: '+x', origin: new Point(5, 0.5, 0), direction: new Vector(-1, 0, 0), t1: 4, t2: 6 },
+        { desc: '-x', origin: new Point(-5, 0.5, 0), direction: new Vector(1, 0, 0), t1: 4, t2: 6 },
+        { desc: '+y', origin: new Point(0.5, 5, 0), direction: new Vector(0, -1, 0), t1: 4, t2: 6 },
+        { desc: '-y', origin: new Point(0.5, -5, 0), direction: new Vector(0, 1, 0), t1: 4, t2: 6 },
+        { desc: '+z', origin: new Point(0.5, 0, 5), direction: new Vector(0, 0, -1), t1: 4, t2: 6 },
+        { desc: '-z', origin: new Point(0.5, 0, -5), direction: new Vector(0, 0, 1), t1: 4, t2: 6 },
+        { desc: 'inside', origin: new Point(0, 0.5, 0), direction: new Vector(0, 0, 1), t1: -1, t2: 1 },
+      ];
+
+      function test(testData: TestData): void {
+        const cube = new TestCube();
+        const ray = new Ray(testData.origin, testData.direction);
+        const intersections = cube.localIntersect(ray);
+        expect(intersections.ts).toEqual([testData.t1, testData.t2]);
+      }
+
+      testCases.forEach(test);
+    });
+
+    it('should miss', () => {
+      interface TestData {
+        origin: Point;
+        direction: Vector;
+      }
+
+      const testCases: TestData[] = [
+        { origin: new Point(-2, 0, 0), direction: new Vector(0.2673, 0.5345, 0.8018) },
+        { origin: new Point(0, -2, 0), direction: new Vector(0.8018, 0.2673, 0.5345) },
+        { origin: new Point(0, 0, -2), direction: new Vector(0.5345, 0.8018, 0.2673) },
+        { origin: new Point(2, 0, 2), direction: new Vector(0, 0, -1) },
+        { origin: new Point(0, 2, 2), direction: new Vector(0, -1, 0) },
+        { origin: new Point(2, 2, 0), direction: new Vector(-1, 0, 0) },
+      ];
+
+      function test(testData: TestData): void {
+        const cube = new TestCube();
+        const ray = new Ray(testData.origin, testData.direction);
+        const intersections = cube.localIntersect(ray);
+        expect(intersections.length).toBe(0);
+      }
+
+      testCases.forEach(test);
+    });
+  });
+
+  describe('localNormalAt()', () => {
+    it('should calculate the normal on the surface of the cube', () => {
+      interface TestData {
+        point: Point;
+        normal: Vector;
+      }
+
+      const testCases: TestData[] = [
+        { point: new Point(1, 0.5, -0.8), normal: new Vector(1, 0, 0) },
+        { point: new Point(-1, -0.2, 0.9), normal: new Vector(-1, 0, 0) },
+        { point: new Point(-0.4, 1, -0.1), normal: new Vector(0, 1, 0) },
+        { point: new Point(0.3, -1, -0.7), normal: new Vector(0, -1, 0) },
+        { point: new Point(-0.6, 0.3, 1), normal: new Vector(0, 0, 1) },
+        { point: new Point(0.4, 0.4, -1), normal: new Vector(0, 0, -1) },
+        { point: new Point(1, 1, 1), normal: new Vector(1, 0, 0) },
+        { point: new Point(-1, -1, -1), normal: new Vector(-1, 0, 0) },
+      ];
+
+      function test(testData: TestData): void {
+        const cube = new TestCube();
+        const p = testData.point;
+        const normal = cube.localNormalAt(p);
+        expect(normal).toEqual(testData.normal);
+      }
+
+      testCases.forEach(test);
     });
   });
 });

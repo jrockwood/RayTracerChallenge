@@ -84,7 +84,7 @@ export class World {
     const intersections = this.intersect(ray);
 
     const hit = intersections.hit();
-    const isShadowed = hit !== null && hit.t < distance;
+    const isShadowed = hit !== null && hit.t < distance && !hit.shape.ignoreShadow;
     return isShadowed;
   }
 
