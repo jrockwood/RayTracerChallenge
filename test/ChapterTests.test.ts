@@ -12,7 +12,7 @@ import { PointLight } from '../src/Lights';
 import { Ray } from '../src/Ray';
 import { Rect } from '../src/Rect';
 import { render } from '../src/Render';
-import { Plane, Sphere } from '../src/Shapes';
+import { Cube, Plane, Sphere } from '../src/Shapes';
 import { viewTransform } from '../src/Transformations';
 import { World } from '../src/World';
 import { CheckerPattern, StripePattern } from '../src/Patterns';
@@ -369,7 +369,7 @@ describe('Previous chapter Tests', () => {
     saveCanvas(canvas, 'ch11-refraction-no-fresnel.ppm');
   });
 
-  fit('Chapter 11 - Chapter head', () => {
+  it('Chapter 11 - Chapter head', () => {
     // Floor and ceiling
     // -----------------
 
@@ -484,18 +484,183 @@ describe('Previous chapter Tests', () => {
 
     saveCanvas(canvas, 'ch11-chapter-head.ppm');
   });
-});
 
-describe('Current Chapter Test', () => {
-  it('Chapter 12 - Cubes', () => {
-    const light = new PointLight(new Point(-10, 6, -5), Color.White);
-    const world = new World(light, []);
+  fit('Chapter 12 - Cubes (Table Scene)', () => {
+    // Floor/Ceiling
+    // -------------
+    const floorAndCeiling = new Cube(
+      Matrix4x4.translation(0, 1, 0).scale(20, 7, 20),
+      new Material()
+        .withPattern(new CheckerPattern(Color.Black, Color.LightGray, Matrix4x4.scaling(0.07, 0.07, 0.07)))
+        .withAmbient(0.25)
+        .withDiffuse(0.7)
+        .withSpecular(0.9)
+        .withShininess(300)
+        .withReflective(0.1),
+    );
 
-    const cameraTransform = viewTransform(new Point(-3.0, 1.0, -6), new Point(0, 0, 0), new Vector(0, 1, 0));
-    const camera = new Camera(100, 50, Math.PI / 3, cameraTransform);
+    // Walls
+    // -----
+    const walls = new Cube(
+      Matrix4x4.scaling(10, 10, 10),
+      new Material()
+        .withPattern(
+          new CheckerPattern(
+            new Color(0.4863, 0.3765, 0.2941),
+            new Color(0.3725, 0.2902, 0.2275),
+            Matrix4x4.scaling(0.05, 20, 0.05),
+          ),
+        )
+        .withAmbient(0.1)
+        .withDiffuse(0.7)
+        .withSpecular(0.9)
+        .withShininess(300)
+        .withReflective(0.2),
+    );
+
+    // Table Top
+    // ---------
+    const tableTop = new Cube(
+      Matrix4x4.scaling(3, 0.1, 2).translate(0, 3.1, 0),
+      new Material()
+        .withPattern(
+          new StripePattern(
+            new Color(0.5529, 0.4235, 0.3255),
+            new Color(0.6588, 0.5098, 0.4),
+            Matrix4x4.rotationY(0.1).scale(0.05, 0.05, 0.05),
+          ),
+        )
+        .withAmbient(0.1)
+        .withDiffuse(0.7)
+        .withSpecular(0.9)
+        .withShininess(300)
+        .withReflective(0.2),
+    );
+
+    // Leg #1
+    // ------
+    const leg1 = new Cube(
+      Matrix4x4.scaling(0.1, 1.5, 0.1).translate(2.7, 1.5, -1.7),
+      new Material(new Color(0.5529, 0.4235, 0.3255)).withAmbient(0.2).withDiffuse(0.7),
+    );
+
+    // Leg #2
+    // ------
+    const leg2 = new Cube(
+      Matrix4x4.scaling(0.1, 1.5, 0.1).translate(2.7, 1.5, 1.7),
+      new Material(new Color(0.5529, 0.4235, 0.3255)).withAmbient(0.2).withDiffuse(0.7),
+    );
+
+    // Leg #3
+    // ------
+    const leg3 = new Cube(
+      Matrix4x4.scaling(0.1, 1.5, 0.1).translate(-2.7, 1.5, -1.7),
+      new Material(new Color(0.5529, 0.4235, 0.3255)).withAmbient(0.2).withDiffuse(0.7),
+    );
+
+    // Leg #4
+    // ------
+    const leg4 = new Cube(
+      Matrix4x4.scaling(0.1, 1.5, 0.1).translate(-2.7, 1.5, 1.7),
+      new Material(new Color(0.5529, 0.4235, 0.3255)).withAmbient(0.2).withDiffuse(0.7),
+    );
+
+    // Glass Cube
+    // ----------
+    const glassCube = new Cube(
+      Matrix4x4.scaling(0.25, 0.25, 0.25).rotateY(0.2).translate(0, 3.45001, 0),
+      new Material(new Color(1, 1, 0.8), 0, 0.3, 0.9, 300, 0.7, 0.7, 1.5),
+      true,
+    );
+
+    // Little Cubes
+    // --------------
+    const littleCube1 = new Cube(
+      Matrix4x4.scaling(0.15, 0.15, 0.15).rotateY(-0.4).translate(1, 3.35, -0.9),
+      new Material(new Color(1, 0.5, 0.5)).withReflective(0.6).withDiffuse(0.4),
+    );
+
+    const littleCube2 = new Cube(
+      Matrix4x4.scaling(0.15, 0.07, 0.15).rotateY(0.4).translate(-1.5, 3.27, 0.3),
+      new Material(new Color(1, 1, 0.5)),
+    );
+
+    const littleCube3 = new Cube(
+      Matrix4x4.scaling(0.2, 0.05, 0.05).rotateY(0.4).translate(0, 3.25, 1),
+      new Material(new Color(0.5, 1, 0.5)),
+    );
+
+    const littleCube4 = new Cube(
+      Matrix4x4.scaling(0.05, 0.2, 0.05).rotateY(0.8).translate(-0.6, 3.4, -1),
+      new Material(new Color(0.5, 0.5, 1)),
+    );
+
+    const littleCube5 = new Cube(
+      Matrix4x4.scaling(0.05, 0.2, 0.05).rotateY(0.8).translate(2, 3.4, 1),
+      new Material(new Color(0.5, 1, 1)),
+    );
+
+    // Frames
+    // ------
+    const frame1 = new Cube(
+      Matrix4x4.scaling(0.05, 1, 1).translate(-10, 4, 1),
+      new Material(new Color(0.7098, 0.2471, 0.2196)).withDiffuse(0.6),
+    );
+
+    const frame2 = new Cube(
+      Matrix4x4.scaling(0.05, 0.4, 0.4).translate(-10, 3.4, 2.7),
+      new Material(new Color(0.2667, 0.2706, 0.6902)).withDiffuse(0.6),
+    );
+
+    const frame3 = new Cube(
+      Matrix4x4.scaling(0.05, 0.4, 0.4).translate(-10, 4.6, 2.7),
+      new Material(new Color(0.3098, 0.5961, 0.3098)).withDiffuse(0.6),
+    );
+
+    // Mirror and Frame
+    // ----------------
+    const mirrorFrame = new Cube(
+      Matrix4x4.scaling(5, 1.5, 0.05).translate(-2, 3.5, 9.95),
+      new Material(new Color(0.3882, 0.2627, 0.1882)).withDiffuse(0.7),
+    );
+
+    const mirror = new Cube(
+      Matrix4x4.scaling(4.8, 1.4, 0.06).translate(-2, 3.5, 9.95),
+      new Material(Color.Black, 0, 0, 1, 300, 1),
+    );
+
+    // Camera
+    // ------
+    const cameraTransform = viewTransform(new Point(8, 6, -8), new Point(0, 3, 0), new Vector(0, 1, 0));
+    const camera = new Camera(400, 200, 0.785, cameraTransform);
+
+    // Light
+    // -----
+    const light = new PointLight(new Point(0, 6.9, -5), new Color(1, 1, 0.9));
+
+    const world = new World(light, [
+      floorAndCeiling,
+      walls,
+      tableTop,
+      leg1,
+      leg2,
+      leg3,
+      leg4,
+      glassCube,
+      littleCube1,
+      littleCube2,
+      littleCube3,
+      littleCube4,
+      littleCube5,
+      frame1,
+      frame2,
+      frame3,
+      mirrorFrame,
+      mirror,
+    ]);
 
     const canvas = render(camera, world);
 
-    saveCanvas(canvas, 'ch12-cubes.ppm');
+    saveCanvas(canvas, 'ch12-table.ppm');
   });
 });
