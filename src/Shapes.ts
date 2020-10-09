@@ -1,8 +1,9 @@
+import { IntersectionList, Intersection } from './Intersections';
 import { Material } from './Materials';
 import { EPSILON } from './Math';
 import { Matrix4x4 } from './Matrices';
 import { Point, Vector } from './PointVector';
-import { Intersection, IntersectionList, Ray } from './Ray';
+import { Ray } from './Ray';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shape

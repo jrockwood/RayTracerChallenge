@@ -1,9 +1,10 @@
 import { Color } from '../src/Color';
+import { Intersection, IntersectionList } from '../src/Intersections';
 import { PointLight } from '../src/Lights';
 import { Material } from '../src/Materials';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
-import { Intersection, IntersectionList, Ray } from '../src/Ray';
+import { Ray } from '../src/Ray';
 import { Plane, Sphere } from '../src/Shapes';
 import { World } from '../src/World';
 import { TestPattern } from './Patterns.test';

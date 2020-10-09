@@ -1,7 +1,8 @@
 import { Color } from './Color';
+import { IntersectionList, PrecomputedIntersectionState } from './Intersections';
 import { Light } from './Lights';
 import { Point } from './PointVector';
-import { IntersectionList, PrecomputedIntersectionState, Ray } from './Ray';
+import { Ray } from './Ray';
 import { Shape } from './Shapes';
 
 export class World {
