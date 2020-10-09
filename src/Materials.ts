@@ -11,6 +11,8 @@ export class Material {
   public static readonly defaultSpecular = 0.9;
   public static readonly defaultShininess = 200.0;
   public static readonly defaultReflective = 0;
+  public static readonly defaultTransparency = 0;
+  public static readonly defaultRefractiveIndex = 1.0;
 
   public readonly color: Color;
   public readonly ambient: number;
@@ -18,6 +20,8 @@ export class Material {
   public readonly specular: number;
   public readonly shininess: number;
   public readonly reflective: number;
+  public readonly transparency: number;
+  public readonly refractiveIndex: number;
   public readonly pattern?: Pattern;
 
   public constructor(
@@ -27,6 +31,8 @@ export class Material {
     specular = Material.defaultSpecular,
     shininess = Material.defaultShininess,
     reflective = Material.defaultReflective,
+    transparency = Material.defaultTransparency,
+    refractiveIndex = Material.defaultRefractiveIndex,
     pattern?: Pattern,
   ) {
     this.color = color;
@@ -35,6 +41,8 @@ export class Material {
     this.specular = Material.verifyValue(specular, 'specular');
     this.shininess = Material.verifyValue(shininess, 'shininess');
     this.reflective = Material.verifyValue(reflective, 'reflective');
+    this.transparency = Material.verifyValue(transparency, 'transparency');
+    this.refractiveIndex = Material.verifyValue(refractiveIndex, 'refractiveIndex');
     this.pattern = pattern;
   }
 
@@ -53,32 +61,122 @@ export class Material {
       this.specular,
       this.shininess,
       this.reflective,
+      this.transparency,
+      this.refractiveIndex,
       this.pattern,
     );
   }
 
   public withAmbient(value: number): Material {
-    return new Material(this.color, value, this.diffuse, this.specular, this.shininess, this.reflective, this.pattern);
+    return new Material(
+      this.color,
+      value,
+      this.diffuse,
+      this.specular,
+      this.shininess,
+      this.reflective,
+      this.transparency,
+      this.refractiveIndex,
+      this.pattern,
+    );
   }
 
   public withDiffuse(value: number): Material {
-    return new Material(this.color, this.ambient, value, this.specular, this.shininess, this.reflective, this.pattern);
+    return new Material(
+      this.color,
+      this.ambient,
+      value,
+      this.specular,
+      this.shininess,
+      this.reflective,
+      this.transparency,
+      this.refractiveIndex,
+      this.pattern,
+    );
   }
 
   public withSpecular(value: number): Material {
-    return new Material(this.color, this.ambient, this.diffuse, value, this.shininess, this.reflective, this.pattern);
+    return new Material(
+      this.color,
+      this.ambient,
+      this.diffuse,
+      value,
+      this.shininess,
+      this.reflective,
+      this.transparency,
+      this.refractiveIndex,
+      this.pattern,
+    );
   }
 
   public withShininess(value: number): Material {
-    return new Material(this.color, this.ambient, this.diffuse, this.specular, value, this.reflective, this.pattern);
+    return new Material(
+      this.color,
+      this.ambient,
+      this.diffuse,
+      this.specular,
+      value,
+      this.reflective,
+      this.transparency,
+      this.refractiveIndex,
+      this.pattern,
+    );
   }
 
   public withReflective(value: number): Material {
-    return new Material(this.color, this.ambient, this.diffuse, this.specular, this.shininess, value, this.pattern);
+    return new Material(
+      this.color,
+      this.ambient,
+      this.diffuse,
+      this.specular,
+      this.shininess,
+      value,
+      this.transparency,
+      this.refractiveIndex,
+      this.pattern,
+    );
+  }
+
+  public withTransparency(value: number): Material {
+    return new Material(
+      this.color,
+      this.ambient,
+      this.diffuse,
+      this.specular,
+      this.shininess,
+      this.reflective,
+      value,
+      this.refractiveIndex,
+      this.pattern,
+    );
+  }
+
+  public withRefractiveIndex(value: number): Material {
+    return new Material(
+      this.color,
+      this.ambient,
+      this.diffuse,
+      this.specular,
+      this.shininess,
+      this.reflective,
+      this.transparency,
+      value,
+      this.pattern,
+    );
   }
 
   public withPattern(value?: Pattern): Material {
-    return new Material(this.color, this.ambient, this.diffuse, this.specular, this.shininess, this.reflective, value);
+    return new Material(
+      this.color,
+      this.ambient,
+      this.diffuse,
+      this.specular,
+      this.shininess,
+      this.reflective,
+      this.transparency,
+      this.refractiveIndex,
+      value,
+    );
   }
 
   public lighting(shape: Shape, light: Light, point: Point, eye: Vector, normal: Vector, isInShadow: boolean): Color {

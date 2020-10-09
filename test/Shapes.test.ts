@@ -32,6 +32,10 @@ class TestShape extends Shape {
   }
 }
 
+export function createGlassSphere(): Sphere {
+  return new Sphere(undefined, new Material().withTransparency(1.0).withRefractiveIndex(1.5));
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shape
 

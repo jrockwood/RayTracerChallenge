@@ -33,6 +33,10 @@ export abstract class Shape {
 
   public abstract withTransform(value: Matrix4x4): Shape;
   public abstract withMaterial(value: Material): Shape;
+
+  public addToMaterial(addFunc: (currentMaterial: Material) => Material): Shape {
+    return this.withMaterial(addFunc(this.material));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

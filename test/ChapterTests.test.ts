@@ -16,6 +16,7 @@ import { Plane, Sphere } from '../src/Shapes';
 import { viewTransform } from '../src/Transformations';
 import { World } from '../src/World';
 import { CheckerPattern, StripePattern } from '../src/Patterns';
+import { createGlassSphere } from './Shapes.test';
 
 interface Projectile {
   position: Point;
@@ -37,7 +38,7 @@ function saveCanvas(canvas: Canvas, fileName: string): void {
   canvas.saveToPpmFile(resolvedPath);
 }
 
-xdescribe('Previous chapter Tests', () => {
+describe('Previous chapter Tests', () => {
   it('Chapter 1-2 - Firing a cannon', () => {
     function tick(environment: Environment, projectile: Projectile): Projectile {
       const position = projectile.position.add(projectile.velocity);
@@ -273,18 +274,20 @@ xdescribe('Previous chapter Tests', () => {
         0.3,
         undefined,
         undefined,
+        undefined,
+        undefined,
         pattern.withTransform(Matrix4x4.scaling(0.25, 0.25, 0.25)),
       ),
     );
 
     const right = new Sphere(
       Matrix4x4.scaling(0.5, 0.5, 0.5).translate(1.5, 0.5, -0.5),
-      new Material(new Color(0.5, 1, 0.1), undefined, 0.7, 0.3, undefined, undefined, pattern),
+      new Material(new Color(0.5, 1, 0.1), undefined, 0.7, 0.3, undefined, undefined, undefined, undefined, pattern),
     );
 
     const left = new Sphere(
       Matrix4x4.scaling(0.33, 0.33, 0.33).translate(-1.5, 0.33, -0.75),
-      new Material(new Color(1, 0.8, 0.1), undefined, 0.7, 0.3, undefined, undefined, pattern),
+      new Material(new Color(1, 0.8, 0.1), undefined, 0.7, 0.3, undefined, undefined, undefined, undefined, pattern),
     );
 
     const light = new PointLight(new Point(-10, 10, -10), Color.White);
@@ -297,9 +300,7 @@ xdescribe('Previous chapter Tests', () => {
 
     saveCanvas(canvas, 'ch10-stripes.ppm');
   });
-});
 
-describe('Current Chapter Test', () => {
   it('Chapter 11 - Reflection', () => {
     const floor = new Plane(
       undefined,
@@ -339,5 +340,34 @@ describe('Current Chapter Test', () => {
 
     const canvas = render(camera, world);
     saveCanvas(canvas, 'ch11-reflection.ppm');
+  });
+});
+
+describe('Current Chapter Test', () => {
+  it('Chapter 11 - Refraction without Fresnel', () => {
+    const floor = new Plane(
+      Matrix4x4.translation(0, -1, 0),
+      new Material().withSpecular(0).withPattern(new CheckerPattern(Color.White, Color.Black)),
+    );
+
+    const wall = new Plane(
+      Matrix4x4.rotationX(Math.PI / 2).translate(0, 0, 2),
+      new Material().withSpecular(0).withPattern(new CheckerPattern(Color.White, Color.Black)),
+    );
+
+    const outerSphere = createGlassSphere();
+    const innerSphere = new Sphere(undefined, new Material().withRefractiveIndex(1)).withTransform(
+      Matrix4x4.translation(0, 0.0625, 0).scale(0.4, 0.4, 0.4),
+    );
+
+    const light = new PointLight(new Point(0, 6, 0), Color.White);
+    const world = new World(light, [floor, wall, outerSphere, innerSphere]);
+
+    // Look directly down
+    const cameraTransform = viewTransform(new Point(0, 0, -3), new Point(0, 0, 0), new Vector(0, 1, 0));
+    const camera = new Camera(50, 50, Math.PI / 3, cameraTransform);
+
+    const canvas = render(camera, world);
+    saveCanvas(canvas, 'ch11-refraction-no-fresnel.ppm');
   });
 });

@@ -50,8 +50,9 @@ export class World {
     );
 
     const reflectedColor = this.reflectedColor(comps, maxRecursion);
+    const refractedColor = this.refractedColor(comps, maxRecursion);
 
-    return surfaceColor.add(reflectedColor);
+    return surfaceColor.add(reflectedColor).add(refractedColor);
   }
 
   public colorAt(ray: Ray, maxRecursion = World.maxRecursion): Color {
@@ -62,7 +63,7 @@ export class World {
       return Color.Black;
     }
 
-    const comps = hit.prepareComputations(ray);
+    const comps = hit.prepareComputations(ray, intersections);
     const color = this.shadeHit(comps, maxRecursion);
     return color;
   }
@@ -89,5 +90,41 @@ export class World {
     const color = this.colorAt(reflectRay, maxRecursion - 1);
     const reflectedColor = color.multiply(comps.shape.material.reflective);
     return reflectedColor;
+  }
+
+  public refractedColor(comps: PrecomputedIntersectionState, maxRecursion = World.maxRecursion): Color {
+    if (maxRecursion <= 0 || comps.shape.material.transparency === 0) {
+      return Color.Black;
+    }
+
+    // Fine the ratio of the first index of refraction to the second. This is inverted from the
+    // definition of Snell's Law, which is sin(theta_i) / sin(theta_t) = n2 / n1.
+    const nRatio = comps.n1 / comps.n2;
+
+    // cos(theta_i) is the same as the dot product of the two vectors.
+    const cos_i = comps.eye.dot(comps.normal);
+
+    // Find sin(theta_t)^2 via trigonometric identity.
+    const sin2_t = nRatio * nRatio * (1 - cos_i * cos_i);
+
+    // Total internal reflection - there is no refraction.
+    if (sin2_t > 1) {
+      return Color.Black;
+    }
+
+    // Find cos(theta_t) via trigonometric identity.
+    const cos_t = Math.sqrt(1.0 - sin2_t);
+
+    // Compute the direction of the refracted ray.
+    const direction = comps.normal.multiply(nRatio * cos_i - cos_t).subtract(comps.eye.multiply(nRatio));
+
+    // Create the refracted ray.
+    const refractRay = new Ray(comps.underPoint, direction);
+
+    // Find the color of the refracted ray, making sure to multiply by the transparency value to
+    // account for any opacity.
+    const color = this.colorAt(refractRay, maxRecursion - 1).multiply(comps.shape.material.transparency);
+
+    return color;
   }
 }

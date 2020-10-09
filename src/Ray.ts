@@ -31,7 +31,10 @@ export interface PrecomputedIntersectionState {
   normal: Vector;
   isInside: boolean;
   overPoint: Point;
+  underPoint: Point;
   reflect: Vector;
+  n1: number;
+  n2: number;
 }
 
 export class Intersection {
@@ -43,7 +46,7 @@ export class Intersection {
     this.shape = shape;
   }
 
-  public prepareComputations(ray: Ray): PrecomputedIntersectionState {
+  public prepareComputations(ray: Ray, intersections: IntersectionList): PrecomputedIntersectionState {
     const point = ray.position(this.t);
     const eye = ray.direction.negate();
     let normal = this.shape.normalAt(point);
@@ -55,8 +58,39 @@ export class Intersection {
     }
 
     const overPoint = point.add(normal.multiply(EPSILON));
+    const underPoint = point.subtractVector(normal.multiply(EPSILON));
 
     const reflect = ray.direction.reflect(normal);
+
+    // Calculate the refraction values.
+    const containers: Shape[] = [];
+    let n1 = 1.0;
+    let n2 = 1.0;
+
+    intersections.values.forEach((intersection) => {
+      if (intersection === this) {
+        if (containers.length === 0) {
+          n1 = 1.0;
+        } else {
+          n1 = containers[containers.length - 1].material.refractiveIndex;
+        }
+      }
+
+      const index = containers.indexOf(intersection.shape);
+      if (index >= 0) {
+        containers.splice(index, 1);
+      } else {
+        containers.push(intersection.shape);
+      }
+
+      if (intersection === this) {
+        if (containers.length === 0) {
+          n2 = 1.0;
+        } else {
+          n2 = containers[containers.length - 1].material.refractiveIndex;
+        }
+      }
+    });
 
     return {
       t: this.t,
@@ -66,7 +100,10 @@ export class Intersection {
       normal,
       isInside,
       overPoint,
+      underPoint,
       reflect,
+      n1,
+      n2,
     };
   }
 }

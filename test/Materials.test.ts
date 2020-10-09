@@ -21,6 +21,12 @@ describe('Material', () => {
       expect(material.reflective).toBe(Material.defaultReflective);
     });
 
+    it('should use the default transparency and refractive index', () => {
+      const material = new Material();
+      expect(material.transparency).toBe(Material.defaultTransparency);
+      expect(material.refractiveIndex).toBe(Material.defaultRefractiveIndex);
+    });
+
     it('should throw for negative values', () => {
       expect(() => new Material(undefined, -1)).toThrow();
       expect(() => new Material(undefined, undefined, -1)).toThrow();
@@ -85,7 +91,7 @@ describe('Material', () => {
 
       it('should account for the pattern', () => {
         const pattern = new StripePattern(Color.White, Color.Black);
-        const material = new Material(undefined, 1, 0, 0, undefined, undefined, pattern);
+        const material = new Material(undefined, 1, 0, 0, undefined, undefined, undefined, undefined, pattern);
         const eye = new Vector(0, 0, -1);
         const normal = new Vector(0, 0, -1);
         const light = new PointLight(new Point(0, 0, -10), Color.White);
