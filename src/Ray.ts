@@ -31,6 +31,7 @@ export interface PrecomputedIntersectionState {
   normal: Vector;
   isInside: boolean;
   overPoint: Point;
+  reflect: Vector;
 }
 
 export class Intersection {
@@ -55,6 +56,8 @@ export class Intersection {
 
     const overPoint = point.add(normal.multiply(EPSILON));
 
+    const reflect = ray.direction.reflect(normal);
+
     return {
       t: this.t,
       shape: this.shape,
@@ -63,6 +66,7 @@ export class Intersection {
       normal,
       isInside,
       overPoint,
+      reflect,
     };
   }
 }

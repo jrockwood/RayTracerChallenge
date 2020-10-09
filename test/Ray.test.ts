@@ -2,7 +2,7 @@ import { EPSILON } from '../src/Math';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
 import { Intersection, IntersectionList, Ray } from '../src/Ray';
-import { Sphere } from '../src/Shapes';
+import { Plane, Sphere } from '../src/Shapes';
 
 describe('Ray', () => {
   describe('ctor()', () => {
@@ -95,6 +95,14 @@ describe('Intersection', () => {
       const comps = intersection.prepareComputations(ray);
       expect(comps.overPoint.z).toBeLessThan(-EPSILON / 2);
       expect(comps.point.z).toBeGreaterThan(comps.overPoint.z);
+    });
+
+    it('should precompute the reflection vector', () => {
+      const shape = new Plane();
+      const ray = new Ray(new Point(0, 1, -1), new Vector(0, -Math.SQRT2 / 2, Math.SQRT2 / 2));
+      const intersection = new Intersection(Math.SQRT2, shape);
+      const comps = intersection.prepareComputations(ray);
+      expect(comps.reflect).toEqual(new Vector(0, Math.SQRT2 / 2, Math.SQRT2 / 2));
     });
   });
 });

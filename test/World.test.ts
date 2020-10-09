@@ -4,7 +4,7 @@ import { Material } from '../src/Materials';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
 import { Intersection, Ray } from '../src/Ray';
-import { Sphere } from '../src/Shapes';
+import { Plane, Sphere } from '../src/Shapes';
 import { World } from '../src/World';
 
 describe('World', () => {
@@ -59,6 +59,18 @@ describe('World', () => {
       const color = world.shadeHit(comps);
       expect(color).toEqual(new Color(0.1, 0.1, 0.1));
     });
+
+    // Add a reflective plane to the default scene, just below the spheres, and orient a ray so it
+    // strikes the plane, reflects upward, and hits the outermost sphere.
+    it('should calculate the shade color for a reflective material', () => {
+      const floor = new Plane(Matrix4x4.translation(0, -1, 0), new Material().withReflective(0.5));
+      const world = createDefaultWorld().addShape(floor);
+      const ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.SQRT2 / 2, Math.SQRT2 / 2));
+      const intersection = new Intersection(Math.SQRT2, floor);
+      const comps = intersection.prepareComputations(ray);
+      const color = world.shadeHit(comps);
+      expect(color.isEqualTo(new Color(0.87675, 0.92434, 0.82917))).toBeTrue();
+    });
   });
 
   describe('colorAt()', () => {
@@ -88,6 +100,18 @@ describe('World', () => {
       const color = world.colorAt(ray);
       expect(color).toEqual(inner.material.color);
     });
+
+    it('should avoid infinite recursion with two parallel mirrors', () => {
+      const lower = new Plane(Matrix4x4.translation(0, -1, 0)).withMaterial(new Material().withReflective(1));
+      const upper = new Plane(Matrix4x4.translation(0, 1, 0)).withMaterial(new Material().withReflective(1));
+      const world = createDefaultWorld()
+        .withLight(new PointLight(new Point(0, 0, 0), Color.White))
+        .addShape(lower)
+        .addShape(upper);
+      const ray = new Ray(new Point(0, 0, 0), new Vector(0, 1, 0));
+      const color = world.colorAt(ray);
+      expect(color).toEqual(new Color(1.9, 1.9, 1.9));
+    });
   });
 
   describe('isShadowed()', () => {
@@ -113,6 +137,42 @@ describe('World', () => {
       const world = createDefaultWorld();
       const point = new Point(-2, 2, -2);
       expect(world.isShadowed(point)).toBeFalse();
+    });
+  });
+
+  describe('reflectedColor()', () => {
+    it('should return black for the reflected color of a nonreflective material', () => {
+      let world = createDefaultWorld();
+      const ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+      let shape = world.shapes[1];
+      shape = shape.withMaterial(shape.material.withAmbient(1));
+      world = world.withShapes([world.shapes[0], shape, ...world.shapes.slice(2)]);
+      const intersection = new Intersection(1, shape);
+      const comps = intersection.prepareComputations(ray);
+      const color = world.reflectedColor(comps);
+      expect(color).toEqual(Color.Black);
+    });
+
+    // Add a reflective plane to the default scene, just below the spheres, and orient a ray so it
+    // strikes the plane, reflects upward, and hits the outermost sphere.
+    it('should calculate the reflected color for a reflective material', () => {
+      const floor = new Plane(Matrix4x4.translation(0, -1, 0), new Material().withReflective(0.5));
+      const world = createDefaultWorld().addShape(floor);
+      const ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.SQRT2 / 2, Math.SQRT2 / 2));
+      const intersection = new Intersection(Math.SQRT2, floor);
+      const comps = intersection.prepareComputations(ray);
+      const color = world.reflectedColor(comps);
+      expect(color.isEqualTo(new Color(0.19033, 0.23791, 0.14274))).toBeTrue();
+    });
+
+    it('should only allow a maximum recursion depth', () => {
+      const floor = new Plane(Matrix4x4.translation(0, -1, 0), new Material().withReflective(0.5));
+      const world = createDefaultWorld().addShape(floor);
+      const ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.SQRT2 / 2, Math.SQRT2 / 2));
+      const intersection = new Intersection(Math.SQRT2, floor);
+      const comps = intersection.prepareComputations(ray);
+      const color = world.reflectedColor(comps, 0);
+      expect(color).toEqual(Color.Black);
     });
   });
 });

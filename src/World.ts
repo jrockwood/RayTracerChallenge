@@ -5,6 +5,8 @@ import { IntersectionList, PrecomputedIntersectionState, Ray } from './Ray';
 import { Shape } from './Shapes';
 
 export class World {
+  public static readonly maxRecursion = 5;
+
   public readonly light: Light;
   public readonly shapes: ReadonlyArray<Shape>;
 
@@ -21,6 +23,10 @@ export class World {
     return new World(this.light, value);
   }
 
+  public addShape(shape: Shape): World {
+    return new World(this.light, [...this.shapes, shape]);
+  }
+
   public intersect(ray: Ray): IntersectionList {
     let hits = new IntersectionList();
 
@@ -32,20 +38,23 @@ export class World {
     return hits;
   }
 
-  public shadeHit(comps: PrecomputedIntersectionState): Color {
+  public shadeHit(comps: PrecomputedIntersectionState, maxRecursion = World.maxRecursion): Color {
     const isShadowed = this.isShadowed(comps.overPoint);
-    const color = comps.shape.material.lighting(
+    const surfaceColor = comps.shape.material.lighting(
       comps.shape,
       this.light,
-      comps.point,
+      comps.overPoint,
       comps.eye,
       comps.normal,
       isShadowed,
     );
-    return color;
+
+    const reflectedColor = this.reflectedColor(comps, maxRecursion);
+
+    return surfaceColor.add(reflectedColor);
   }
 
-  public colorAt(ray: Ray): Color {
+  public colorAt(ray: Ray, maxRecursion = World.maxRecursion): Color {
     const intersections = this.intersect(ray);
     const hit = intersections.hit();
 
@@ -54,7 +63,7 @@ export class World {
     }
 
     const comps = hit.prepareComputations(ray);
-    const color = this.shadeHit(comps);
+    const color = this.shadeHit(comps, maxRecursion);
     return color;
   }
 
@@ -69,5 +78,16 @@ export class World {
     const hit = intersections.hit();
     const isShadowed = hit !== null && hit.t < distance;
     return isShadowed;
+  }
+
+  public reflectedColor(comps: PrecomputedIntersectionState, maxRecursion = World.maxRecursion): Color {
+    if (maxRecursion <= 0 || comps.shape.material.reflective === 0) {
+      return Color.Black;
+    }
+
+    const reflectRay = new Ray(comps.overPoint, comps.reflect);
+    const color = this.colorAt(reflectRay, maxRecursion - 1);
+    const reflectedColor = color.multiply(comps.shape.material.reflective);
+    return reflectedColor;
   }
 }
