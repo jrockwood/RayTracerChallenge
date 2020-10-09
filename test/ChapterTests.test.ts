@@ -17,7 +17,6 @@ import { viewTransform } from '../src/Transformations';
 import { World } from '../src/World';
 import { CheckerPattern, StripePattern } from '../src/Patterns';
 import { createGlassSphere } from './Shapes.test';
-import { Transform } from 'stream';
 
 interface Projectile {
   position: Point;
@@ -39,7 +38,7 @@ function saveCanvas(canvas: Canvas, fileName: string): void {
   canvas.saveToPpmFile(resolvedPath);
 }
 
-xdescribe('Previous chapter Tests', () => {
+describe('Previous chapter Tests', () => {
   it('Chapter 1-2 - Firing a cannon', () => {
     function tick(environment: Environment, projectile: Projectile): Projectile {
       const position = projectile.position.add(projectile.velocity);
@@ -370,48 +369,116 @@ xdescribe('Previous chapter Tests', () => {
     saveCanvas(canvas, 'ch11-refraction-no-fresnel.ppm');
   });
 
-  it('Chapter 11 - Chapter head', () => {
+  fit('Chapter 11 - Chapter head', () => {
+    // Floor and ceiling
+    // -----------------
+
     const floor = new Plane(
-      Matrix4x4.translation(0, -1, 0),
-      new Material().withReflective(0.5).withPattern(new CheckerPattern(Color.White, Color.Black)),
+      Matrix4x4.rotationY(0.31415),
+      new Material()
+        .withReflective(0.4)
+        .withSpecular(0)
+        .withPattern(new CheckerPattern(new Color(0.35, 0.35, 0.35), new Color(0.65, 0.65, 0.65))),
     );
 
-    const leftWall = new Plane(
-      Matrix4x4.rotationX(Math.PI / 2)
+    const ceiling = new Plane(
+      Matrix4x4.translation(0, 5, 0),
+      new Material(new Color(0.8, 0.8, 0.8)).withAmbient(0.3).withSpecular(0),
+    );
+
+    // Walls
+    // -----
+
+    const wallMaterial = new Material()
+      .withAmbient(0)
+      .withDiffuse(0.4)
+      .withSpecular(0)
+      .withReflective(0.3)
+      .withPattern(
+        new StripePattern(
+          new Color(0.45, 0.45, 0.45),
+          new Color(0.55, 0.55, 0.55),
+          Matrix4x4.scaling(0.25, 0.25, 0.25).rotateY(1.5708),
+        ),
+      );
+
+    const westWall = new Plane(
+      Matrix4x4.rotationY(Math.PI / 2)
         .rotateZ(Math.PI / 2)
-        .translate(0, 0, 4),
-      new Material()
-        .withReflective(0.5)
-        .withPattern(new StripePattern(Color.Gray, Color.DarkGray, Matrix4x4.scaling(0.75, 0.75, 0.75))),
+        .translate(-5, 0, 0),
+      wallMaterial,
     );
 
-    const rightWall = new Plane(
-      Matrix4x4.rotationZ(Math.PI / 2).translate(7, 0, 0),
-      new Material()
-        .withReflective(0.5)
-        .withPattern(new StripePattern(Color.Gray, Color.DarkGray, Matrix4x4.scaling(0.75, 0.75, 0.75))),
+    const eastWall = new Plane(
+      Matrix4x4.rotationY(Math.PI / 2)
+        .rotateZ(Math.PI / 2)
+        .translate(5, 0, 0),
+      wallMaterial,
     );
 
-    const orangeBall = new Sphere(
-      Matrix4x4.scaling(1.25, 1.25, 1.25),
-      new Material(new Color(1.0, 0.25, 0)).withSpecular(0.3).withShininess(5),
+    const northWall = new Plane(Matrix4x4.rotationX(Math.PI / 2).translate(0, 0, 5), wallMaterial);
+    const southWall = new Plane(Matrix4x4.rotationX(Math.PI / 2).translate(0, 0, -5), wallMaterial);
+
+    // Background balls
+    // ----------------
+
+    const backBall1 = new Sphere(
+      Matrix4x4.scaling(0.4, 0.4, 0.4).translate(4.6, 0.4, 1),
+      new Material(new Color(0.8, 0.5, 0.3)).withShininess(50),
     );
 
-    const greenBall = new Sphere(
-      Matrix4x4.scaling(0.5, 0.5, 0.5).translate(-2, 0, 2),
-      new Material(new Color(0, 1, 0.75)),
+    const backBall2 = new Sphere(
+      Matrix4x4.scaling(0.3, 0.3, 0.3).translate(4.7, 0.3, 0.4),
+      new Material(new Color(0.9, 0.4, 0.5)).withShininess(50),
     );
 
-    const blueBall = new Sphere(
-      Matrix4x4.translation(-8.5, 0, 2).scale(0.33, 0.33, 0.33),
-      new Material(new Color(0, 0.75, 1)),
+    const backBall3 = new Sphere(
+      Matrix4x4.scaling(0.5, 0.5, 0.5).translate(-1, 0.5, 4.5),
+      new Material(new Color(0.4, 0.9, 0.6)).withShininess(50),
     );
 
-    const light = new PointLight(new Point(-10, 6, -5), Color.White);
-    const world = new World(light, [floor, leftWall, rightWall, orangeBall, greenBall, blueBall]);
+    const backBall4 = new Sphere(
+      Matrix4x4.scaling(0.3, 0.3, 0.3).translate(-1.7, 0.3, 4.7),
+      new Material(new Color(0.4, 0.6, 0.9)).withShininess(50),
+    );
 
-    const cameraTransform = viewTransform(new Point(-3.0, 1.0, -6), new Point(0, 0, 0), new Vector(0, 1, 0));
-    const camera = new Camera(100, 50, Math.PI / 3, cameraTransform);
+    // Foreground balls
+    // ----------------
+
+    const redSphere = new Sphere(
+      Matrix4x4.translation(-0.6, 1, 0.6),
+      new Material(new Color(1, 0.3, 0.2)).withSpecular(0.4).withShininess(5),
+    );
+
+    const blueGlassSphere = new Sphere(
+      Matrix4x4.scaling(0.7, 0.7, 0.7).translate(0.6, 0.7, -0.6),
+      new Material(new Color(0, 0, 0.2), 0, 0.4, 0.9, 300, 0.9, 0.9, 1.5),
+    );
+
+    const greenGlassSphere = new Sphere(
+      Matrix4x4.scaling(0.5, 0.5, 0.5).translate(-0.7, 0.5, -0.8),
+      new Material(new Color(0, 0.2, 0), 0, 0.4, 0.9, 300, 0.9, 0.9, 1.5),
+    );
+
+    const light = new PointLight(new Point(-4.9, 4.9, -1), Color.White);
+    const world = new World(light, [
+      floor,
+      ceiling,
+      westWall,
+      eastWall,
+      northWall,
+      southWall,
+      backBall1,
+      backBall2,
+      backBall3,
+      backBall4,
+      redSphere,
+      blueGlassSphere,
+      greenGlassSphere,
+    ]);
+
+    const cameraTransform = viewTransform(new Point(-2.6, 1.5, -3.9), new Point(-0.6, 1, -0.8), new Vector(0, 1, 0));
+    const camera = new Camera(400, 200, 1.152, cameraTransform);
 
     const canvas = render(camera, world);
 
@@ -419,7 +486,7 @@ xdescribe('Previous chapter Tests', () => {
   });
 });
 
-xdescribe('Current Chapter Test', () => {
+describe('Current Chapter Test', () => {
   it('Chapter 12 - Cubes', () => {
     const light = new PointLight(new Point(-10, 6, -5), Color.White);
     const world = new World(light, []);
