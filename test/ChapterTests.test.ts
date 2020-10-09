@@ -369,9 +369,7 @@ xdescribe('Previous chapter Tests', () => {
     const canvas = render(camera, world);
     saveCanvas(canvas, 'ch11-refraction-no-fresnel.ppm');
   });
-});
 
-describe('Current Chapter Test', () => {
   it('Chapter 11 - Chapter head', () => {
     const floor = new Plane(
       Matrix4x4.translation(0, -1, 0),
@@ -413,10 +411,24 @@ describe('Current Chapter Test', () => {
     const world = new World(light, [floor, leftWall, rightWall, orangeBall, greenBall, blueBall]);
 
     const cameraTransform = viewTransform(new Point(-3.0, 1.0, -6), new Point(0, 0, 0), new Vector(0, 1, 0));
-    const camera = new Camera(200, 100, Math.PI / 3, cameraTransform);
+    const camera = new Camera(100, 50, Math.PI / 3, cameraTransform);
 
     const canvas = render(camera, world);
 
     saveCanvas(canvas, 'ch11-chapter-head.ppm');
+  });
+});
+
+xdescribe('Current Chapter Test', () => {
+  it('Chapter 12 - Cubes', () => {
+    const light = new PointLight(new Point(-10, 6, -5), Color.White);
+    const world = new World(light, []);
+
+    const cameraTransform = viewTransform(new Point(-3.0, 1.0, -6), new Point(0, 0, 0), new Vector(0, 1, 0));
+    const camera = new Camera(100, 50, Math.PI / 3, cameraTransform);
+
+    const canvas = render(camera, world);
+
+    saveCanvas(canvas, 'ch12-cubes.ppm');
   });
 });

@@ -1,3 +1,4 @@
+import { dir } from 'console';
 import { IntersectionList, Intersection } from './Intersections';
 import { Material } from './Materials';
 import { EPSILON } from './Math';
@@ -111,5 +112,70 @@ export class Plane extends Shape {
 
   public withMaterial(value: Material): Shape {
     return new Plane(this.transform, value);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cube
+
+export class Cube extends Shape {
+  public constructor(transform?: Matrix4x4, material?: Material) {
+    super(transform, material);
+  }
+
+  protected localIntersect(localRay: Ray): IntersectionList {
+    function checkAxis(origin: number, direction: number): { tmin: number; tmax: number } {
+      const tminNumerator = -1 - origin;
+      const tmaxNumerator = 1 - origin;
+      let tmin: number;
+      let tmax: number;
+
+      if (Math.abs(direction) >= EPSILON) {
+        tmin = tminNumerator / direction;
+        tmax = tmaxNumerator / direction;
+      } else {
+        tmin = tminNumerator * Number.POSITIVE_INFINITY;
+        tmax = tmaxNumerator * Number.POSITIVE_INFINITY;
+      }
+
+      if (tmin > tmax) {
+        const temp = tmin;
+        tmin = tmax;
+        tmax = temp;
+      }
+
+      return { tmin, tmax };
+    }
+
+    const { tmin: xtMin, tmax: xtMax } = checkAxis(localRay.origin.x, localRay.direction.x);
+    const { tmin: ytMin, tmax: ytMax } = checkAxis(localRay.origin.y, localRay.direction.y);
+    const { tmin: ztMin, tmax: ztMax } = checkAxis(localRay.origin.z, localRay.direction.z);
+
+    const tmin = Math.max(xtMin, ytMin, ztMin);
+    const tmax = Math.min(xtMax, ytMax, ztMax);
+
+    if (tmin > tmax) {
+      return new IntersectionList();
+    }
+
+    return new IntersectionList(new Intersection(tmin, this), new Intersection(tmax, this));
+  }
+
+  protected localNormalAt(localPoint: Point): Vector {
+    const maxc = Math.max(Math.abs(localPoint.x), Math.abs(localPoint.y), Math.abs(localPoint.z));
+
+    if (maxc === Math.abs(localPoint.x)) {
+      return new Vector(localPoint.x, 0, 0);
+    } else if (maxc === Math.abs(localPoint.y)) {
+      return new Vector(0, localPoint.y, 0);
+    }
+
+    return new Vector(0, 0, localPoint.z);
+  }
+  public withTransform(value: Matrix4x4): Shape {
+    throw new Error('Method not implemented.');
+  }
+  public withMaterial(value: Material): Shape {
+    throw new Error('Method not implemented.');
   }
 }
