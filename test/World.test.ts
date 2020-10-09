@@ -93,6 +93,21 @@ describe('World', () => {
       const color = world.shadeHit(comps, 5);
       expect(color.isEqualTo(new Color(0.93642, 0.68642, 0.68642))).toBeTrue();
     });
+
+    it('should calculate the shade color with a relective and transparent material', () => {
+      const floor = new Plane(
+        Matrix4x4.translation(0, -1, 0),
+        new Material().withReflective(0.5).withTransparency(0.5).withRefractiveIndex(1.5),
+      );
+      const ball = new Sphere(Matrix4x4.translation(0, -3.5, -0.5), new Material(new Color(1, 0, 0), 0.5));
+      const world = createDefaultWorld().addShape(floor).addShape(ball);
+
+      const ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.SQRT2 / 2, Math.SQRT2 / 2));
+      const intersections = new IntersectionList(new Intersection(Math.SQRT2, floor));
+      const comps = intersections.get(0).prepareComputations(ray, intersections);
+      const color = world.shadeHit(comps, 5);
+      expect(color.isEqualTo(new Color(0.93391, 0.69643, 0.69243))).toBeTrue();
+    });
   });
 
   describe('colorAt()', () => {

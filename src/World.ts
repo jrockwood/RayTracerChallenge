@@ -1,5 +1,5 @@
 import { Color } from './Color';
-import { IntersectionList, PrecomputedIntersectionState } from './Intersections';
+import { IntersectionList, PrecomputedIntersectionState, schlick } from './Intersections';
 import { Light } from './Lights';
 import { Point } from './PointVector';
 import { Ray } from './Ray';
@@ -52,6 +52,12 @@ export class World {
 
     const reflectedColor = this.reflectedColor(comps, maxRecursion);
     const refractedColor = this.refractedColor(comps, maxRecursion);
+
+    const material = comps.shape.material;
+    if (material.reflective > 0 && material.transparency > 0) {
+      const reflectance = schlick(comps);
+      return surfaceColor.add(reflectedColor.multiply(reflectance)).add(refractedColor.multiply(1 - reflectance));
+    }
 
     return surfaceColor.add(reflectedColor).add(refractedColor);
   }

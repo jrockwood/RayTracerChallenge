@@ -1,4 +1,4 @@
-import { Intersection, IntersectionList } from '../src/Intersections';
+import { Intersection, IntersectionList, schlick } from '../src/Intersections';
 import { EPSILON } from '../src/Math';
 import { Matrix4x4 } from '../src/Matrices';
 import { Point, Vector } from '../src/PointVector';
@@ -201,5 +201,37 @@ describe('IntersectionList', () => {
       const list = new IntersectionList(i1, i2, i3, i4);
       expect(list.hit()).toBe(i4);
     });
+  });
+});
+
+describe('schlick()', () => {
+  it('should return the reflectance under total internal reflection', () => {
+    const sphere = createGlassSphere();
+    const ray = new Ray(new Point(0, 0, Math.SQRT2 / 2), new Vector(0, 1, 0));
+    const intersections = new IntersectionList(
+      new Intersection(-Math.SQRT2 / 2, sphere),
+      new Intersection(Math.SQRT2 / 2, sphere),
+    );
+    const comps = intersections.get(1).prepareComputations(ray, intersections);
+    const reflectance = schlick(comps);
+    expect(reflectance).toBe(1.0);
+  });
+
+  it('should return the reflectance with a perpendicular viewing angle', () => {
+    const sphere = createGlassSphere();
+    const ray = new Ray(new Point(0, 0, 0), new Vector(0, 1, 0));
+    const intersections = new IntersectionList(new Intersection(-1, sphere), new Intersection(1, sphere));
+    const comps = intersections.get(0).prepareComputations(ray, intersections);
+    const reflectance = schlick(comps);
+    expect(reflectance).toBeCloseTo(0.04);
+  });
+
+  it('should return the reflectance with a small angle and n2 > n1', () => {
+    const sphere = createGlassSphere();
+    const ray = new Ray(new Point(0, 0.99, -2), new Vector(0, 0, 1));
+    const intersections = new IntersectionList(new Intersection(1.8589, sphere));
+    const comps = intersections.get(0).prepareComputations(ray, intersections);
+    const reflectance = schlick(comps);
+    expect(reflectance).toBeCloseTo(0.48873);
   });
 });

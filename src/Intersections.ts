@@ -128,3 +128,26 @@ export class IntersectionList {
     return nonNegativeTs.length > 0 ? nonNegativeTs[0] : null;
   }
 }
+
+export function schlick(comps: PrecomputedIntersectionState): number {
+  // Find the cosine of the angle between the eye and the normal vector.
+  let cos = comps.eye.dot(comps.normal);
+
+  // Total internal reflection can only occur if n1 > n2.
+  if (comps.n1 > comps.n2) {
+    const n = comps.n1 / comps.n2;
+    const sin2_t = n * n * (1.0 - cos * cos);
+    if (sin2_t > 1.0) {
+      return 1.0;
+    }
+
+    // Compute the cosine of theta_t using trig identity.
+    const cos_t = Math.sqrt(1.0 - sin2_t);
+
+    // When n1 > n2, use cos(theta_t) instead.
+    cos = cos_t;
+  }
+
+  const r0 = Math.pow((comps.n1 - comps.n2) / (comps.n1 + comps.n2), 2);
+  return r0 + (1 - r0) * Math.pow(1 - cos, 5);
+}
