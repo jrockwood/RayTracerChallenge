@@ -31,6 +31,10 @@ class TestShape extends Shape {
   public withMaterial(value: Material): Shape {
     throw new Error('Method not implemented.');
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public withIgnoreShadow(value: boolean): Shape {
+    throw new Error('Method not implemented.');
+  }
 }
 
 export function createGlassSphere(): Sphere {

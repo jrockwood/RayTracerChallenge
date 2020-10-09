@@ -1,4 +1,3 @@
-import { dir } from 'console';
 import { IntersectionList, Intersection } from './Intersections';
 import { Material } from './Materials';
 import { EPSILON } from './Math';
@@ -12,10 +11,16 @@ import { Ray } from './Ray';
 export abstract class Shape {
   public readonly transform: Matrix4x4;
   public readonly material: Material;
+  public readonly ignoreShadow: boolean;
 
-  protected constructor(transform: Matrix4x4 = Matrix4x4.identity, material: Material = new Material()) {
+  protected constructor(
+    transform: Matrix4x4 = Matrix4x4.identity,
+    material: Material = new Material(),
+    ignoreShadow = false,
+  ) {
     this.transform = transform;
     this.material = material;
+    this.ignoreShadow = ignoreShadow;
   }
 
   public intersect(ray: Ray): IntersectionList {
@@ -35,6 +40,7 @@ export abstract class Shape {
 
   public abstract withTransform(value: Matrix4x4): Shape;
   public abstract withMaterial(value: Material): Shape;
+  public abstract withIgnoreShadow(value: boolean): Shape;
 
   public addToMaterial(addFunc: (currentMaterial: Material) => Material): Shape {
     return this.withMaterial(addFunc(this.material));
@@ -45,8 +51,8 @@ export abstract class Shape {
 // Sphere
 
 export class Sphere extends Shape {
-  public constructor(transform?: Matrix4x4, material?: Material) {
-    super(transform, material);
+  public constructor(transform?: Matrix4x4, material?: Material, ignoreShadow?: boolean) {
+    super(transform, material, ignoreShadow);
   }
 
   public withTransform(value: Matrix4x4): Shape {
@@ -55,6 +61,10 @@ export class Sphere extends Shape {
 
   public withMaterial(value: Material): Shape {
     return new Sphere(this.transform, value);
+  }
+
+  public withIgnoreShadow(value: boolean): Shape {
+    return new Sphere(this.transform, this.material, value);
   }
 
   protected localIntersect(localRay: Ray): IntersectionList {
@@ -87,8 +97,8 @@ export class Sphere extends Shape {
 // Plane
 
 export class Plane extends Shape {
-  public constructor(transform?: Matrix4x4, material?: Material) {
-    super(transform, material);
+  public constructor(transform?: Matrix4x4, material?: Material, ignoreShadow?: boolean) {
+    super(transform, material, ignoreShadow);
   }
 
   protected localIntersect(localRay: Ray): IntersectionList {
@@ -113,14 +123,18 @@ export class Plane extends Shape {
   public withMaterial(value: Material): Shape {
     return new Plane(this.transform, value);
   }
+
+  public withIgnoreShadow(value: boolean): Shape {
+    return new Plane(this.transform, this.material, value);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cube
 
 export class Cube extends Shape {
-  public constructor(transform?: Matrix4x4, material?: Material) {
-    super(transform, material);
+  public constructor(transform?: Matrix4x4, material?: Material, ignoreShadow?: boolean) {
+    super(transform, material, ignoreShadow);
   }
 
   protected localIntersect(localRay: Ray): IntersectionList {
@@ -172,10 +186,16 @@ export class Cube extends Shape {
 
     return new Vector(0, 0, localPoint.z);
   }
+
   public withTransform(value: Matrix4x4): Shape {
-    throw new Error('Method not implemented.');
+    return new Cube(value, this.material, this.ignoreShadow);
   }
+
   public withMaterial(value: Material): Shape {
-    throw new Error('Method not implemented.');
+    return new Cube(this.transform, value, this.ignoreShadow);
+  }
+
+  public withIgnoreShadow(value: boolean): Shape {
+    return new Cube(this.transform, this.material, value);
   }
 }
