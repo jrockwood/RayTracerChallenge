@@ -5,16 +5,20 @@ export class Color {
   public readonly green: number;
   public readonly blue: number;
 
-  public static Black: Color = new Color(0, 0, 0);
-  public static White: Color = new Color(1, 1, 1);
+  public static Black = new Color(0, 0, 0);
+  public static White = new Color(1, 1, 1);
 
-  public static Red: Color = new Color(1, 0, 0);
-  public static Green: Color = new Color(0, 1, 0);
-  public static Blue: Color = new Color(0, 0, 1);
+  public static LightGray = new Color(0.75, 0.75, 0.75);
+  public static Gray = new Color(0.5, 0.5, 0.5);
+  public static DarkGray = new Color(0.25, 0.25, 0.25);
 
-  public static Yellow: Color = new Color(1, 1, 0);
-  public static Magenta: Color = new Color(1, 0, 1);
-  public static Cyan: Color = new Color(0, 1, 1);
+  public static Red = new Color(1, 0, 0);
+  public static Green = new Color(0, 1, 0);
+  public static Blue = new Color(0, 0, 1);
+
+  public static Yellow = new Color(1, 1, 0);
+  public static Magenta = new Color(1, 0, 1);
+  public static Cyan = new Color(0, 1, 1);
 
   public constructor(red: number, green: number, blue: number) {
     this.red = red;
