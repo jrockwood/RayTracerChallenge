@@ -195,5 +195,29 @@ namespace RayTracerChallenge.Library.Tests
             var v = new Vector(1, 2, 3);
             (Matrix4x4.Identity * v).Should().Be(v);
         }
+
+        [Test]
+        public void Transpose_should_swap_the_rows_and_columns()
+        {
+            var matrix = new Matrix4x4(
+                0, 9, 3, 0,
+                9, 8, 0, 8,
+                1, 8, 5, 3,
+                0, 0, 5, 8);
+
+            var expectedTransposed = new Matrix4x4(
+                0, 9, 1, 0,
+                9, 8, 8, 0,
+                3, 0, 5, 5,
+                0, 8, 3, 8);
+
+            matrix.Transpose().Should().Be(expectedTransposed);
+        }
+
+        [Test]
+        public void Transposing_the_identity_matrix_should_return_the_identity_matrix()
+        {
+            Matrix4x4.Identity.Transpose().Should().Be(Matrix4x4.Identity);
+        }
     }
 }

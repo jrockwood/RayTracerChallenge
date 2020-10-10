@@ -230,5 +230,14 @@ namespace RayTracerChallenge.Library
         {
             return $"|{M00} {M01} {M02} {M03}|\n|{M10} {M11} {M12} {M13}|\n|{M20} {M21} {M22} {M23}|\n|{M30} {M31} {M32} {M33}|";
         }
+
+        public Matrix4x4 Transpose()
+        {
+            return new Matrix4x4(
+                M00, M10, M20, M30,
+                M01, M11, M21, M31,
+                M02, M12, M22, M32,
+                M03, M13, M23, M33);
+        }
     }
 }
