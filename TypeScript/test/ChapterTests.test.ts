@@ -38,7 +38,7 @@ function saveCanvas(canvas: Canvas, fileName: string): void {
   canvas.saveToPpmFile(resolvedPath);
 }
 
-describe('Previous chapter Tests', () => {
+xdescribe('Previous chapter Tests', () => {
   it('Chapter 1-2 - Firing a cannon', () => {
     function tick(environment: Environment, projectile: Projectile): Projectile {
       const position = projectile.position.add(projectile.velocity);
@@ -485,7 +485,7 @@ describe('Previous chapter Tests', () => {
     saveCanvas(canvas, 'ch11-chapter-head.ppm');
   });
 
-  fit('Chapter 12 - Cubes (Table Scene)', () => {
+  it('Chapter 12 - Cubes (Table Scene)', () => {
     // Floor/Ceiling
     // -------------
     const floorAndCeiling = new Cube(
