@@ -31,16 +31,21 @@
             System.Windows.Forms.Label _mainTitleLabel;
             System.Windows.Forms.Label _descriptionLabel;
             System.Windows.Forms.Panel _sceneSelectionPanel;
+            System.Windows.Forms.Panel _imagePanel;
             System.Windows.Forms.Label _selectSceneLabel;
-            this._renderButton = new System.Windows.Forms.Button();
             this._pictureBox = new System.Windows.Forms.PictureBox();
+            this._stretchImageRadioButton = new System.Windows.Forms.RadioButton();
+            this._naturalSizeRadioButton = new System.Windows.Forms.RadioButton();
+            this._renderButton = new System.Windows.Forms.Button();
             this._sceneDescriptionLabel = new System.Windows.Forms.Label();
             this._sceneComboBox = new System.Windows.Forms.ComboBox();
             _mainTitleLabel = new System.Windows.Forms.Label();
             _descriptionLabel = new System.Windows.Forms.Label();
             _sceneSelectionPanel = new System.Windows.Forms.Panel();
+            _imagePanel = new System.Windows.Forms.Panel();
             _selectSceneLabel = new System.Windows.Forms.Label();
             _sceneSelectionPanel.SuspendLayout();
+            _imagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,7 +57,7 @@
             _mainTitleLabel.Location = new System.Drawing.Point(13, 13);
             _mainTitleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             _mainTitleLabel.Name = "_mainTitleLabel";
-            _mainTitleLabel.Size = new System.Drawing.Size(811, 46);
+            _mainTitleLabel.Size = new System.Drawing.Size(981, 46);
             _mainTitleLabel.TabIndex = 0;
             _mainTitleLabel.Text = "Ray Tracer Challenge";
             _mainTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -64,7 +69,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             _descriptionLabel.Location = new System.Drawing.Point(13, 59);
             _descriptionLabel.Name = "_descriptionLabel";
-            _descriptionLabel.Size = new System.Drawing.Size(812, 62);
+            _descriptionLabel.Size = new System.Drawing.Size(982, 62);
             _descriptionLabel.TabIndex = 1;
             _descriptionLabel.Text = "Displays scenes from the ray tracer built using the book, \"Ray Tracer Challenge\" " +
     "by Jamis Buck.\r\n";
@@ -75,15 +80,63 @@
             _sceneSelectionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            _sceneSelectionPanel.Controls.Add(_imagePanel);
+            _sceneSelectionPanel.Controls.Add(this._stretchImageRadioButton);
+            _sceneSelectionPanel.Controls.Add(this._naturalSizeRadioButton);
             _sceneSelectionPanel.Controls.Add(this._renderButton);
-            _sceneSelectionPanel.Controls.Add(this._pictureBox);
             _sceneSelectionPanel.Controls.Add(this._sceneDescriptionLabel);
             _sceneSelectionPanel.Controls.Add(this._sceneComboBox);
             _sceneSelectionPanel.Controls.Add(_selectSceneLabel);
             _sceneSelectionPanel.Location = new System.Drawing.Point(13, 124);
             _sceneSelectionPanel.Name = "_sceneSelectionPanel";
-            _sceneSelectionPanel.Size = new System.Drawing.Size(812, 672);
+            _sceneSelectionPanel.Size = new System.Drawing.Size(982, 774);
             _sceneSelectionPanel.TabIndex = 2;
+            // 
+            // _imagePanel
+            // 
+            _imagePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            _imagePanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            _imagePanel.Controls.Add(this._pictureBox);
+            _imagePanel.Location = new System.Drawing.Point(0, 145);
+            _imagePanel.Name = "_imagePanel";
+            _imagePanel.Size = new System.Drawing.Size(981, 629);
+            _imagePanel.TabIndex = 7;
+            // 
+            // _pictureBox
+            // 
+            this._pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._pictureBox.Location = new System.Drawing.Point(0, 0);
+            this._pictureBox.Name = "_pictureBox";
+            this._pictureBox.Size = new System.Drawing.Size(977, 625);
+            this._pictureBox.TabIndex = 3;
+            this._pictureBox.TabStop = false;
+            // 
+            // _stretchImageRadioButton
+            // 
+            this._stretchImageRadioButton.AutoSize = true;
+            this._stretchImageRadioButton.Location = new System.Drawing.Point(143, 114);
+            this._stretchImageRadioButton.Name = "_stretchImageRadioButton";
+            this._stretchImageRadioButton.Size = new System.Drawing.Size(123, 25);
+            this._stretchImageRadioButton.TabIndex = 6;
+            this._stretchImageRadioButton.TabStop = true;
+            this._stretchImageRadioButton.Text = "Stretch image";
+            this._stretchImageRadioButton.UseVisualStyleBackColor = true;
+            this._stretchImageRadioButton.CheckedChanged += new System.EventHandler(this.StretchImageRadioButton_CheckedChanged);
+            // 
+            // _naturalSizeRadioButton
+            // 
+            this._naturalSizeRadioButton.AutoSize = true;
+            this._naturalSizeRadioButton.Checked = true;
+            this._naturalSizeRadioButton.Location = new System.Drawing.Point(0, 114);
+            this._naturalSizeRadioButton.Name = "_naturalSizeRadioButton";
+            this._naturalSizeRadioButton.Size = new System.Drawing.Size(137, 25);
+            this._naturalSizeRadioButton.TabIndex = 5;
+            this._naturalSizeRadioButton.TabStop = true;
+            this._naturalSizeRadioButton.Text = "Use natural size";
+            this._naturalSizeRadioButton.UseVisualStyleBackColor = true;
+            this._naturalSizeRadioButton.CheckedChanged += new System.EventHandler(this.NaturalSizeRadioButton_CheckedChanged);
             // 
             // _renderButton
             // 
@@ -95,24 +148,15 @@
             this._renderButton.UseVisualStyleBackColor = true;
             this._renderButton.Click += new System.EventHandler(this.RenderButton_Click);
             // 
-            // _pictureBox
-            // 
-            this._pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this._pictureBox.Location = new System.Drawing.Point(-1, 97);
-            this._pictureBox.Name = "_pictureBox";
-            this._pictureBox.Size = new System.Drawing.Size(813, 575);
-            this._pictureBox.TabIndex = 3;
-            this._pictureBox.TabStop = false;
-            // 
             // _sceneDescriptionLabel
             // 
+            this._sceneDescriptionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this._sceneDescriptionLabel.AutoEllipsis = true;
             this._sceneDescriptionLabel.Location = new System.Drawing.Point(306, 24);
             this._sceneDescriptionLabel.Name = "_sceneDescriptionLabel";
-            this._sceneDescriptionLabel.Size = new System.Drawing.Size(505, 70);
+            this._sceneDescriptionLabel.Size = new System.Drawing.Size(675, 172);
             this._sceneDescriptionLabel.TabIndex = 2;
             this._sceneDescriptionLabel.Text = "Scene description";
             // 
@@ -138,7 +182,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(837, 808);
+            this.ClientSize = new System.Drawing.Size(1007, 910);
             this.Controls.Add(_sceneSelectionPanel);
             this.Controls.Add(_descriptionLabel);
             this.Controls.Add(_mainTitleLabel);
@@ -150,6 +194,7 @@
             this.Text = "Ray Tracer Challenge";
             _sceneSelectionPanel.ResumeLayout(false);
             _sceneSelectionPanel.PerformLayout();
+            _imagePanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this._pictureBox)).EndInit();
             this.ResumeLayout(false);
 
@@ -161,6 +206,8 @@
         private System.Windows.Forms.Label _sceneDescriptionLabel;
         private System.Windows.Forms.ComboBox _sceneComboBox;
         private System.Windows.Forms.Button _renderButton;
+        private System.Windows.Forms.RadioButton _naturalSizeRadioButton;
+        private System.Windows.Forms.RadioButton _stretchImageRadioButton;
     }
 }
 

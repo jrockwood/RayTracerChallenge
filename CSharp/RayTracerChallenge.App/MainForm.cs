@@ -28,6 +28,7 @@ namespace RayTracerChallenge.App
         {
             InitializeComponent();
             InitializeScenes();
+            SetPictureBoxSizeMode();
         }
 
         //// ===========================================================================================================
@@ -43,6 +44,12 @@ namespace RayTracerChallenge.App
 
             _sceneComboBox.SelectedIndex = 0;
             _sceneComboBox.DisplayMember = "Title";
+        }
+
+        private void SetPictureBoxSizeMode()
+        {
+            _pictureBox.SizeMode =
+                _naturalSizeRadioButton.Checked ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
         }
 
         private void SceneComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -62,6 +69,16 @@ namespace RayTracerChallenge.App
 
             var bitmap = canvas.ToBitmap();
             _pictureBox.Image = bitmap;
+        }
+
+        private void NaturalSizeRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            SetPictureBoxSizeMode();
+        }
+
+        private void StretchImageRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            SetPictureBoxSizeMode();
         }
     }
 }
