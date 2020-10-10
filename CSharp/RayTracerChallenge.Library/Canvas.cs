@@ -56,6 +56,17 @@ namespace RayTracerChallenge.Library
             _pixels[index] = color;
         }
 
+        public void FillRect(int top, int left, int bottom, int right, Color color)
+        {
+            for (int x = Math.Max(0, left); x <= Math.Min(right, Width - 1); x++)
+            {
+                for (int y = Math.Max(0, top); y <= Math.Min(bottom, Height - 1); y++)
+                {
+                    SetPixel(x, y, color);
+                }
+            }
+        }
+
         private int CalculateIndex(int x, int y)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
