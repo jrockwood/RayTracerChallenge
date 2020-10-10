@@ -120,5 +120,80 @@ namespace RayTracerChallenge.Library.Tests
             Action action = () => _ = Matrix3x3.Identity[3, 0];
             action.Should().Throw<IndexOutOfRangeException>();
         }
+
+        [Test]
+        public void Multiplying_two_matrices()
+        {
+            var matrix1 = new Matrix4x4(
+                1, 2, 3, 4,
+                5, 6, 7, 8,
+                9, 8, 7, 6,
+                5, 4, 3, 2);
+
+            var matrix2 = new Matrix4x4(
+                -2, 1, 2, 3,
+                3, 2, 1, -1,
+                4, 3, 6, 5,
+                1, 2, 7, 8);
+
+            (matrix1 * matrix2).Should().Be(
+                new Matrix4x4(
+                    20, 22, 50, 48,
+                    44, 54, 114, 108,
+                    40, 58, 110, 102,
+                    16, 26, 46, 42));
+        }
+
+        [Test]
+        public void Multiplying_a_matrix_and_a_point()
+        {
+            var matrix = new Matrix4x4(
+                1, 2, 3, 4,
+                2, 4, 4, 2,
+                8, 6, 4, 1,
+                0, 0, 0, 1);
+
+            var point = new Point(1, 2, 3);
+            (matrix * point).Should().Be(new Point(18, 24, 33));
+        }
+
+        [Test]
+        public void Multiplying_a_matrix_and_a_vector()
+        {
+            var matrix = new Matrix4x4(
+                1, 2, 3, 4,
+                2, 4, 4, 2,
+                8, 6, 4, 1,
+                0, 0, 0, 1);
+
+            var vector = new Vector(1, 2, 3);
+            (matrix * vector).Should().Be(new Vector(14, 22, 32));
+        }
+
+        [Test]
+        public void Multiplying_a_matrix_by_the_identity_matrix_should_return_the_same_matrix()
+        {
+            var matrix = new Matrix4x4(
+                0, 1, 2, 4,
+                1, 2, 4, 8,
+                2, 4, 8, 16,
+                4, 8, 16, 32);
+
+            (matrix * Matrix4x4.Identity).Should().Be(matrix);
+        }
+
+        [Test]
+        public void Multiplying_the_identity_matrix_by_a_point_should_return_the_same_point()
+        {
+            var p = new Point(1, 2, 3);
+            (Matrix4x4.Identity * p).Should().Be(p);
+        }
+
+        [Test]
+        public void Multiplying_the_identity_matrix_by_a_vector_should_return_the_same_vector()
+        {
+            var v = new Vector(1, 2, 3);
+            (Matrix4x4.Identity * v).Should().Be(v);
+        }
     }
 }

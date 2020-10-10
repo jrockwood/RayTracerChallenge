@@ -110,6 +110,58 @@ namespace RayTracerChallenge.Library
         public float M33 { get; }
 
         //// ===========================================================================================================
+        //// Operators
+        //// ===========================================================================================================
+
+        public static Matrix4x4 operator *(Matrix4x4 a, Matrix4x4 b)
+        {
+            return new Matrix4x4(
+                // First row
+                (a.M00 * b.M00) + (a.M01 * b.M10) + (a.M02 * b.M20) + (a.M03 * b.M30),
+                (a.M00 * b.M01) + (a.M01 * b.M11) + (a.M02 * b.M21) + (a.M03 * b.M31),
+                (a.M00 * b.M02) + (a.M01 * b.M12) + (a.M02 * b.M22) + (a.M03 * b.M32),
+                (a.M00 * b.M03) + (a.M01 * b.M13) + (a.M02 * b.M23) + (a.M03 * b.M33),
+
+                // Second row
+                (a.M10 * b.M00) + (a.M11 * b.M10) + (a.M12 * b.M20) + (a.M13 * b.M30),
+                (a.M10 * b.M01) + (a.M11 * b.M11) + (a.M12 * b.M21) + (a.M13 * b.M31),
+                (a.M10 * b.M02) + (a.M11 * b.M12) + (a.M12 * b.M22) + (a.M13 * b.M32),
+                (a.M10 * b.M03) + (a.M11 * b.M13) + (a.M12 * b.M23) + (a.M13 * b.M33),
+
+                // Third row
+                (a.M20 * b.M00) + (a.M21 * b.M10) + (a.M22 * b.M20) + (a.M23 * b.M30),
+                (a.M20 * b.M01) + (a.M21 * b.M11) + (a.M22 * b.M21) + (a.M23 * b.M31),
+                (a.M20 * b.M02) + (a.M21 * b.M12) + (a.M22 * b.M22) + (a.M23 * b.M32),
+                (a.M20 * b.M03) + (a.M21 * b.M13) + (a.M22 * b.M23) + (a.M23 * b.M33),
+
+                // Fourth row
+                (a.M30 * b.M00) + (a.M31 * b.M10) + (a.M32 * b.M20) + (a.M33 * b.M30),
+                (a.M30 * b.M01) + (a.M31 * b.M11) + (a.M32 * b.M21) + (a.M33 * b.M31),
+                (a.M30 * b.M02) + (a.M31 * b.M12) + (a.M32 * b.M22) + (a.M33 * b.M32),
+                (a.M30 * b.M03) + (a.M31 * b.M13) + (a.M32 * b.M23) + (a.M33 * b.M33)
+
+            );
+        }
+
+        public static Point operator *(Matrix4x4 matrix, Point point)
+        {
+            float x = (matrix.M00 * point.X) + (matrix.M01 * point.Y) + (matrix.M02 * point.Z) + matrix.M03;
+            float y = (matrix.M10 * point.X) + (matrix.M11 * point.Y) + (matrix.M12 * point.Z) + matrix.M13;
+            float z = (matrix.M20 * point.X) + (matrix.M21 * point.Y) + (matrix.M22 * point.Z) + matrix.M23;
+
+            return new Point(x, y, z);
+        }
+
+        public static Vector operator *(Matrix4x4 matrix, Vector vector)
+        {
+            float x = (matrix.M00 * vector.X) + (matrix.M01 * vector.Y) + (matrix.M02 * vector.Z);
+            float y = (matrix.M10 * vector.X) + (matrix.M11 * vector.Y) + (matrix.M12 * vector.Z);
+            float z = (matrix.M20 * vector.X) + (matrix.M21 * vector.Y) + (matrix.M22 * vector.Z);
+
+            return new Vector(x, y, z);
+        }
+
+        //// ===========================================================================================================
         //// Equality Members
         //// ===========================================================================================================
 
