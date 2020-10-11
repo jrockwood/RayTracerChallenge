@@ -28,6 +28,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Methods
         //// ===========================================================================================================
 
+        public abstract Shape WithTransform(Matrix4x4 value);
+
         public IntersectionList Intersect(Ray ray)
         {
             var localRay = ray.Transform(Transform.Invert());
@@ -36,6 +38,14 @@ namespace RayTracerChallenge.Library.Shapes
 
         protected abstract IntersectionList LocalIntersect(Ray localRay);
 
-        public abstract Shape WithTransform(Matrix4x4 value);
+        public Vector NormalAt(Point worldPoint)
+        {
+            Point localPoint = Transform.Invert() * worldPoint;
+            Vector localNormal = LocalNormalAt(localPoint);
+            Vector worldNormal = Transform.Invert().Transpose() * localNormal;
+            return worldNormal.Normalize();
+        }
+
+        protected abstract Vector LocalNormalAt(Point localPoint);
     }
 }

@@ -24,6 +24,11 @@ namespace RayTracerChallenge.Library.Shapes
         //// Methods
         //// ===========================================================================================================
 
+        public override Shape WithTransform(Matrix4x4 value)
+        {
+            return new Sphere(value);
+        }
+
         protected override IntersectionList LocalIntersect(Ray localRay)
         {
             Vector sphereToRay = localRay.Origin - Point.Zero;
@@ -46,9 +51,10 @@ namespace RayTracerChallenge.Library.Shapes
             return new IntersectionList(new Intersection(t1, this), new Intersection(t2, this));
         }
 
-        public override Shape WithTransform(Matrix4x4 value)
+        protected override Vector LocalNormalAt(Point localPoint)
         {
-            return new Sphere(value);
+            Vector localNormal = localPoint - Point.Zero;
+            return localNormal;
         }
     }
 }
