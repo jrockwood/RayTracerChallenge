@@ -32,5 +32,25 @@ namespace RayTracerChallenge.Library.Tests
             ray.PositionAt(-1).Should().Be(new Point(1, 3, 4));
             ray.PositionAt(2.5f).Should().Be(new Point(4.5f, 3, 4));
         }
+
+        [Test]
+        public void Transform_should_translate_a_ray()
+        {
+            var ray = new Ray(new Point(1, 2, 3), Vector.UnitY);
+            var m = Matrix4x4.CreateTranslation(3, 4, 5);
+            var r2 = ray.Transform(m);
+            r2.Origin.Should().Be(new Point(4, 6, 8));
+            r2.Direction.Should().Be(Vector.UnitY);
+        }
+
+        [Test]
+        public void Scaling_a_ray()
+        {
+            var ray = new Ray(new Point(1, 2, 3), Vector.UnitY);
+            var m = Matrix4x4.CreateScaling(2, 3, 4);
+            var r2 = ray.Transform(m);
+            r2.Origin.Should().Be(new Point(2, 6, 12));
+            r2.Direction.Should().Be(new Vector(0, 3, 0));
+        }
     }
 }

@@ -11,6 +11,19 @@ namespace RayTracerChallenge.Library.Shapes
 
     public class Sphere : Shape
     {
+        //// ===========================================================================================================
+        //// Constructors
+        //// ===========================================================================================================
+
+        public Sphere(Matrix4x4? transform = null)
+            : base(transform)
+        {
+        }
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
         protected override IntersectionList LocalIntersect(Ray localRay)
         {
             Vector sphereToRay = localRay.Origin - Point.Zero;
@@ -31,6 +44,11 @@ namespace RayTracerChallenge.Library.Shapes
             float t2 = (-b + sqrtOfDiscriminant) / (2 * a);
 
             return new IntersectionList(new Intersection(t1, this), new Intersection(t2, this));
+        }
+
+        public override Shape WithTransform(Matrix4x4 value)
+        {
+            return new Sphere(value);
         }
     }
 }

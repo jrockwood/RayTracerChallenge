@@ -34,5 +34,12 @@ namespace RayTracerChallenge.Library
         {
             return Origin + (Direction * t);
         }
+
+        public Ray Transform(Matrix4x4 transform)
+        {
+            Point newOrigin = transform * Origin;
+            Vector newDirection = transform * Direction;
+            return new Ray(newOrigin, newDirection);
+        }
     }
 }
