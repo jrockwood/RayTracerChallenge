@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="Scene.cs" company="Justin Rockwood">
+// <copyright file="RenderContext.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -7,71 +7,50 @@
 
 namespace RayTracerChallenge.App.Scenes
 {
-    using System.ComponentModel;
+    using System;
     using RayTracerChallenge.Library;
 
-    public abstract class Scene
+    public class RenderContext
     {
         //// ===========================================================================================================
         //// Member Variables
         //// ===========================================================================================================
 
-        private Canvas? _canvas;
-        private BackgroundWorker? _worker;
-        private DoWorkEventArgs? _workEventArgs;
-        private int _highestPercentageReached;
+        private int _progress;
 
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        protected Scene(string title, string description)
+        public RenderContext(Canvas canvas)
         {
-            Title = title;
-            Description = description;
+            Canvas = canvas;
         }
+
+        //// ===========================================================================================================
+        //// Events
+        //// ===========================================================================================================
+
+        public event EventHandler? ProgressChanged;
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public string Title { get; }
-        public string Description { get; }
+        public Canvas Canvas { get; }
 
-        public abstract int RequestedWidth { get; }
-        public abstract int RequestedHeight { get; }
-
-        protected bool ShouldCancel => _worker?.CancellationPending ?? false;
-
-        //// ===========================================================================================================
-        //// Methods
-        //// ===========================================================================================================
-
-        public void Render(Canvas canvas, BackgroundWorker worker, DoWorkEventArgs e)
+        public int Progress
         {
-            _canvas = canvas;
-            _worker = worker;
-            _workEventArgs = e;
-            _highestPercentageReached = 0;
-
-            RenderToCanvas(canvas);
-            worker.ReportProgress(100, canvas);
-
-            _worker = null;
-            _workEventArgs = null;
-        }
-
-        protected abstract void RenderToCanvas(Canvas canvas);
-
-        protected void ReportProgress(int percentComplete)
-        {
-            if (percentComplete <= _highestPercentageReached)
+            get => _progress;
+            set
             {
-                return;
-            }
+                if (_progress != value)
+                {
+                    _progress = value;
 
-            _worker?.ReportProgress(percentComplete, _canvas);
-            _highestPercentageReached = percentComplete;
+                    ProgressChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
     }
 }

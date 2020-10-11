@@ -7,6 +7,7 @@
 
 namespace RayTracerChallenge.App.Scenes
 {
+    using System;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Shapes;
 
@@ -20,7 +21,7 @@ namespace RayTracerChallenge.App.Scenes
         public override int RequestedWidth => 400;
         public override int RequestedHeight => 400;
 
-        public override void Render(Canvas canvas)
+        protected override void RenderToCanvas(Canvas canvas)
         {
             var color = Colors.Red;
             var sphere = new Sphere();
@@ -41,6 +42,12 @@ namespace RayTracerChallenge.App.Scenes
                 // For each pixel in the row...
                 for (int x = 0; x < canvas.Width; x++)
                 {
+                    // See if we should stop.
+                    if (ShouldCancel)
+                    {
+                        return;
+                    }
+
                     // Compute the world x coordinate (left = -half, right = +half).
                     float worldX = -halfWallSize + (pixelSize * x);
 
@@ -55,6 +62,11 @@ namespace RayTracerChallenge.App.Scenes
                     {
                         canvas.SetPixel(x, y, color);
                     }
+
+                    // Report the progress.
+                    int percentComplete = (int)Math.Round(
+                        (((y * canvas.Height) + x) / ((float)canvas.Width * canvas.Height)) * 100f);
+                    ReportProgress(percentComplete);
                 }
             }
         }

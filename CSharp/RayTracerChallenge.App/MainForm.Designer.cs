@@ -32,21 +32,28 @@
             System.Windows.Forms.Label _descriptionLabel;
             System.Windows.Forms.Panel _sceneSelectionPanel;
             System.Windows.Forms.Panel _imagePanel;
-            System.Windows.Forms.Label _selectSceneLabel;
+            System.Windows.Forms.GroupBox _selectSceneGroupBox;
+            System.Windows.Forms.Panel _renderPanel;
             this._pictureBox = new System.Windows.Forms.PictureBox();
             this._stretchImageRadioButton = new System.Windows.Forms.RadioButton();
             this._naturalSizeRadioButton = new System.Windows.Forms.RadioButton();
-            this._renderButton = new System.Windows.Forms.Button();
             this._sceneDescriptionLabel = new System.Windows.Forms.Label();
             this._sceneComboBox = new System.Windows.Forms.ComboBox();
+            this._progressPercentLabel = new System.Windows.Forms.Label();
+            this._cancelButton = new System.Windows.Forms.Button();
+            this._progressBar = new System.Windows.Forms.ProgressBar();
+            this._renderButton = new System.Windows.Forms.Button();
             _mainTitleLabel = new System.Windows.Forms.Label();
             _descriptionLabel = new System.Windows.Forms.Label();
             _sceneSelectionPanel = new System.Windows.Forms.Panel();
             _imagePanel = new System.Windows.Forms.Panel();
-            _selectSceneLabel = new System.Windows.Forms.Label();
+            _selectSceneGroupBox = new System.Windows.Forms.GroupBox();
+            _renderPanel = new System.Windows.Forms.Panel();
             _sceneSelectionPanel.SuspendLayout();
             _imagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._pictureBox)).BeginInit();
+            _selectSceneGroupBox.SuspendLayout();
+            _renderPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // _mainTitleLabel
@@ -83,13 +90,9 @@
             _sceneSelectionPanel.Controls.Add(_imagePanel);
             _sceneSelectionPanel.Controls.Add(this._stretchImageRadioButton);
             _sceneSelectionPanel.Controls.Add(this._naturalSizeRadioButton);
-            _sceneSelectionPanel.Controls.Add(this._renderButton);
-            _sceneSelectionPanel.Controls.Add(this._sceneDescriptionLabel);
-            _sceneSelectionPanel.Controls.Add(this._sceneComboBox);
-            _sceneSelectionPanel.Controls.Add(_selectSceneLabel);
-            _sceneSelectionPanel.Location = new System.Drawing.Point(13, 124);
+            _sceneSelectionPanel.Location = new System.Drawing.Point(13, 297);
             _sceneSelectionPanel.Name = "_sceneSelectionPanel";
-            _sceneSelectionPanel.Size = new System.Drawing.Size(982, 774);
+            _sceneSelectionPanel.Size = new System.Drawing.Size(982, 601);
             _sceneSelectionPanel.TabIndex = 2;
             // 
             // _imagePanel
@@ -99,9 +102,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             _imagePanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             _imagePanel.Controls.Add(this._pictureBox);
-            _imagePanel.Location = new System.Drawing.Point(0, 145);
+            _imagePanel.Location = new System.Drawing.Point(0, 31);
             _imagePanel.Name = "_imagePanel";
-            _imagePanel.Size = new System.Drawing.Size(981, 629);
+            _imagePanel.Size = new System.Drawing.Size(981, 570);
             _imagePanel.TabIndex = 7;
             // 
             // _pictureBox
@@ -109,14 +112,14 @@
             this._pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this._pictureBox.Location = new System.Drawing.Point(0, 0);
             this._pictureBox.Name = "_pictureBox";
-            this._pictureBox.Size = new System.Drawing.Size(977, 625);
+            this._pictureBox.Size = new System.Drawing.Size(977, 566);
             this._pictureBox.TabIndex = 3;
             this._pictureBox.TabStop = false;
             // 
             // _stretchImageRadioButton
             // 
             this._stretchImageRadioButton.AutoSize = true;
-            this._stretchImageRadioButton.Location = new System.Drawing.Point(143, 114);
+            this._stretchImageRadioButton.Location = new System.Drawing.Point(145, 0);
             this._stretchImageRadioButton.Name = "_stretchImageRadioButton";
             this._stretchImageRadioButton.Size = new System.Drawing.Size(123, 25);
             this._stretchImageRadioButton.TabIndex = 6;
@@ -129,7 +132,7 @@
             // 
             this._naturalSizeRadioButton.AutoSize = true;
             this._naturalSizeRadioButton.Checked = true;
-            this._naturalSizeRadioButton.Location = new System.Drawing.Point(0, 114);
+            this._naturalSizeRadioButton.Location = new System.Drawing.Point(2, 0);
             this._naturalSizeRadioButton.Name = "_naturalSizeRadioButton";
             this._naturalSizeRadioButton.Size = new System.Drawing.Size(137, 25);
             this._naturalSizeRadioButton.TabIndex = 5;
@@ -138,15 +141,20 @@
             this._naturalSizeRadioButton.UseVisualStyleBackColor = true;
             this._naturalSizeRadioButton.CheckedChanged += new System.EventHandler(this.NaturalSizeRadioButton_CheckedChanged);
             // 
-            // _renderButton
+            // _selectSceneGroupBox
             // 
-            this._renderButton.Location = new System.Drawing.Point(0, 59);
-            this._renderButton.Name = "_renderButton";
-            this._renderButton.Size = new System.Drawing.Size(109, 32);
-            this._renderButton.TabIndex = 4;
-            this._renderButton.Text = "&Render";
-            this._renderButton.UseVisualStyleBackColor = true;
-            this._renderButton.Click += new System.EventHandler(this.RenderButton_Click);
+            _selectSceneGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            _selectSceneGroupBox.Controls.Add(this._sceneDescriptionLabel);
+            _selectSceneGroupBox.Controls.Add(this._sceneComboBox);
+            _selectSceneGroupBox.Location = new System.Drawing.Point(15, 127);
+            _selectSceneGroupBox.Margin = new System.Windows.Forms.Padding(6);
+            _selectSceneGroupBox.Name = "_selectSceneGroupBox";
+            _selectSceneGroupBox.Padding = new System.Windows.Forms.Padding(6);
+            _selectSceneGroupBox.Size = new System.Drawing.Size(980, 112);
+            _selectSceneGroupBox.TabIndex = 3;
+            _selectSceneGroupBox.TabStop = false;
+            _selectSceneGroupBox.Text = "Select a scene";
             // 
             // _sceneDescriptionLabel
             // 
@@ -154,9 +162,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this._sceneDescriptionLabel.AutoEllipsis = true;
-            this._sceneDescriptionLabel.Location = new System.Drawing.Point(306, 24);
+            this._sceneDescriptionLabel.Location = new System.Drawing.Point(318, 31);
             this._sceneDescriptionLabel.Name = "_sceneDescriptionLabel";
-            this._sceneDescriptionLabel.Size = new System.Drawing.Size(675, 172);
+            this._sceneDescriptionLabel.Size = new System.Drawing.Size(653, 75);
             this._sceneDescriptionLabel.TabIndex = 2;
             this._sceneDescriptionLabel.Text = "Scene description";
             // 
@@ -164,26 +172,77 @@
             // 
             this._sceneComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this._sceneComboBox.FormattingEnabled = true;
-            this._sceneComboBox.Location = new System.Drawing.Point(0, 24);
+            this._sceneComboBox.Location = new System.Drawing.Point(9, 31);
+            this._sceneComboBox.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
             this._sceneComboBox.Name = "_sceneComboBox";
             this._sceneComboBox.Size = new System.Drawing.Size(300, 29);
             this._sceneComboBox.TabIndex = 1;
             this._sceneComboBox.SelectedIndexChanged += new System.EventHandler(this.SceneComboBox_SelectedIndexChanged);
             // 
-            // _selectSceneLabel
+            // _renderPanel
             // 
-            _selectSceneLabel.AutoSize = true;
-            _selectSceneLabel.Location = new System.Drawing.Point(0, 0);
-            _selectSceneLabel.Name = "_selectSceneLabel";
-            _selectSceneLabel.Size = new System.Drawing.Size(109, 21);
-            _selectSceneLabel.TabIndex = 0;
-            _selectSceneLabel.Text = "&Select a scene:";
+            _renderPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            _renderPanel.Controls.Add(this._progressPercentLabel);
+            _renderPanel.Controls.Add(this._cancelButton);
+            _renderPanel.Controls.Add(this._progressBar);
+            _renderPanel.Controls.Add(this._renderButton);
+            _renderPanel.Location = new System.Drawing.Point(15, 248);
+            _renderPanel.Name = "_renderPanel";
+            _renderPanel.Size = new System.Drawing.Size(980, 43);
+            _renderPanel.TabIndex = 4;
+            // 
+            // _progressPercentLabel
+            // 
+            this._progressPercentLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this._progressPercentLabel.AutoSize = true;
+            this._progressPercentLabel.Location = new System.Drawing.Point(814, 6);
+            this._progressPercentLabel.Name = "_progressPercentLabel";
+            this._progressPercentLabel.Size = new System.Drawing.Size(50, 21);
+            this._progressPercentLabel.TabIndex = 9;
+            this._progressPercentLabel.Text = "100%";
+            this._progressPercentLabel.Visible = false;
+            // 
+            // _cancelButton
+            // 
+            this._cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this._cancelButton.Location = new System.Drawing.Point(872, 0);
+            this._cancelButton.Name = "_cancelButton";
+            this._cancelButton.Size = new System.Drawing.Size(109, 32);
+            this._cancelButton.TabIndex = 4;
+            this._cancelButton.Text = "Cancel";
+            this._cancelButton.UseVisualStyleBackColor = true;
+            this._cancelButton.Visible = false;
+            this._cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            // 
+            // _progressBar
+            // 
+            this._progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._progressBar.Location = new System.Drawing.Point(115, 0);
+            this._progressBar.Name = "_progressBar";
+            this._progressBar.Size = new System.Drawing.Size(693, 32);
+            this._progressBar.TabIndex = 8;
+            this._progressBar.Value = 50;
+            this._progressBar.Visible = false;
+            // 
+            // _renderButton
+            // 
+            this._renderButton.Location = new System.Drawing.Point(0, 0);
+            this._renderButton.Name = "_renderButton";
+            this._renderButton.Size = new System.Drawing.Size(109, 32);
+            this._renderButton.TabIndex = 4;
+            this._renderButton.Text = "&Render";
+            this._renderButton.UseVisualStyleBackColor = true;
+            this._renderButton.Click += new System.EventHandler(this.RenderButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1007, 910);
+            this.Controls.Add(_renderPanel);
+            this.Controls.Add(_selectSceneGroupBox);
             this.Controls.Add(_sceneSelectionPanel);
             this.Controls.Add(_descriptionLabel);
             this.Controls.Add(_mainTitleLabel);
@@ -197,6 +256,9 @@
             _sceneSelectionPanel.PerformLayout();
             _imagePanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this._pictureBox)).EndInit();
+            _selectSceneGroupBox.ResumeLayout(false);
+            _renderPanel.ResumeLayout(false);
+            _renderPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -204,11 +266,14 @@
         #endregion
 
         private System.Windows.Forms.PictureBox _pictureBox;
-        private System.Windows.Forms.Label _sceneDescriptionLabel;
-        private System.Windows.Forms.ComboBox _sceneComboBox;
-        private System.Windows.Forms.Button _renderButton;
         private System.Windows.Forms.RadioButton _naturalSizeRadioButton;
         private System.Windows.Forms.RadioButton _stretchImageRadioButton;
+        private System.Windows.Forms.ComboBox _sceneComboBox;
+        private System.Windows.Forms.Label _sceneDescriptionLabel;
+        private System.Windows.Forms.Button _cancelButton;
+        private System.Windows.Forms.ProgressBar _progressBar;
+        private System.Windows.Forms.Button _renderButton;
+        private System.Windows.Forms.Label _progressPercentLabel;
     }
 }
 
