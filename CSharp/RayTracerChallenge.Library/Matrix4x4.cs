@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // <copyright file="Matrix4x4.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
@@ -108,6 +108,21 @@ namespace RayTracerChallenge.Library
         public float M31 { get; }
         public float M32 { get; }
         public float M33 { get; }
+
+        public float Determinant
+        {
+            get
+            {
+                float result = 0;
+
+                for (int column = 0; column <= 3; column++)
+                {
+                    result += this[0, column] * Cofactor(0, column);
+                }
+
+                return result;
+            }
+        }
 
         //// ===========================================================================================================
         //// Operators
@@ -238,6 +253,41 @@ namespace RayTracerChallenge.Library
                 M01, M11, M21, M31,
                 M02, M12, M22, M32,
                 M03, M13, M23, M33);
+        }
+
+        public Matrix3x3 Submatrix(int rowToRemove, int columnToRemove)
+        {
+            int row0 = rowToRemove == 0 ? 1 : 0;
+            int row1 = rowToRemove <= 1 ? 2 : 1;
+            int row2 = rowToRemove <= 2 ? 3 : 2;
+            int col0 = columnToRemove == 0 ? 1 : 0;
+            int col1 = columnToRemove <= 1 ? 2 : 1;
+            int col2 = columnToRemove <= 2 ? 3 : 2;
+
+            // prettier-ignore
+            return new Matrix3x3(
+                this[row0, col0], this[row0, col1], this[row0, col2],
+                this[row1, col0], this[row1, col1], this[row1, col2],
+                this[row2, col0], this[row2, col1], this[row2, col2]);
+        }
+
+        internal float Minor(int row, int column)
+        {
+            var submatrix = Submatrix(row, column);
+            return submatrix.Determinant;
+        }
+
+        internal float Cofactor(int row, int column)
+        {
+            float minor = Minor(row, column);
+
+            // If row + column is odd, then we need to negate the minor.
+            if ((row + column) % 2 == 1)
+            {
+                minor = -minor;
+            }
+
+            return minor;
         }
     }
 }

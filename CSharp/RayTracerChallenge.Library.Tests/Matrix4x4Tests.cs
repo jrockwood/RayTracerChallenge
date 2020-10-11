@@ -219,5 +219,97 @@ namespace RayTracerChallenge.Library.Tests
         {
             Matrix4x4.Identity.Transpose().Should().Be(Matrix4x4.Identity);
         }
+
+        [Test]
+        public void Submatrix_should_remove_the_specified_row_and_column_and_return_a_3x3_matrix()
+        {
+            var matrix = new Matrix4x4(
+                -6, 1, 1, 6,
+                -8, 5, 8, 6,
+                -1, 0, 8, 2,
+                -7, 1, -1, 1);
+
+            matrix.Submatrix(0, 0).Should().Be(new Matrix3x3(5, 8, 6, 0, 8, 2, 1, -1, 1));
+            matrix.Submatrix(0, 1).Should().Be(new Matrix3x3(-8, 8, 6, -1, 8, 2, -7, -1, 1));
+            matrix.Submatrix(0, 2).Should().Be(new Matrix3x3(-8, 5, 6, -1, 0, 2, -7, 1, 1));
+            matrix.Submatrix(0, 3).Should().Be(new Matrix3x3(-8, 5, 8, -1, 0, 8, -7, 1, -1));
+
+            matrix.Submatrix(1, 0).Should().Be(new Matrix3x3(1, 1, 6, 0, 8, 2, 1, -1, 1));
+            matrix.Submatrix(1, 1).Should().Be(new Matrix3x3(-6, 1, 6, -1, 8, 2, -7, -1, 1));
+            matrix.Submatrix(1, 2).Should().Be(new Matrix3x3(-6, 1, 6, -1, 0, 2, -7, 1, 1));
+            matrix.Submatrix(1, 3).Should().Be(new Matrix3x3(-6, 1, 1, -1, 0, 8, -7, 1, -1));
+
+            matrix.Submatrix(2, 0).Should().Be(new Matrix3x3(1, 1, 6, 5, 8, 6, 1, -1, 1));
+            matrix.Submatrix(2, 1).Should().Be(new Matrix3x3(-6, 1, 6, -8, 8, 6, -7, -1, 1));
+            matrix.Submatrix(2, 2).Should().Be(new Matrix3x3(-6, 1, 6, -8, 5, 6, -7, 1, 1));
+            matrix.Submatrix(2, 3).Should().Be(new Matrix3x3(-6, 1, 1, -8, 5, 8, -7, 1, -1));
+
+            matrix.Submatrix(3, 0).Should().Be(new Matrix3x3(1, 1, 6, 5, 8, 6, 0, 8, 2));
+            matrix.Submatrix(3, 1).Should().Be(new Matrix3x3(-6, 1, 6, -8, 8, 6, -1, 8, 2));
+            matrix.Submatrix(3, 2).Should().Be(new Matrix3x3(-6, 1, 6, -8, 5, 6, -1, 0, 2));
+            matrix.Submatrix(3, 3).Should().Be(new Matrix3x3(-6, 1, 1, -8, 5, 8, -1, 0, 8));
+        }
+
+        [Test]
+        public void Minor_should_return_the_minor_of_the_matrix_which_is_the_determinant_of_the_submatrix()
+        {
+            var matrix = new Matrix4x4(
+                3, 5, 0, 4,
+                2, -1, -7, 9,
+                6, -1, 5, 2,
+                3, 7, -4, 6);
+
+            matrix.Minor(0, 0).Should().Be(-457);
+            matrix.Minor(0, 1).Should().Be(-65);
+            matrix.Minor(0, 2).Should().Be(395);
+            matrix.Minor(0, 3).Should().Be(-416);
+
+            matrix.Minor(1, 0).Should().Be(66);
+            matrix.Minor(1, 1).Should().Be(-42);
+            matrix.Minor(1, 2).Should().Be(-30);
+            matrix.Minor(1, 3).Should().Be(102);
+
+            matrix.Minor(2, 0).Should().Be(182);
+            matrix.Minor(2, 1).Should().Be(34);
+            matrix.Minor(2, 2).Should().Be(-64);
+            matrix.Minor(2, 3).Should().Be(94);
+        }
+
+        [Test]
+        public void Cofactor_should_return_the_minor_of_the_matrix_which_is_the_determinant_of_the_submatrix()
+        {
+            var matrix = new Matrix4x4(
+                3, 5, 0, 4,
+                2, -1, -7, 9,
+                6, -1, 5, 2,
+                3, 7, -4, 6);
+
+            matrix.Cofactor(0, 0).Should().Be(-457);
+            matrix.Cofactor(0, 1).Should().Be(65);
+            matrix.Cofactor(0, 2).Should().Be(395);
+            matrix.Cofactor(0, 3).Should().Be(416);
+
+            matrix.Cofactor(1, 0).Should().Be(-66);
+            matrix.Cofactor(1, 1).Should().Be(-42);
+            matrix.Cofactor(1, 2).Should().Be(30);
+            matrix.Cofactor(1, 3).Should().Be(102);
+
+            matrix.Cofactor(2, 0).Should().Be(182);
+            matrix.Cofactor(2, 1).Should().Be(-34);
+            matrix.Cofactor(2, 2).Should().Be(-64);
+            matrix.Cofactor(2, 3).Should().Be(-94);
+        }
+
+        [Test]
+        public void Determinant_should_return_the_determinant_of_the_matrix()
+        {
+            var matrix = new Matrix4x4(
+                -2, -8, 3, 5,
+                -3, 1, 7, 3,
+                1, 2, -9, 6,
+                -6, 7, 7, -9);
+
+            matrix.Determinant.Should().Be(-4071);
+        }
     }
 }

@@ -100,5 +100,79 @@ namespace RayTracerChallenge.Library.Tests
             Action action = () => _ = Matrix3x3.Identity[3, 0];
             action.Should().Throw<IndexOutOfRangeException>();
         }
+
+        [Test]
+        public void Submatrix_should_remove_the_specified_row_and_column_and_return_a_2x2_matrix()
+        {
+            var matrix = new Matrix3x3(
+                1, 5, 0,
+                -3, 2, 7,
+                0, 6, -3);
+
+            matrix.Submatrix(0, 0).Should().Be(new Matrix2x2(2, 7, 6, -3));
+            matrix.Submatrix(0, 1).Should().Be(new Matrix2x2(-3, 7, 0, -3));
+            matrix.Submatrix(0, 2).Should().Be(new Matrix2x2(-3, 2, 0, 6));
+
+            matrix.Submatrix(1, 0).Should().Be(new Matrix2x2(5, 0, 6, -3));
+            matrix.Submatrix(1, 1).Should().Be(new Matrix2x2(1, 0, 0, -3));
+            matrix.Submatrix(1, 2).Should().Be(new Matrix2x2(1, 5, 0, 6));
+
+            matrix.Submatrix(2, 0).Should().Be(new Matrix2x2(5, 0, 2, 7));
+            matrix.Submatrix(2, 1).Should().Be(new Matrix2x2(1, 0, -3, 7));
+            matrix.Submatrix(2, 2).Should().Be(new Matrix2x2(1, 5, -3, 2));
+        }
+
+        [Test]
+        public void Minor_should_return_the_minor_of_the_matrix_which_is_the_determinant_of_the_submatrix()
+        {
+            var matrix = new Matrix3x3(
+                3, 5, 0,
+                2, -1, -7,
+                6, -1, 5);
+
+            matrix.Minor(0, 0).Should().Be(-12);
+            matrix.Minor(0, 1).Should().Be(52);
+            matrix.Minor(0, 2).Should().Be(4);
+
+            matrix.Minor(1, 0).Should().Be(25);
+            matrix.Minor(1, 1).Should().Be(15);
+            matrix.Minor(1, 2).Should().Be(-33);
+
+            matrix.Minor(2, 0).Should().Be(-35);
+            matrix.Minor(2, 1).Should().Be(-21);
+            matrix.Minor(2, 2).Should().Be(-13);
+        }
+
+        [Test]
+        public void Cofactor_should_return_the_cofactor_of_the_matrix()
+        {
+            var matrix = new Matrix3x3(
+                3, 5, 0,
+                2, -1, -7,
+                6, -1, 5);
+
+            matrix.Cofactor(0, 0).Should().Be(-12);
+            matrix.Cofactor(0, 1).Should().Be(-52);
+            matrix.Cofactor(0, 2).Should().Be(4);
+
+            matrix.Cofactor(1, 0).Should().Be(-25);
+            matrix.Cofactor(1, 1).Should().Be(15);
+            matrix.Cofactor(1, 2).Should().Be(33);
+
+            matrix.Cofactor(2, 0).Should().Be(-35);
+            matrix.Cofactor(2, 1).Should().Be(21);
+            matrix.Cofactor(2, 2).Should().Be(-13);
+        }
+
+        [Test]
+        public void Determinant_should_return_the_determinant_of_the_matrix()
+        {
+            var matrix = new Matrix3x3(
+                1, 2, 6,
+                -5, 8, -4,
+                2, 6, 4);
+
+            matrix.Determinant.Should().Be(-196);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // <copyright file="Matrix3x3.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
@@ -84,6 +84,20 @@ namespace RayTracerChallenge.Library
         public float M21 { get; }
         public float M22 { get; }
 
+        public float Determinant
+        {
+            get
+            {
+                float result = 0;
+                for (int column = 0; column <= 2; column++)
+                {
+                    result += this[0, column] * Cofactor(0, column);
+                }
+
+                return result;
+            }
+        }
+
         //// ===========================================================================================================
         //// Equality Members
         //// ===========================================================================================================
@@ -143,6 +157,35 @@ namespace RayTracerChallenge.Library
         public override string ToString()
         {
             return $"|{M00} {M01} {M02}|\n|{M10} {M11} {M12}|\n|{M20} {M21} {M22}|";
+        }
+
+        public Matrix2x2 Submatrix(int rowToRemove, int columnToRemove)
+        {
+            int row0 = rowToRemove == 0 ? 1 : 0;
+            int row1 = rowToRemove < 2 ? 2 : 1;
+            int col0 = columnToRemove == 0 ? 1 : 0;
+            int col1 = columnToRemove < 2 ? 2 : 1;
+
+            return new Matrix2x2(this[row0, col0], this[row0, col1], this[row1, col0], this[row1, col1]);
+        }
+
+        internal float Minor(int row, int column)
+        {
+            var submatrix = Submatrix(row, column);
+            return submatrix.Determinant;
+        }
+
+        internal float Cofactor(int row, int column)
+        {
+            float minor = Minor(row, column);
+
+            // If row + column is odd, then we need to negate the minor.
+            if ((row + column) % 2 == 1)
+            {
+                minor = -minor;
+            }
+
+            return minor;
         }
     }
 }

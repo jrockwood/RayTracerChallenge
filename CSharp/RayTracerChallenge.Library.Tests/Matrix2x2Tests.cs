@@ -80,5 +80,12 @@ namespace RayTracerChallenge.Library.Tests
             Action action = () => _ = Matrix2x2.Identity[2, 0];
             action.Should().Throw<IndexOutOfRangeException>();
         }
+
+        [Test]
+        public void Determinant_should_calculate_the_determinant()
+        {
+            var matrix = new Matrix2x2(1, 5, -3, 2);
+            matrix.Determinant.Should().Be(17);
+        }
     }
 }
