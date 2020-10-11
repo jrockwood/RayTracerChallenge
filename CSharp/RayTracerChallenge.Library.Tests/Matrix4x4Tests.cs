@@ -311,5 +311,112 @@ namespace RayTracerChallenge.Library.Tests
 
             matrix.Determinant.Should().Be(-4071);
         }
+
+        [Test]
+        public void IsInvertible_should_return_true_if_the_determinant_is_non_zero()
+        {
+            var matrix = new Matrix4x4(
+                6, 4, 4, 4,
+                5, 5, 7, 6,
+                4, -9, 3, -7,
+                9, 1, 7, -6);
+
+            matrix.Determinant.Should().Be(-2120);
+            matrix.IsInvertible.Should().BeTrue();
+        }
+
+        [Test]
+        public void IsInvertible_should_return_false_if_the_determinant_is_zero()
+        {
+            var matrix = new Matrix4x4(
+                -4, 2, -2, -3,
+                9, 6, 2, 6,
+                0, -5, 1, -5,
+                0, 0, 0, 0);
+
+            matrix.Determinant.Should().Be(0);
+            matrix.IsInvertible.Should().BeFalse();
+        }
+
+        [Test]
+        public void Invert_should_return_the_inverse_of_a_matrix()
+        {
+            // Test 1
+            var matrix = new Matrix4x4(
+                -5, 2, 6, -8,
+                1, -5, 1, 8,
+                7, 7, -6, -7,
+                1, -3, 7, 4);
+
+            var invertedMatrix = new Matrix4x4(
+                0.21805f, 0.45113f, 0.24060f, -0.04511f,
+                -0.80827f, -1.45677f, -0.44361f, 0.52068f,
+                -0.07895f, -0.22368f, -0.05263f, 0.19737f,
+                -0.52256f, -0.81391f, -0.30075f, 0.30639f);
+
+            matrix.Invert().Should().Be(invertedMatrix);
+
+            // Test 2
+            matrix = new Matrix4x4(
+                8, -5, 9, 2,
+                7, 5, 6, 1,
+                -6, 0, 9, 6,
+                -3, 0, -9, -4);
+
+            invertedMatrix = new Matrix4x4(
+                -0.15385f, -0.15385f, -0.28205f, -0.53846f,
+                -0.07692f, 0.12308f, 0.02564f, 0.03077f,
+                0.35897f, 0.35897f, 0.43590f, 0.92308f,
+                -0.69231f, -0.69231f, -0.76923f, -1.92308f);
+
+            matrix.Invert().Should().Be(invertedMatrix);
+
+            // Test 3
+            matrix = new Matrix4x4(
+                9, 3, 0, 9,
+                -5, -2, -6, -3,
+                -4, 9, 6, 4,
+                -7, 6, 6, 2);
+
+            invertedMatrix = new Matrix4x4(
+                -0.04074f, -0.07778f, 0.14444f, -0.22222f,
+                -0.07778f, 0.03333f, 0.36667f, -0.33333f,
+                -0.02901f, -0.14630f, -0.10926f, 0.12963f,
+                0.17778f, 0.06667f, -0.26667f, 0.33333f);
+
+            matrix.Invert().Should().Be(invertedMatrix);
+        }
+
+        [Test]
+        public void Invert_should_throw_when_trying_to_invert_the_matrix_if_it_is_not_invertible()
+        {
+            var matrix = new Matrix4x4(
+                -4, 2, -2, -3,
+                9, 6, 2, 6,
+                0, -5, 1, -5,
+                0, 0, 0, 0);
+
+            Action action = () => matrix.Invert();
+            action.Should().ThrowExactly<InvalidOperationException>();
+        }
+
+        [Test]
+        public void Invert_should_return_the_same_matrix_if_multiplying_a_product_by_its_inverse()
+        {
+            var a = new Matrix4x4(
+                3, -9, 7, 3,
+                3, -8, 2, -9,
+                -4, 4, 4, 1,
+                -6, 5, -1, 1);
+
+            var b = new Matrix4x4(
+                8, 2, 2, 2,
+                3, -1, 7, 0,
+                7, 0, 5, 4,
+                6, -2, 0, 5);
+
+            var c = a * b;
+            (c * b.Invert()).Should().Be(a);
+        }
     }
 }

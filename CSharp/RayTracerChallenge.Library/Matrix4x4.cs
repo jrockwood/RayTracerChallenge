@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // <copyright file="Matrix4x4.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
@@ -123,6 +123,8 @@ namespace RayTracerChallenge.Library
                 return result;
             }
         }
+
+        public bool IsInvertible => Determinant != 0;
 
         //// ===========================================================================================================
         //// Operators
@@ -288,6 +290,41 @@ namespace RayTracerChallenge.Library
             }
 
             return minor;
+        }
+
+        public Matrix4x4 Invert()
+        {
+            if (!IsInvertible)
+            {
+                throw new InvalidOperationException("The matrix is not invertible");
+            }
+
+            // Initialize the new matrix.
+            float[][] newMatrix = new float[4][];
+            for (int row = 0; row < 4; row++)
+            {
+                newMatrix[row] = new float[4];
+            }
+
+            // Calculate the determinant outside of the loop.
+            float determinant = Determinant;
+
+            for (int row = 0; row < 4; row++)
+            {
+                for (int col = 0; col < 4; col++)
+                {
+                    float c = Cofactor(row, col);
+
+                    // Note the "col, row" here instead of "row, col", which transposes the matrix.
+                    newMatrix[col][row] = c / determinant;
+                }
+            }
+
+            return new Matrix4x4(
+                newMatrix[0][0], newMatrix[0][1], newMatrix[0][2], newMatrix[0][3],
+                newMatrix[1][0], newMatrix[1][1], newMatrix[1][2], newMatrix[1][3],
+                newMatrix[2][0], newMatrix[2][1], newMatrix[2][2], newMatrix[2][3],
+                newMatrix[3][0], newMatrix[3][1], newMatrix[3][2], newMatrix[3][3]);
         }
     }
 }
