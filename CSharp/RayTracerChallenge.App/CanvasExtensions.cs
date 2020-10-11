@@ -48,9 +48,9 @@ namespace RayTracerChallenge.App
                     byte green = ConvertColorComponent(scaledColor.Green);
                     byte blue = ConvertColorComponent(scaledColor.Blue);
 
-                    rgbValues[rgbValuesIndex++] = red;
-                    rgbValues[rgbValuesIndex++] = green;
                     rgbValues[rgbValuesIndex++] = blue;
+                    rgbValues[rgbValuesIndex++] = green;
+                    rgbValues[rgbValuesIndex++] = red;
                 }
             }
 
