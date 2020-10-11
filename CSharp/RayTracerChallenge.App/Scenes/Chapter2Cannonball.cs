@@ -32,7 +32,7 @@ namespace RayTracerChallenge.App.Scenes
         //// Methods
         //// ===========================================================================================================
 
-        public override void Render(Canvas canvas)
+        protected override void RenderToCanvas(Canvas canvas)
         {
             var start = new Point(0, 1, 0);
             var velocity = new Vector(1, 1.8f, 0).Normalize() * 11.25f;

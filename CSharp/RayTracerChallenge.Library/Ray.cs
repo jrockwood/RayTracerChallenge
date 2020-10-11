@@ -1,34 +1,45 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="SceneList.cs" company="Justin Rockwood">
+// <copyright file="Ray.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.App.Scenes
+namespace RayTracerChallenge.Library
 {
-    using System.Collections.Generic;
-
-    public class SceneList
+    public sealed class Ray
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public SceneList()
+        public Ray(Point origin, Vector direction)
         {
-            Scenes = new List<Scene>
-            {
-                new Chapter2Cannonball(),
-                new Chapter4ClockFace(),
-                new Chapter5RedSphere(),
-            };
+            Origin = origin;
+            Direction = direction;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public IReadOnlyList<Scene> Scenes { get; }
+        public Point Origin { get; }
+        public Vector Direction { get; }
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
+        public Point PositionAt(float t)
+        {
+            return Origin + (Direction * t);
+        }
+
+        public Ray Transform(Matrix4x4 transform)
+        {
+            Point newOrigin = transform * Origin;
+            Vector newDirection = transform * Direction;
+            return new Ray(newOrigin, newDirection);
+        }
     }
 }

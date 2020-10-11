@@ -1,34 +1,41 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="SceneList.cs" company="Justin Rockwood">
+// <copyright file="Shape.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.App.Scenes
+namespace RayTracerChallenge.Library.Shapes
 {
-    using System.Collections.Generic;
-
-    public class SceneList
+    public abstract class Shape
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public SceneList()
+        protected Shape(Matrix4x4? transform = null)
         {
-            Scenes = new List<Scene>
-            {
-                new Chapter2Cannonball(),
-                new Chapter4ClockFace(),
-                new Chapter5RedSphere(),
-            };
+            Transform = transform ?? Matrix4x4.Identity;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public IReadOnlyList<Scene> Scenes { get; }
+        public Matrix4x4 Transform { get; }
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
+        public IntersectionList Intersect(Ray ray)
+        {
+            var localRay = ray.Transform(Transform.Invert());
+            return LocalIntersect(localRay);
+        }
+
+        protected abstract IntersectionList LocalIntersect(Ray localRay);
+
+        public abstract Shape WithTransform(Matrix4x4 value);
     }
 }

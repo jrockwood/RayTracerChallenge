@@ -1,34 +1,34 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="SceneList.cs" company="Justin Rockwood">
+// <copyright file="Intersection.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.App.Scenes
+namespace RayTracerChallenge.Library
 {
-    using System.Collections.Generic;
+    using RayTracerChallenge.Library.Shapes;
 
-    public class SceneList
+    /// <summary>
+    /// Represents an immutable intersection between a ray and a <see cref="Shape"/>.
+    /// </summary>
+    public sealed class Intersection
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public SceneList()
+        public Intersection(float t, Shape shape)
         {
-            Scenes = new List<Scene>
-            {
-                new Chapter2Cannonball(),
-                new Chapter4ClockFace(),
-                new Chapter5RedSphere(),
-            };
+            T = t;
+            Shape = shape;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public IReadOnlyList<Scene> Scenes { get; }
+        public float T { get; }
+        public Shape Shape { get; }
     }
 }

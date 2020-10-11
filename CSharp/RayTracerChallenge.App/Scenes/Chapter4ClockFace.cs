@@ -20,7 +20,7 @@ namespace RayTracerChallenge.App.Scenes
         public override int RequestedWidth => 400;
         public override int RequestedHeight => 400;
 
-        public override void Render(Canvas canvas)
+        protected override void RenderToCanvas(Canvas canvas)
         {
             int centerX = canvas.Width / 2;
             int centerY = canvas.Height / 2;
