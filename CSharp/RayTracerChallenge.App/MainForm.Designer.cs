@@ -162,6 +162,7 @@
             // 
             // _sceneComboBox
             // 
+            this._sceneComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this._sceneComboBox.FormattingEnabled = true;
             this._sceneComboBox.Location = new System.Drawing.Point(0, 24);
             this._sceneComboBox.Name = "_sceneComboBox";

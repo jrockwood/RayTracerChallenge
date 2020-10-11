@@ -43,6 +43,10 @@ namespace RayTracerChallenge.Library.Tests
             matrix.M33.Should().Be(16.5f);
         }
 
+        //// ===========================================================================================================
+        //// Equality Tests
+        //// ===========================================================================================================
+
         [Test]
         public void Equality_should_be_true_for_identical_matrices()
         {
@@ -81,6 +85,10 @@ namespace RayTracerChallenge.Library.Tests
             a.GetHashCode().Should().NotBe(b.GetHashCode());
         }
 
+        //// ===========================================================================================================
+        //// ToString Tests
+        //// ===========================================================================================================
+
         [Test]
         public void ToString_should_display_in_a_friendly_square()
         {
@@ -88,6 +96,10 @@ namespace RayTracerChallenge.Library.Tests
                 .Should()
                 .Be("|1 2 3 4|\n|5 6 7 8|\n|9 10 11 12|\n|13 14 15 16|");
         }
+
+        //// ===========================================================================================================
+        //// Indexer Tests
+        //// ===========================================================================================================
 
         [Test]
         public void Indexer_should_return_each_value()
@@ -120,6 +132,10 @@ namespace RayTracerChallenge.Library.Tests
             Action action = () => _ = Matrix3x3.Identity[3, 0];
             action.Should().Throw<IndexOutOfRangeException>();
         }
+
+        //// ===========================================================================================================
+        //// Multiplication Tests
+        //// ===========================================================================================================
 
         [Test]
         public void Multiplying_two_matrices()
@@ -196,6 +212,10 @@ namespace RayTracerChallenge.Library.Tests
             (Matrix4x4.Identity * v).Should().Be(v);
         }
 
+        //// ===========================================================================================================
+        //// Transpose Tests
+        //// ===========================================================================================================
+
         [Test]
         public void Transpose_should_swap_the_rows_and_columns()
         {
@@ -219,6 +239,10 @@ namespace RayTracerChallenge.Library.Tests
         {
             Matrix4x4.Identity.Transpose().Should().Be(Matrix4x4.Identity);
         }
+
+        //// ===========================================================================================================
+        //// Submatrix Tests
+        //// ===========================================================================================================
 
         [Test]
         public void Submatrix_should_remove_the_specified_row_and_column_and_return_a_3x3_matrix()
@@ -250,6 +274,10 @@ namespace RayTracerChallenge.Library.Tests
             matrix.Submatrix(3, 3).Should().Be(new Matrix3x3(-6, 1, 1, -8, 5, 8, -1, 0, 8));
         }
 
+        //// ===========================================================================================================
+        //// Minor Tests
+        //// ===========================================================================================================
+
         [Test]
         public void Minor_should_return_the_minor_of_the_matrix_which_is_the_determinant_of_the_submatrix()
         {
@@ -274,6 +302,10 @@ namespace RayTracerChallenge.Library.Tests
             matrix.Minor(2, 2).Should().Be(-64);
             matrix.Minor(2, 3).Should().Be(94);
         }
+
+        //// ===========================================================================================================
+        //// Cofactor Tests
+        //// ===========================================================================================================
 
         [Test]
         public void Cofactor_should_return_the_minor_of_the_matrix_which_is_the_determinant_of_the_submatrix()
@@ -300,6 +332,10 @@ namespace RayTracerChallenge.Library.Tests
             matrix.Cofactor(2, 3).Should().Be(-94);
         }
 
+        //// ===========================================================================================================
+        //// Determinant Tests
+        //// ===========================================================================================================
+
         [Test]
         public void Determinant_should_return_the_determinant_of_the_matrix()
         {
@@ -311,6 +347,10 @@ namespace RayTracerChallenge.Library.Tests
 
             matrix.Determinant.Should().Be(-4071);
         }
+
+        //// ===========================================================================================================
+        //// IsInvertible and Invert Tests
+        //// ===========================================================================================================
 
         [Test]
         public void IsInvertible_should_return_true_if_the_determinant_is_non_zero()
@@ -417,6 +457,227 @@ namespace RayTracerChallenge.Library.Tests
 
             var c = a * b;
             (c * b.Invert()).Should().Be(a);
+        }
+
+        //// ===========================================================================================================
+        //// CreateTranslation Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void Multiplying_by_a_translation_matrix()
+        {
+            var transform = Matrix4x4.CreateTranslation(5, -3, 2);
+            var p = new Point(-3, 4, 5);
+            (transform * p).Should().Be(new Point(2, 1, 7));
+        }
+
+        [Test]
+        public void Multiplying_by_the_inverse_of_a_translation_matrix()
+        {
+            var transform = Matrix4x4.CreateTranslation(5, -3, 2);
+            var inverse = transform.Invert();
+            var p = new Point(-3, 4, 5);
+            (inverse * p).Should().Be(new Point(-8, 7, 3));
+        }
+
+        [Test]
+        public void Translation_does_not_affect_vectors()
+        {
+            var transform = Matrix4x4.CreateTranslation(5, -3, 2);
+            var v = new Vector(-3, 4, 5);
+            (transform * v).Should().Be(v);
+        }
+
+        //// ===========================================================================================================
+        //// CreateScaling Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void CreateScaling_should_scale_a_point()
+        {
+            var transform = Matrix4x4.CreateScaling(2, 3, 4);
+            var point = new Point(-4, 6, 8);
+            (transform * point).Should().Be(new Point(-8, 18, 32));
+        }
+
+        [Test]
+        public void CreateScaling_should_scale_a_vector()
+        {
+            var transform = Matrix4x4.CreateScaling(2, 3, 4);
+            var vector = new Vector(-4, 6, 8);
+            (transform * vector).Should().Be(new Vector(-8, 18, 32));
+        }
+
+        [Test]
+        public void CreateScaling_should_scale_in_the_reverse_direction_by_multiplying_by_the_inverse_of_the_scaling_matrix()
+        {
+            var transform = Matrix4x4.CreateScaling(2, 3, 4);
+            var inverse = transform.Invert();
+            var vector = new Vector(-4, 6, 8);
+            (inverse * vector).Should().Be(new Vector(-2, 2, 2));
+        }
+
+        [Test]
+        public void CreateScaling_should_reflect_along_an_axis_by_scaling_a_negative_value()
+        {
+            var transform = Matrix4x4.CreateScaling(-1, 1, 1);
+            var point = new Point(2, 3, 4);
+            (transform * point).Should().Be(new Point(-2, 3, 4));
+        }
+
+        //// ===========================================================================================================
+        //// CreateRotationX Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void CreateRotationX_should_rotate_a_point_around_the_x_axis()
+        {
+            var point = new Point(0, 1, 0);
+            var halfQuarter = Matrix4x4.CreateRotationX(MathF.PI / 4);
+            var fullQuarter = Matrix4x4.CreateRotationX(MathF.PI / 2);
+
+            (halfQuarter * point).Should().Be(new Point(0, MathF.Sqrt(2) / 2, MathF.Sqrt(2) / 2));
+            (fullQuarter * point).Should().Be(new Point(0, 0, 1));
+        }
+
+        [Test]
+        public void
+            CreateRotationX_should_rotate_a_point_around_the_x_axis_in_the_opposite_direction_by_multiplying_by_the_inverse_matrix()
+        {
+            var point = new Point(0, 1, 0);
+            var halfQuarter = Matrix4x4.CreateRotationX(MathF.PI / 4);
+            var inverse = halfQuarter.Invert();
+            (inverse * point).Should().Be(new Point(0, MathF.Sqrt(2) / 2, -MathF.Sqrt(2) / 2));
+        }
+
+        //// ===========================================================================================================
+        //// CreateRotationY Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void CreateRotationY_should_rotate_a_point_around_the_x_axis()
+        {
+            var point = new Point(0, 0, 1);
+            var halfQuarter = Matrix4x4.CreateRotationY(MathF.PI / 4);
+            var fullQuarter = Matrix4x4.CreateRotationY(MathF.PI / 2);
+
+            (halfQuarter * point).Should().Be(new Point(MathF.Sqrt(2) / 2, 0, MathF.Sqrt(2) / 2));
+            (fullQuarter * point).Should().Be(new Point(1, 0, 0));
+        }
+
+        //// ===========================================================================================================
+        //// CreateRotationZ Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void CreateRotationZ_should_rotate_a_point_around_the_x_axis()
+        {
+            var point = new Point(0, 1, 0);
+            var halfQuarter = Matrix4x4.CreateRotationZ(MathF.PI / 4);
+            var fullQuarter = Matrix4x4.CreateRotationZ(MathF.PI / 2);
+
+            (halfQuarter * point).Should().Be(new Point(-MathF.Sqrt(2) / 2, MathF.Sqrt(2) / 2, 0));
+            (fullQuarter * point).Should().Be(new Point(-1, 0, 0));
+        }
+
+        //// ===========================================================================================================
+        //// CreateShearing Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void CreateShearing_should_move_x_in_proportion_to_y()
+        {
+            var transform = Matrix4x4.CreateShearing(1, 0, 0, 0, 0, 0);
+            var p = new Point(2, 3, 4);
+            (transform * p).Should().Be(new Point(5, 3, 4));
+        }
+
+        [Test]
+        public void CreateShearing_should_move_x_in_proportion_to_z()
+        {
+            var transform = Matrix4x4.CreateShearing(0, 1, 0, 0, 0, 0);
+            var p = new Point(2, 3, 4);
+            (transform * p).Should().Be(new Point(6, 3, 4));
+        }
+
+        [Test]
+        public void CreateShearing_should_move_y_in_proportion_to_x()
+        {
+            var transform = Matrix4x4.CreateShearing(0, 0, 1, 0, 0, 0);
+            var p = new Point(2, 3, 4);
+            (transform * p).Should().Be(new Point(2, 5, 4));
+        }
+
+        [Test]
+        public void CreateShearing_should_move_y_in_proportion_to_z()
+        {
+            var transform = Matrix4x4.CreateShearing(0, 0, 0, 1, 0, 0);
+            var p = new Point(2, 3, 4);
+            (transform * p).Should().Be(new Point(2, 7, 4));
+        }
+
+        [Test]
+        public void CreateShearing_should_move_z_in_proportion_to_x()
+        {
+            var transform = Matrix4x4.CreateShearing(0, 0, 0, 0, 1, 0);
+            var p = new Point(2, 3, 4);
+            (transform * p).Should().Be(new Point(2, 3, 6));
+        }
+
+        [Test]
+        public void CreateShearing_should_move_z_in_proportion_to_y()
+        {
+            var transform = Matrix4x4.CreateShearing(0, 0, 0, 0, 0, 1);
+            var p = new Point(2, 3, 4);
+            (transform * p).Should().Be(new Point(2, 3, 7));
+        }
+
+        //// ===========================================================================================================
+        //// Chaining Transformations
+        //// ===========================================================================================================
+
+        [Test]
+        public void Individual_transformations_are_applied_in_sequence()
+        {
+            var p = new Point(1, 0, 1);
+            var rotation = Matrix4x4.CreateRotationX(MathF.PI / 2);
+            var scaling = Matrix4x4.CreateScaling(5, 5, 5);
+            var translation = Matrix4x4.CreateTranslation(10, 5, 7);
+
+            // apply rotation first
+            var p2 = rotation * p;
+            p2.Should().Be(new Point(1, -1, 0));
+
+            // then apply scaling
+            var p3 = scaling * p2;
+            p3.Should().Be(new Point(5, -5, 0));
+
+            // then apply translation
+            var p4 = translation * p3;
+            p4.Should().Be(new Point(15, 0, 7));
+        }
+
+        [Test]
+        public void Chained_transformations_should_be_done_in_reverse_order()
+        {
+            var p = new Point(1, 0, 1);
+            var rotation = Matrix4x4.CreateRotationX(MathF.PI / 2);
+            var scaling = Matrix4x4.CreateScaling(5, 5, 5);
+            var translation = Matrix4x4.CreateTranslation(10, 5, 7);
+
+            var transform = translation * scaling * rotation;
+            (transform * p).Should().Be(new Point(15, 0, 7));
+        }
+
+        [Test]
+        public void Chained_transformations_should_correctly_apply_using_the_fluent_API()
+        {
+            var p = new Point(1, 0, 1);
+            var transform = Matrix4x4.Identity
+                .RotateX(MathF.PI / 2)
+                .Scale(5, 5, 5)
+                .Translate(10, 5, 7);
+            (transform * p).Should().Be(new Point(15, 0, 7));
         }
     }
 }
