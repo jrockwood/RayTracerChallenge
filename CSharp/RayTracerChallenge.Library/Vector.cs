@@ -103,6 +103,11 @@ namespace RayTracerChallenge.Library
         //// Methods
         //// ===========================================================================================================
 
+        public override string ToString()
+        {
+            return $"<{X}, {Y}, {Z}>";
+        }
+
         public Vector Negate()
         {
             return new Vector(-X, -Y, -Z);
