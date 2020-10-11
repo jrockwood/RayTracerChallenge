@@ -20,6 +20,7 @@ namespace RayTracerChallenge.App.Scenes
             Scenes = new List<Scene>
             {
                 new Chapter2Cannonball(),
+                new Chapter4ClockFace(),
             };
         }
 
