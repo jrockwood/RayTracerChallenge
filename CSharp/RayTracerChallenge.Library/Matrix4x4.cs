@@ -326,5 +326,98 @@ namespace RayTracerChallenge.Library
                 newMatrix[2][0], newMatrix[2][1], newMatrix[2][2], newMatrix[2][3],
                 newMatrix[3][0], newMatrix[3][1], newMatrix[3][2], newMatrix[3][3]);
         }
+
+        public static Matrix4x4 CreateTranslation(float x, float y, float z)
+        {
+            return new Matrix4x4(
+                1, 0, 0, x,
+                0, 1, 0, y,
+                0, 0, 1, z,
+                0, 0, 0, 1);
+        }
+
+        public Matrix4x4 Translate(float x, float y, float z)
+        {
+            return CreateTranslation(x, y, z) * this;
+        }
+
+        public static Matrix4x4 CreateScaling(float x, float y, float z)
+        {
+            return new Matrix4x4(
+                x, 0, 0, 0,
+                0, y, 0, 0,
+                0, 0, z, 0,
+                0, 0, 0, 1);
+        }
+
+        public Matrix4x4 Scale(float x, float y, float z)
+        {
+            return CreateScaling(x, y, z) * this;
+        }
+
+        public static Matrix4x4 CreateRotationX(float radians)
+        {
+            float cos = MathF.Cos(radians);
+            float sin = MathF.Sin(radians);
+
+            return new Matrix4x4(
+                1, 0, 0, 0,
+                0, cos, -sin, 0,
+                0, sin, cos, 0,
+                0, 0, 0, 1);
+        }
+
+        public Matrix4x4 RotateX(float radians)
+        {
+            return CreateRotationX(radians) * this;
+        }
+
+        public static Matrix4x4 CreateRotationY(float radians)
+        {
+            float cos = MathF.Cos(radians);
+            float sin = MathF.Sin(radians);
+
+            return new Matrix4x4(
+                cos, 0, sin, 0,
+                0, 1, 0, 0,
+                -sin, 0, cos, 0,
+                0, 0, 0, 1);
+        }
+
+        public Matrix4x4 RotateY(float radians)
+        {
+            return CreateRotationY(radians) * this;
+        }
+
+        public static Matrix4x4 CreateRotationZ(float radians)
+        {
+            float cos = MathF.Cos(radians);
+            float sin = MathF.Sin(radians);
+
+            return new Matrix4x4(
+                cos, -sin, 0, 0,
+                sin, cos, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1);
+        }
+
+        public Matrix4x4 RotateZ(float radians)
+        {
+            return CreateRotationZ(radians) * this;
+        }
+
+        public static Matrix4x4 CreateShearing(float xy, float xz, float yx, float yz, float zx, float zy)
+        {
+            return new Matrix4x4(
+                1, xy, xz, 0,
+                yx, 1, yz, 0,
+                zx, zy, 1, 0,
+                0, 0, 0, 1);
+        }
+
+        public Matrix4x4 Shear(float xy, float xz, float yx, float yz, float zx, float zy)
+        {
+            return CreateShearing(xy, xz, yx, yz, zx, zy) * this;
+        }
     }
 }
