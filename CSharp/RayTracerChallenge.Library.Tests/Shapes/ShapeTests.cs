@@ -16,17 +16,21 @@ namespace RayTracerChallenge.Library.Tests.Shapes
     {
         private sealed class TestShape : Shape
         {
-            public TestShape(Matrix4x4? transform = null)
-                : base(transform)
+            public TestShape(Matrix4x4? transform = null, Material? material = null)
+                : base(transform, material)
             {
             }
 
             public Ray? SavedLocalRay { get; private set; }
-            public Point? SavedLocalPoint { get; private set; }
 
             public override Shape WithTransform(Matrix4x4 value)
             {
-                return new TestShape(value);
+                return new TestShape(value, Material);
+            }
+
+            public override Shape WithMaterial(Material value)
+            {
+                return new TestShape(Transform, value);
             }
 
             protected override IntersectionList LocalIntersect(Ray localRay)
@@ -37,7 +41,6 @@ namespace RayTracerChallenge.Library.Tests.Shapes
 
             protected override Vector LocalNormalAt(Point localPoint)
             {
-                SavedLocalPoint = localPoint;
                 return new Vector(localPoint.X, localPoint.Y, localPoint.Z);
             }
         }
@@ -50,10 +53,18 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         }
 
         [Test]
-        public void Ctor_should_store_the_transform()
+        public void Ctor_should_store_the_transform_and_material()
         {
-            var shape = new TestShape(Matrix4x4.CreateTranslation(2, 3, 4));
+            var shape = new TestShape(Matrix4x4.CreateTranslation(2, 3, 4), new Material(Colors.Red));
             shape.Transform.Should().Be(Matrix4x4.CreateTranslation(2, 3, 4));
+            shape.Material.Color.Should().Be(Colors.Red);
+        }
+
+        [Test]
+        public void Shape_should_have_a_default_material()
+        {
+            var shape = new TestShape();
+            shape.Material.Should().BeEquivalentTo(new Material());
         }
 
         [Test]

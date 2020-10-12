@@ -15,8 +15,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Sphere(Matrix4x4? transform = null)
-            : base(transform)
+        public Sphere(Matrix4x4? transform = null, Material? material = null)
+            : base(transform, material)
         {
         }
 
@@ -26,7 +26,12 @@ namespace RayTracerChallenge.Library.Shapes
 
         public override Shape WithTransform(Matrix4x4 value)
         {
-            return new Sphere(value);
+            return new Sphere(value, Material);
+        }
+
+        public override Shape WithMaterial(Material value)
+        {
+            return new Sphere(Transform, value);
         }
 
         protected override IntersectionList LocalIntersect(Ray localRay)
