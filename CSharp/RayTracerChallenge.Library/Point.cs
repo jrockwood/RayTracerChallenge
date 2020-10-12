@@ -47,22 +47,32 @@ namespace RayTracerChallenge.Library
 
         public static Point operator +(Point point, Vector vector)
         {
-            return new Point(point.X + vector.X, point.Y + vector.Y, point.Z + vector.Z);
+            return point.Add(vector);
         }
 
-        public static Point operator +(Vector vector, Point point)
+        public Point Add(Vector vector)
         {
-            return new Point(point.X + vector.X, point.Y + vector.Y, point.Z + vector.Z);
+            return new Point(X + vector.X, Y + vector.Y, Z + vector.Z);
         }
 
         public static Vector operator -(Point p1, Point p2)
         {
-            return new Vector(p1.X - p2.X, p1.Y - p2.Y, p1.Z - p2.Z);
+            return p1.Subtract(p2);
+        }
+
+        public Vector Subtract(Point point)
+        {
+            return new Vector(X - point.X, Y - point.Y, Z - point.Z);
         }
 
         public static Point operator -(Point point, Vector vector)
         {
-            return new Point(point.X - vector.X, point.Y - vector.Y, point.Z - vector.Z);
+            return point.Subtract(vector);
+        }
+
+        public Point Subtract(Vector vector)
+        {
+            return new Point(X - vector.X, Y - vector.Y, Z - vector.Z);
         }
 
         //// ===========================================================================================================
