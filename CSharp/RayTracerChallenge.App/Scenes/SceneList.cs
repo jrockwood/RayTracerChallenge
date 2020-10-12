@@ -23,6 +23,7 @@ namespace RayTracerChallenge.App.Scenes
                 new Chapter4ClockFace(),
                 new Chapter5RedSphere(),
                 new Chapter6ShadedSphere(),
+                new Chapter7SixSpheres(),
             };
         }
 
