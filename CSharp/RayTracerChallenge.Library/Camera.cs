@@ -18,6 +18,9 @@ namespace RayTracerChallenge.Library
         private readonly float _halfWidth;
         private readonly float _halfHeight;
 
+        private int _renderPercentComplete;
+        private Canvas? _currentRenderingCanvas;
+
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
@@ -48,6 +51,12 @@ namespace RayTracerChallenge.Library
         }
 
         //// ===========================================================================================================
+        //// Events
+        //// ===========================================================================================================
+
+        public event EventHandler<RenderPercentCompleteEventArgs>? RenderPercentCompleteChanged;
+
+        //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
@@ -76,6 +85,30 @@ namespace RayTracerChallenge.Library
         /// Gets the size in world-space units of the pixels on the canvas.
         /// </summary>
         public float PixelSize { get; }
+
+        /// <summary>
+        /// Gets the current render percent complete.
+        /// </summary>
+        public int RenderPercentComplete
+        {
+            get => _renderPercentComplete;
+            set
+            {
+                if (_renderPercentComplete == value)
+                {
+                    return;
+                }
+
+                if (_currentRenderingCanvas != null)
+                {
+                    RenderPercentCompleteChanged?.Invoke(
+                        this,
+                        new RenderPercentCompleteEventArgs(value, _currentRenderingCanvas));
+                }
+
+                _renderPercentComplete = value;
+            }
+        }
 
         //// ===========================================================================================================
         //// Methods
@@ -110,22 +143,71 @@ namespace RayTracerChallenge.Library
         /// Uses the camera to render an image of the specified world.
         /// </summary>
         /// <param name="world">The world to render.</param>
+        /// <param name="shouldCancelFunc">
+        /// Optional function that is called during the rendering loop to see if the rendering should be cancelled.
+        /// </param>
         /// <returns>A <see cref="Canvas"/> containing the rendered image.</returns>
-        public Canvas Render(World world)
+        public Canvas Render(World world, Func<bool>? shouldCancelFunc = null)
         {
             var canvas = new Canvas(CanvasWidth, CanvasHeight);
+            RenderToCanvas(canvas, world, shouldCancelFunc);
+            return canvas;
+        }
+
+        /// <summary>
+        /// Uses the camera to render an image of the specified world.
+        /// </summary>
+        /// <param name="canvas">
+        /// The canvas to render to. It should be the same size as <see cref="CanvasWidth"/> and <see cref="CanvasHeight"/>
+        /// </param>
+        /// <param name="world">The world to render.</param>
+        /// <param name="shouldCancelFunc">
+        /// Optional function that is called during the rendering loop to see if the rendering should be cancelled.
+        /// </param>
+        /// <returns>A <see cref="Canvas"/> containing the rendered image.</returns>
+        public void RenderToCanvas(Canvas canvas, World world, Func<bool>? shouldCancelFunc = null)
+        {
+            // Make sure the canvas is the same size as this camera.
+            if (canvas.Width != CanvasWidth || canvas.Height != CanvasHeight)
+            {
+                throw new ArgumentException("Canvas must be the same size as the camera", nameof(canvas));
+            }
+
+            // Cache the canvas so that it can be passed in the RenderPercentCompleteChanged event handler
+            _currentRenderingCanvas = canvas;
+
+            int totalPixels = CanvasWidth * CanvasHeight;
 
             for (int y = 0; y < CanvasHeight; y++)
             {
+                // Check for cancellation.
+                if (shouldCancelFunc?.Invoke() == true)
+                {
+                    break;
+                }
+
                 for (int x = 0; x < CanvasWidth; x++)
                 {
+                    // Check for cancellation.
+                    if (shouldCancelFunc?.Invoke() == true)
+                    {
+                        break;
+                    }
+
                     Ray ray = RayForPixel(x, y);
                     Color color = world.ColorAt(ray);
                     canvas.SetPixel(x, y, color);
+
+                    // Report the progress.
+                    RenderPercentComplete = (int)((((y * CanvasHeight) + x) / (float)totalPixels) * 100.0f);
                 }
             }
 
-            return canvas;
+            // Report that we're done.
+            RenderPercentComplete = 100;
+
+            // Clear the cached canvas.
+            _currentRenderingCanvas = null;
         }
     }
 }

@@ -64,14 +64,17 @@ namespace RayTracerChallenge.App
                 _naturalSizeRadioButton.Checked ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
         }
 
-        private void ReportPercentComplete(int progress, Canvas canvas)
+        private void ReportPercentComplete(int progress, Canvas? canvas)
         {
             _progressBar.Value = progress;
             _progressPercentLabel.Text = progress + @"%";
 
-            var bitmap = canvas.ToBitmap();
-            _pictureBox.Image = bitmap;
-            Application.DoEvents();
+            if (canvas != null)
+            {
+                var bitmap = canvas.ToBitmap();
+                _pictureBox.Image = bitmap;
+                Application.DoEvents();
+            }
         }
 
         //// ===========================================================================================================
@@ -80,11 +83,8 @@ namespace RayTracerChallenge.App
 
         private void BackgroundWorkerOnDoWork(object sender, DoWorkEventArgs e)
         {
-            var context = e.Argument as BackgroundWorkerContext ?? throw new InvalidOperationException();
-
-            var canvas = context.Canvas;
-            context.Scene.Render(canvas, _backgroundWorker, e);
-            e.Result = canvas;
+            var scene = e.Argument as Scene ?? throw new InvalidOperationException();
+            e.Result = scene.Render(_backgroundWorker);
         }
 
         private void BackgroundWorkerOnProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -118,15 +118,14 @@ namespace RayTracerChallenge.App
 
             _renderButton.Enabled = false;
 
-            var canvas = new Canvas(scene.RequestedWidth, scene.RequestedHeight);
-            ReportPercentComplete(0, canvas);
+            ReportPercentComplete(0, null);
 
             _progressPercentLabel.Visible = true;
             _progressBar.Visible = true;
             _cancelButton.Visible = true;
             _cancelButton.Enabled = true;
 
-            _backgroundWorker.RunWorkerAsync(new BackgroundWorkerContext(scene, canvas));
+            _backgroundWorker.RunWorkerAsync(scene);
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -143,22 +142,6 @@ namespace RayTracerChallenge.App
         private void StretchImageRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             SetPictureBoxSizeMode();
-        }
-
-        //// ===========================================================================================================
-        //// Classes
-        //// ===========================================================================================================
-
-        private sealed class BackgroundWorkerContext
-        {
-            public BackgroundWorkerContext(Scene scene, Canvas canvas)
-            {
-                Scene = scene;
-                Canvas = canvas;
-            }
-
-            public Scene Scene { get; }
-            public Canvas Canvas { get; }
         }
     }
 }

@@ -10,15 +10,16 @@ namespace RayTracerChallenge.App.Scenes
     using System;
     using RayTracerChallenge.Library;
 
-    public sealed class Chapter4ClockFace : Scene
+    public sealed class Chapter4ClockFace : SimpleScene
     {
         public Chapter4ClockFace()
-            : base("Chapter 4 - Clock Face", "Draws dots representing a clock face. Tests matrix transformations")
+            : base(
+                "Chapter 4 - Clock Face",
+                "Draws dots representing a clock face. Tests matrix transformations",
+                400,
+                400)
         {
         }
-
-        public override int RequestedWidth => 400;
-        public override int RequestedHeight => 400;
 
         protected override void RenderToCanvas(Canvas canvas)
         {
