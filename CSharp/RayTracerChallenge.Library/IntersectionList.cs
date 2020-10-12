@@ -28,9 +28,14 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public IntersectionList(params Intersection[] intersections)
+        public IntersectionList(IEnumerable<Intersection> intersections)
         {
             _intersections = intersections.OrderBy(x => x.T).ToImmutableArray();
+        }
+
+        public IntersectionList(params Intersection[] intersections)
+            : this((IEnumerable<Intersection>)intersections)
+        {
         }
 
         //// ===========================================================================================================
