@@ -13,6 +13,10 @@ namespace RayTracerChallenge.Library.Tests
 
     public class VectorTests
     {
+        //// ===========================================================================================================
+        //// Ctor Tests
+        //// ===========================================================================================================
+
         [Test]
         public void Vectors_have_x_y_and_z_coordinates()
         {
@@ -21,6 +25,10 @@ namespace RayTracerChallenge.Library.Tests
             vector.Y.Should().Be(2);
             vector.Z.Should().Be(3);
         }
+
+        //// ===========================================================================================================
+        //// Equality Tests
+        //// ===========================================================================================================
 
         [Test]
         public void Equality_should_be_equal_for_two_vectors_that_are_approximately_equal()
@@ -32,6 +40,10 @@ namespace RayTracerChallenge.Library.Tests
             (v1 == v2).Should().BeTrue();
             (v1 != v2).Should().BeFalse();
         }
+
+        //// ===========================================================================================================
+        //// Mathematical Operations Tests
+        //// ===========================================================================================================
 
         [Test]
         public void Adding_two_vectors()
@@ -93,6 +105,10 @@ namespace RayTracerChallenge.Library.Tests
             (v / 2f).Should().Be(new Vector(0.5f, -1, 1.5f));
         }
 
+        //// ===========================================================================================================
+        //// Magnitude Tests
+        //// ===========================================================================================================
+
         [Test]
         public void Computing_the_magnitude_of_unit_vector_x()
         {
@@ -123,6 +139,10 @@ namespace RayTracerChallenge.Library.Tests
             new Vector(-1, -2, -3).Magnitude.Should().Be(MathF.Sqrt(14));
         }
 
+        //// ===========================================================================================================
+        //// Normalize Tests
+        //// ===========================================================================================================
+
         [Test]
         public void Normalizing_a_vector_gives_a_unit_vector()
         {
@@ -135,6 +155,10 @@ namespace RayTracerChallenge.Library.Tests
         {
             new Vector(1, 2, 3).Normalize().Magnitude.Should().BeApproximately(1, NumberExtensions.Epsilon);
         }
+
+        //// ===========================================================================================================
+        //// Dot and Cross Product Tests
+        //// ===========================================================================================================
 
         [Test]
         public void The_dot_product_of_two_vectors()
@@ -151,6 +175,28 @@ namespace RayTracerChallenge.Library.Tests
             var b = new Vector(2, 3, 4);
             a.Cross(b).Should().Be(new Vector(-1, 2, -1));
             b.Cross(a).Should().Be(new Vector(1, -2, 1));
+        }
+
+        //// ===========================================================================================================
+        //// Reflect Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void Reflect_should_reflect_a_vector_approaching_at_45_degrees()
+        {
+            var vector = new Vector(1, -1, 0);
+            var normal = Vector.UnitY;
+            var reflection = vector.Reflect(normal);
+            reflection.Should().Be(new Vector(1, 1, 0));
+        }
+
+        [Test]
+        public void Reflect_should_reflect_a_vector_off_a_slanted_surface()
+        {
+            var vector = new Vector(0, -1, 0);
+            var normal = new Vector(MathF.Sqrt(2) / 2, MathF.Sqrt(2) / 2, 0);
+            var reflection = vector.Reflect(normal);
+            reflection.Should().Be(new Vector(1, 0, 0));
         }
     }
 }

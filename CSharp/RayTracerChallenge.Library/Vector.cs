@@ -131,5 +131,11 @@ namespace RayTracerChallenge.Library
                 (Z * other.X) - (X * other.Z),
                 (X * other.Y) - (Y * other.X));
         }
+
+        public Vector Reflect(Vector normal)
+        {
+            Vector reflection = this - (normal * 2 * Dot(normal));
+            return reflection;
+        }
     }
 }

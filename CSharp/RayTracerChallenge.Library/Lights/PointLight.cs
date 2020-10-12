@@ -1,35 +1,34 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="SceneList.cs" company="Justin Rockwood">
+// <copyright file="PointLight.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.App.Scenes
+namespace RayTracerChallenge.Library.Lights
 {
-    using System.Collections.Generic;
-
-    public class SceneList
+    /// <summary>
+    /// Represents a light with no size, existing at a single point in space, with an intensity describing how bright it
+    /// is and its color.
+    /// </summary>
+    public class PointLight
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public SceneList()
+        public PointLight(Point position, Color intensity)
         {
-            Scenes = new List<Scene>
-            {
-                new Chapter2Cannonball(),
-                new Chapter4ClockFace(),
-                new Chapter5RedSphere(),
-                new Chapter6ShadedSphere(),
-            };
+            Position = position;
+            Intensity = intensity;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public IReadOnlyList<Scene> Scenes { get; }
+        public Point Position { get; }
+
+        public Color Intensity { get; }
     }
 }

@@ -7,6 +7,7 @@
 
 namespace RayTracerChallenge.Library.Tests.Shapes
 {
+    using System;
     using FluentAssertions;
     using NUnit.Framework;
     using RayTracerChallenge.Library.Shapes;
@@ -14,7 +15,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
     public class SphereTests
     {
         //// ===========================================================================================================
-        //// Intersect
+        //// Intersect Tests
         //// ===========================================================================================================
 
         [Test]
@@ -69,6 +70,52 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var s = new Sphere();
             var xs = s.Intersect(ray);
             xs.Ts.Should().HaveCount(2).And.ContainInOrder(-6.0f, -4.0f);
+        }
+
+        //// ===========================================================================================================
+        //// NormalAt Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void NormalAt_should_return_the_normal_on_a_sphere_at_a_point_on_the_x_axis()
+        {
+            var sphere = new Sphere();
+            var normal = sphere.NormalAt(new Point(1, 0, 0));
+            normal.Should().Be(new Vector(1, 0, 0));
+        }
+
+        [Test]
+        public void NormalAt_should_return_the_normal_on_a_sphere_at_a_point_on_the_y_axis()
+        {
+            var sphere = new Sphere();
+            var normal = sphere.NormalAt(new Point(0, 1, 0));
+            normal.Should().Be(new Vector(0, 1, 0));
+        }
+
+        [Test]
+        public void NormalAt_should_return_the_normal_on_a_sphere_at_a_point_on_the_z_axis()
+        {
+            var sphere = new Sphere();
+            var normal = sphere.NormalAt(new Point(0, 0, 1));
+            normal.Should().Be(new Vector(0, 0, 1));
+        }
+
+        [Test]
+        public void NormalAt_should_return_the_normal_on_a_sphere_at_a_non_axial_point()
+        {
+            var sphere = new Sphere();
+            float sqrt3Over3 = MathF.Sqrt(3) / 3;
+            var normal = sphere.NormalAt(new Point(sqrt3Over3, sqrt3Over3, sqrt3Over3));
+            normal.Should().Be(new Vector(sqrt3Over3, sqrt3Over3, sqrt3Over3));
+        }
+
+        [Test]
+        public void NormalAt_should_return_a_normalized_vector()
+        {
+            var sphere = new Sphere();
+            float sqrt3Over3 = MathF.Sqrt(3) / 3;
+            var normal = sphere.NormalAt(new Point(sqrt3Over3, sqrt3Over3, sqrt3Over3));
+            normal.Should().Be(normal.Normalize());
         }
     }
 }
