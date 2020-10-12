@@ -82,7 +82,7 @@ namespace RayTracerChallenge.Library
             return new Material(Color, Ambient, Diffuse, Specular, value);
         }
 
-        public Color CalculateLighting(PointLight light, Point point, Vector eye, Vector normal)
+        public Color CalculateLighting(Light light, Point point, Vector eye, Vector normal)
         {
             // Combine the surface color with the light's color/intensity.
             Color effectiveColor = Color * light.Intensity;
