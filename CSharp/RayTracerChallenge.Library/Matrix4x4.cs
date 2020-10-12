@@ -419,5 +419,28 @@ namespace RayTracerChallenge.Library
         {
             return CreateShearing(xy, xz, yx, yz, zx, zy) * this;
         }
+
+        /// <summary>
+        /// Creates a matrix transformation for the view.
+        /// </summary>
+        /// <param name="from">The position of the eye (camera).</param>
+        /// <param name="to">The destination point that the eye (camera) is looking at.</param>
+        /// <param name="up">The direction of "up" from the eye's (camera's) point of view.</param>
+        public static Matrix4x4 CreateLookAt(Point from, Point to, Vector up)
+        {
+            Vector forward = to.Subtract(from).Normalize();
+            Vector upNormalized = up.Normalize();
+            Vector left = forward.Cross(upNormalized);
+            Vector trueUp = left.Cross(forward);
+
+            var orientation = new Matrix4x4(
+                left.X, left.Y, left.Z, 0,
+                trueUp.X, trueUp.Y, trueUp.Z, 0,
+                -forward.X, -forward.Y, -forward.Z, 0,
+                0, 0, 0, 1);
+
+            Matrix4x4 result = orientation * CreateTranslation(-from.X, -from.Y, -from.Z);
+            return result;
+        }
     }
 }
