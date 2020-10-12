@@ -132,48 +132,63 @@ namespace RayTracerChallenge.Library
 
         public static Matrix4x4 operator *(Matrix4x4 a, Matrix4x4 b)
         {
+            return a.Multiply(b);
+        }
+
+        public Matrix4x4 Multiply(Matrix4x4 b)
+        {
             return new Matrix4x4(
                 // First row
-                (a.M00 * b.M00) + (a.M01 * b.M10) + (a.M02 * b.M20) + (a.M03 * b.M30),
-                (a.M00 * b.M01) + (a.M01 * b.M11) + (a.M02 * b.M21) + (a.M03 * b.M31),
-                (a.M00 * b.M02) + (a.M01 * b.M12) + (a.M02 * b.M22) + (a.M03 * b.M32),
-                (a.M00 * b.M03) + (a.M01 * b.M13) + (a.M02 * b.M23) + (a.M03 * b.M33),
+                (M00 * b.M00) + (M01 * b.M10) + (M02 * b.M20) + (M03 * b.M30),
+                (M00 * b.M01) + (M01 * b.M11) + (M02 * b.M21) + (M03 * b.M31),
+                (M00 * b.M02) + (M01 * b.M12) + (M02 * b.M22) + (M03 * b.M32),
+                (M00 * b.M03) + (M01 * b.M13) + (M02 * b.M23) + (M03 * b.M33),
 
                 // Second row
-                (a.M10 * b.M00) + (a.M11 * b.M10) + (a.M12 * b.M20) + (a.M13 * b.M30),
-                (a.M10 * b.M01) + (a.M11 * b.M11) + (a.M12 * b.M21) + (a.M13 * b.M31),
-                (a.M10 * b.M02) + (a.M11 * b.M12) + (a.M12 * b.M22) + (a.M13 * b.M32),
-                (a.M10 * b.M03) + (a.M11 * b.M13) + (a.M12 * b.M23) + (a.M13 * b.M33),
+                (M10 * b.M00) + (M11 * b.M10) + (M12 * b.M20) + (M13 * b.M30),
+                (M10 * b.M01) + (M11 * b.M11) + (M12 * b.M21) + (M13 * b.M31),
+                (M10 * b.M02) + (M11 * b.M12) + (M12 * b.M22) + (M13 * b.M32),
+                (M10 * b.M03) + (M11 * b.M13) + (M12 * b.M23) + (M13 * b.M33),
 
                 // Third row
-                (a.M20 * b.M00) + (a.M21 * b.M10) + (a.M22 * b.M20) + (a.M23 * b.M30),
-                (a.M20 * b.M01) + (a.M21 * b.M11) + (a.M22 * b.M21) + (a.M23 * b.M31),
-                (a.M20 * b.M02) + (a.M21 * b.M12) + (a.M22 * b.M22) + (a.M23 * b.M32),
-                (a.M20 * b.M03) + (a.M21 * b.M13) + (a.M22 * b.M23) + (a.M23 * b.M33),
+                (M20 * b.M00) + (M21 * b.M10) + (M22 * b.M20) + (M23 * b.M30),
+                (M20 * b.M01) + (M21 * b.M11) + (M22 * b.M21) + (M23 * b.M31),
+                (M20 * b.M02) + (M21 * b.M12) + (M22 * b.M22) + (M23 * b.M32),
+                (M20 * b.M03) + (M21 * b.M13) + (M22 * b.M23) + (M23 * b.M33),
 
                 // Fourth row
-                (a.M30 * b.M00) + (a.M31 * b.M10) + (a.M32 * b.M20) + (a.M33 * b.M30),
-                (a.M30 * b.M01) + (a.M31 * b.M11) + (a.M32 * b.M21) + (a.M33 * b.M31),
-                (a.M30 * b.M02) + (a.M31 * b.M12) + (a.M32 * b.M22) + (a.M33 * b.M32),
-                (a.M30 * b.M03) + (a.M31 * b.M13) + (a.M32 * b.M23) + (a.M33 * b.M33)
+                (M30 * b.M00) + (M31 * b.M10) + (M32 * b.M20) + (M33 * b.M30),
+                (M30 * b.M01) + (M31 * b.M11) + (M32 * b.M21) + (M33 * b.M31),
+                (M30 * b.M02) + (M31 * b.M12) + (M32 * b.M22) + (M33 * b.M32),
+                (M30 * b.M03) + (M31 * b.M13) + (M32 * b.M23) + (M33 * b.M33)
 
             );
         }
 
         public static Point operator *(Matrix4x4 matrix, Point point)
         {
-            float x = (matrix.M00 * point.X) + (matrix.M01 * point.Y) + (matrix.M02 * point.Z) + matrix.M03;
-            float y = (matrix.M10 * point.X) + (matrix.M11 * point.Y) + (matrix.M12 * point.Z) + matrix.M13;
-            float z = (matrix.M20 * point.X) + (matrix.M21 * point.Y) + (matrix.M22 * point.Z) + matrix.M23;
+            return matrix.Multiply(point);
+        }
+
+        public Point Multiply(Point point)
+        {
+            float x = (M00 * point.X) + (M01 * point.Y) + (M02 * point.Z) + M03;
+            float y = (M10 * point.X) + (M11 * point.Y) + (M12 * point.Z) + M13;
+            float z = (M20 * point.X) + (M21 * point.Y) + (M22 * point.Z) + M23;
 
             return new Point(x, y, z);
         }
 
         public static Vector operator *(Matrix4x4 matrix, Vector vector)
         {
-            float x = (matrix.M00 * vector.X) + (matrix.M01 * vector.Y) + (matrix.M02 * vector.Z);
-            float y = (matrix.M10 * vector.X) + (matrix.M11 * vector.Y) + (matrix.M12 * vector.Z);
-            float z = (matrix.M20 * vector.X) + (matrix.M21 * vector.Y) + (matrix.M22 * vector.Z);
+            return matrix.Multiply(vector);
+        }
+
+        public Vector Multiply(Vector vector)
+        {
+            float x = (M00 * vector.X) + (M01 * vector.Y) + (M02 * vector.Z);
+            float y = (M10 * vector.X) + (M11 * vector.Y) + (M12 * vector.Z);
+            float z = (M20 * vector.X) + (M21 * vector.Y) + (M22 * vector.Z);
 
             return new Vector(x, y, z);
         }
