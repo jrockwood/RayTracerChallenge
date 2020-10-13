@@ -1,36 +1,37 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="SceneList.cs" company="Justin Rockwood">
+// <copyright file="RenderPercentCompleteEventArgs.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.App.Scenes
+namespace RayTracerChallenge.Library
 {
-    using System.Collections.Generic;
+    using System;
 
-    public class SceneList
+    /// <summary>
+    /// Event args for the <see cref="Camera.RenderPercentCompleteChanged"/> event.
+    /// </summary>
+    public sealed class RenderPercentCompleteEventArgs : EventArgs
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public SceneList()
+        public RenderPercentCompleteEventArgs(int percentComplete, Canvas canvas)
         {
-            Scenes = new List<Scene>
-            {
-                new Chapter2Cannonball(),
-                new Chapter4ClockFace(),
-                new Chapter5RedSphere(),
-                new Chapter6ShadedSphere(),
-                new Chapter7SixSpheres(),
-            };
+            PercentComplete = percentComplete;
+            Canvas = canvas;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public IReadOnlyList<Scene> Scenes { get; }
+        public int PercentComplete { get; }
+
+        public string PercentCompleteAsString => PercentComplete + "%";
+
+        public Canvas Canvas { get; }
     }
 }

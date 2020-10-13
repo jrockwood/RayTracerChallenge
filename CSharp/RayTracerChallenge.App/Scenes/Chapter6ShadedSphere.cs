@@ -7,20 +7,16 @@
 
 namespace RayTracerChallenge.App.Scenes
 {
-    using System;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
-    public class Chapter6ShadedSphere : Scene
+    public class Chapter6ShadedSphere : SimpleScene
     {
         public Chapter6ShadedSphere()
-            : base("Chapter 6 - Shaded Sphere", "Renders a shaded sphere. Tests materials and lighting.")
+            : base("Chapter 6 - Shaded Sphere", "Renders a shaded sphere. Tests materials and lighting.", 400, 400)
         {
         }
-
-        public override int RequestedWidth => 400;
-        public override int RequestedHeight => 400;
 
         protected override void RenderToCanvas(Canvas canvas)
         {
@@ -72,9 +68,7 @@ namespace RayTracerChallenge.App.Scenes
                     }
 
                     // Report the progress.
-                    int percentComplete = (int)Math.Round(
-                        (((y * canvas.Height) + x) / ((float)canvas.Width * canvas.Height)) * 100f);
-                    ReportProgress(percentComplete);
+                    ReportProgress(x, y);
                 }
             }
         }

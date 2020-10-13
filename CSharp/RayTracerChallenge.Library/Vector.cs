@@ -50,24 +50,64 @@ namespace RayTracerChallenge.Library
         //// Operators
         //// ===========================================================================================================
 
+        public static Vector operator -(Vector v)
+        {
+            return v.Negate();
+        }
+
+        public Vector Negate()
+        {
+            return new Vector(-X, -Y, -Z);
+        }
+
         public static Vector operator +(Vector v1, Vector v2)
         {
-            return new Vector(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
+            return v1.Add(v2);
+        }
+
+        public Vector Add(Vector v)
+        {
+            return new Vector(X + v.X, Y + v.Y, Z + v.Z);
+        }
+
+        public static Point operator +(Vector vector, Point point)
+        {
+            return vector.Add(point);
+        }
+
+        public Point Add(Point point)
+        {
+            return new Point(X + point.X, Y + point.Y, Z + point.Z);
         }
 
         public static Vector operator -(Vector v1, Vector v2)
         {
-            return new Vector(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
+            return v1.Subtract(v2);
+        }
+
+        public Vector Subtract(Vector v)
+        {
+            return new Vector(X - v.X, Y - v.Y, Z - v.Z);
         }
 
         public static Vector operator *(Vector v, float scalar)
         {
-            return new Vector(v.X * scalar, v.Y * scalar, v.Z * scalar);
+            return v.Multiply(scalar);
+        }
+
+        public Vector Multiply(float scalar)
+        {
+            return new Vector(X * scalar, Y * scalar, Z * scalar);
         }
 
         public static Vector operator /(Vector v, float scalar)
         {
-            return new Vector(v.X / scalar, v.Y / scalar, v.Z / scalar);
+            return v.Divide(scalar);
+        }
+
+        public Vector Divide(float scalar)
+        {
+            return new Vector(X / scalar, Y / scalar, Z / scalar);
         }
 
         //// ===========================================================================================================
@@ -106,11 +146,6 @@ namespace RayTracerChallenge.Library
         public override string ToString()
         {
             return $"<{X}, {Y}, {Z}>";
-        }
-
-        public Vector Negate()
-        {
-            return new Vector(-X, -Y, -Z);
         }
 
         public Vector Normalize()

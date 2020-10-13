@@ -10,25 +10,29 @@ namespace RayTracerChallenge.App.Scenes
     using System.ComponentModel;
     using RayTracerChallenge.Library;
 
+    /// <summary>
+    /// Abstract base class for a scenes that can render to a <see cref="Canvas"/>. Inherit from <see
+    /// cref="SimpleScene"/> if you don't use a <see cref="World"/> or <see cref="Camera"/> and rendering should take
+    /// less than 1-2 seconds. Inherit from <see cref="ComplexScene"/> for all other cases.
+    /// </summary>
     public abstract class Scene
     {
         //// ===========================================================================================================
         //// Member Variables
         //// ===========================================================================================================
 
-        private Canvas? _canvas;
-        private BackgroundWorker? _worker;
-        private DoWorkEventArgs? _workEventArgs;
         private int _highestPercentageReached;
 
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        protected Scene(string title, string description)
+        protected Scene(string title, string description, int canvasWidth, int canvasHeight)
         {
             Title = title;
             Description = description;
+            CanvasWidth = canvasWidth;
+            CanvasHeight = canvasHeight;
         }
 
         //// ===========================================================================================================
@@ -38,27 +42,36 @@ namespace RayTracerChallenge.App.Scenes
         public string Title { get; }
         public string Description { get; }
 
-        public abstract int RequestedWidth { get; }
-        public abstract int RequestedHeight { get; }
+        public int CanvasWidth { get; }
+        public int CanvasHeight { get; }
 
-        protected bool ShouldCancel => _worker?.CancellationPending ?? false;
+        protected Canvas? CurrentlyRenderingCanvas { get; private set; }
+        protected BackgroundWorker? Worker { get; private set; }
+
+        protected bool ShouldCancel => Worker?.CancellationPending ?? false;
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
-        public void Render(Canvas canvas, BackgroundWorker worker, DoWorkEventArgs e)
+        public Canvas Render(BackgroundWorker worker)
         {
-            _canvas = canvas;
-            _worker = worker;
-            _workEventArgs = e;
-            _highestPercentageReached = 0;
+            Worker = worker;
 
-            RenderToCanvas(canvas);
-            worker.ReportProgress(100, canvas);
+            try
+            {
+                var canvas = new Canvas(CanvasWidth, CanvasHeight);
+                CurrentlyRenderingCanvas = canvas;
+                RenderToCanvas(canvas);
+                ReportProgress(100);
 
-            _worker = null;
-            _workEventArgs = null;
+                return canvas;
+            }
+            finally
+            {
+                Worker = null;
+                CurrentlyRenderingCanvas = null;
+            }
         }
 
         protected abstract void RenderToCanvas(Canvas canvas);
@@ -70,8 +83,27 @@ namespace RayTracerChallenge.App.Scenes
                 return;
             }
 
-            _worker?.ReportProgress(percentComplete, _canvas);
             _highestPercentageReached = percentComplete;
+            Worker?.ReportProgress(percentComplete, CurrentlyRenderingCanvas);
+        }
+
+        /// <summary>
+        /// Reports percent complete to the background worker so that it can change the UI.
+        /// </summary>
+        /// <param name="x">The x coordinate of the pixel that was just rendered.</param>
+        /// <param name="y">The y coordinate of the pixel that was just rendered.</param>
+        protected void ReportProgress(int x, int y)
+        {
+            if (CurrentlyRenderingCanvas == null)
+            {
+                return;
+            }
+
+            float totalPixels = CurrentlyRenderingCanvas.Width * CurrentlyRenderingCanvas.Height;
+            float percentComplete = ((y * CurrentlyRenderingCanvas.Width) + x) / totalPixels;
+            percentComplete *= 100;
+
+            ReportProgress((int)percentComplete);
         }
     }
 }

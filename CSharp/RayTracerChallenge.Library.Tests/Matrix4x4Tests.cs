@@ -679,5 +679,49 @@ namespace RayTracerChallenge.Library.Tests
                 .Translate(10, 5, 7);
             (transform * p).Should().Be(new Point(15, 0, 7));
         }
+
+        //// ===========================================================================================================
+        //// CreateLookAt Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void CreateLookAt_should_return_the_identity_matrix_for_the_default_orientation()
+        {
+            var transform = Matrix4x4.CreateLookAt(Point.Zero, new Point(0, 0, -1), Vector.UnitY);
+            transform.Should().Be(Matrix4x4.Identity);
+        }
+
+        [Test]
+        public void
+            CreateLookAt_should_be_the_same_as_a_scaling_mirrored_transform_when_looking_in_the_positive_z_direction()
+        {
+            var transform = Matrix4x4.CreateLookAt(Point.Zero, new Point(0, 0, 1), Vector.UnitY);
+            transform.Should().Be(Matrix4x4.CreateScaling(-1, 1, -1));
+        }
+
+        [Test]
+        public void CreateLookAt_should_move_the_world_and_not_the_eye()
+        {
+            var transform = Matrix4x4.CreateLookAt(new Point(0, 0, 8), Point.Zero, Vector.UnitY);
+            transform.Should().Be(Matrix4x4.CreateTranslation(0, 0, -8));
+        }
+
+        [Test]
+        public void CreateLookAt_should_move_the_world_using_an_arbitrary_view_transformation()
+        {
+            var from = new Point(1, 3, 2);
+            var to = new Point(4, -2, 8);
+            var up = new Vector(1, 1, 0);
+            var transform = Matrix4x4.CreateLookAt(from, to, up);
+
+            // prettier-ignore
+            var expected = new Matrix4x4(
+                -0.50709f, 0.50709f, 0.67612f, -2.36643f,
+                0.76772f, 0.60609f, 0.12122f, -2.82843f,
+                -0.35857f, 0.59761f, -0.71714f, 0.00000f,
+                0.00000f, 0.00000f, 0.00000f, 1.00000f);
+
+            transform.Should().Be(expected);
+        }
     }
 }

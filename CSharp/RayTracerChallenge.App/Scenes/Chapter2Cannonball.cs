@@ -10,23 +10,20 @@ namespace RayTracerChallenge.App.Scenes
     using System;
     using RayTracerChallenge.Library;
 
-    public sealed class Chapter2Cannonball : Scene
+    public sealed class Chapter2Cannonball : SimpleScene
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
         public Chapter2Cannonball()
-            : base("Chapter 2 - Cannonball", "Traces the trajectory of a cannonball. Tests points, vectors, and the canvas.")
+            : base(
+                "Chapter 2 - Cannonball",
+                "Traces the trajectory of a cannonball. Tests points, vectors, and the canvas.",
+                900,
+                550)
         {
         }
-
-        //// ===========================================================================================================
-        //// Properties
-        //// ===========================================================================================================
-
-        public override int RequestedWidth => 900;
-        public override int RequestedHeight => 550;
 
         //// ===========================================================================================================
         //// Methods

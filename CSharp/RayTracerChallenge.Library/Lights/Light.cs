@@ -1,36 +1,33 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="SceneList.cs" company="Justin Rockwood">
+// <copyright file="Light.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.App.Scenes
+namespace RayTracerChallenge.Library.Lights
 {
-    using System.Collections.Generic;
-
-    public class SceneList
+    /// <summary>
+    /// Abstract base class for all lights.
+    /// </summary>
+    public abstract class Light
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public SceneList()
+        protected Light(Point position, Color intensity)
         {
-            Scenes = new List<Scene>
-            {
-                new Chapter2Cannonball(),
-                new Chapter4ClockFace(),
-                new Chapter5RedSphere(),
-                new Chapter6ShadedSphere(),
-                new Chapter7SixSpheres(),
-            };
+            Position = position;
+            Intensity = intensity;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public IReadOnlyList<Scene> Scenes { get; }
+        public Point Position { get; }
+
+        public Color Intensity { get; }
     }
 }

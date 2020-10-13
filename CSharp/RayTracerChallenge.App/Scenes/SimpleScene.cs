@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="SceneList.cs" company="Justin Rockwood">
+// <copyright file="SimpleScene.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -7,30 +7,21 @@
 
 namespace RayTracerChallenge.App.Scenes
 {
-    using System.Collections.Generic;
+    using RayTracerChallenge.Library;
 
-    public class SceneList
+    /// <summary>
+    /// Abstract base class for a simple scene that doesn't use a <see cref="World"/> or <see cref="Camera"/> and should
+    /// take less than 1-2 seconds to render. Inherit from <see cref="ComplexScene"/> for most scenes.
+    /// </summary>
+    public abstract class SimpleScene : Scene
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public SceneList()
+        protected SimpleScene(string title, string description, int canvasWidth, int canvasHeight)
+            : base(title, description, canvasWidth, canvasHeight)
         {
-            Scenes = new List<Scene>
-            {
-                new Chapter2Cannonball(),
-                new Chapter4ClockFace(),
-                new Chapter5RedSphere(),
-                new Chapter6ShadedSphere(),
-                new Chapter7SixSpheres(),
-            };
         }
-
-        //// ===========================================================================================================
-        //// Properties
-        //// ===========================================================================================================
-
-        public IReadOnlyList<Scene> Scenes { get; }
     }
 }

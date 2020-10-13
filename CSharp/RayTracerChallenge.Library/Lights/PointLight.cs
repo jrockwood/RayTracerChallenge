@@ -11,24 +11,15 @@ namespace RayTracerChallenge.Library.Lights
     /// Represents a light with no size, existing at a single point in space, with an intensity describing how bright it
     /// is and its color.
     /// </summary>
-    public class PointLight
+    public class PointLight : Light
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
         public PointLight(Point position, Color intensity)
+            : base(position, intensity)
         {
-            Position = position;
-            Intensity = intensity;
         }
-
-        //// ===========================================================================================================
-        //// Properties
-        //// ===========================================================================================================
-
-        public Point Position { get; }
-
-        public Color Intensity { get; }
     }
 }

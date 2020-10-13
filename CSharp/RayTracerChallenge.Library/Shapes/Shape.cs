@@ -7,6 +7,8 @@
 
 namespace RayTracerChallenge.Library.Shapes
 {
+    using System;
+
     public abstract class Shape
     {
         //// ===========================================================================================================
@@ -33,6 +35,11 @@ namespace RayTracerChallenge.Library.Shapes
         public abstract Shape WithTransform(Matrix4x4 value);
 
         public abstract Shape WithMaterial(Material value);
+
+        public Shape WithMaterial(Func<Material, Material> setter)
+        {
+            return WithMaterial(setter(Material));
+        }
 
         public IntersectionList Intersect(Ray ray)
         {
