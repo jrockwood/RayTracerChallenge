@@ -9,10 +9,12 @@ namespace RayTracerChallenge.App
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Windows.Forms;
     using RayTracerChallenge.App.Scenes;
     using RayTracerChallenge.Library;
 
+    [SuppressMessage("ReSharper", "LocalizableElement")]
     public partial class MainForm : Form
     {
         //// ===========================================================================================================
@@ -66,8 +68,7 @@ namespace RayTracerChallenge.App
 
         private void ReportPercentComplete(int progress, Canvas? canvas)
         {
-            _progressBar.Value = progress;
-            _progressPercentLabel.Text = progress + @"%";
+            _progressControl.PercentComplete = progress;
 
             if (canvas != null)
             {
@@ -100,8 +101,11 @@ namespace RayTracerChallenge.App
 
             _renderButton.Enabled = true;
             _cancelButton.Visible = false;
-            _progressBar.Visible = false;
-            _progressPercentLabel.Visible = false;
+
+            _progressControl.Stop();
+            _progressControl.Visible = false;
+
+            _renderTimeLabel.Text = $"Render time: {_progressControl.FormattedElapsedTime}";
         }
 
         private void SceneComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -120,8 +124,11 @@ namespace RayTracerChallenge.App
 
             ReportPercentComplete(0, null);
 
-            _progressPercentLabel.Visible = true;
-            _progressBar.Visible = true;
+            _progressControl.Visible = true;
+            _progressControl.Start();
+
+            _renderTimeLabel.Text = "";
+
             _cancelButton.Visible = true;
             _cancelButton.Enabled = true;
 
@@ -131,6 +138,8 @@ namespace RayTracerChallenge.App
         private void CancelButton_Click(object sender, EventArgs e)
         {
             _backgroundWorker.CancelAsync();
+            _progressControl.Stop();
+            _progressControl.Visible = false;
             _cancelButton.Enabled = false;
         }
 
