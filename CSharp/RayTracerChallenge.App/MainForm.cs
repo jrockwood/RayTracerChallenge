@@ -45,7 +45,7 @@ namespace RayTracerChallenge.App
                 _sceneComboBox.Items.Add(scene);
             }
 
-            _sceneComboBox.SelectedIndex = 0;
+            _sceneComboBox.SelectedIndex = _sceneComboBox.Items.Count - 1;
             _sceneComboBox.DisplayMember = "Title";
         }
 
