@@ -199,7 +199,7 @@ namespace RayTracerChallenge.Library
                     canvas.SetPixel(x, y, color);
 
                     // Report the progress.
-                    RenderPercentComplete = (int)((((y * CanvasHeight) + x) / (float)totalPixels) * 100.0f);
+                    RenderPercentComplete = (int)((((y * CanvasWidth) + x) / (float)totalPixels) * 100.0f);
                 }
             }
 

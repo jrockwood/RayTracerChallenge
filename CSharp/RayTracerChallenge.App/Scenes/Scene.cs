@@ -100,7 +100,7 @@ namespace RayTracerChallenge.App.Scenes
             }
 
             float totalPixels = CurrentlyRenderingCanvas.Width * CurrentlyRenderingCanvas.Height;
-            float percentComplete = ((y * CurrentlyRenderingCanvas.Height) + x) / totalPixels;
+            float percentComplete = ((y * CurrentlyRenderingCanvas.Width) + x) / totalPixels;
             percentComplete *= 100;
 
             ReportProgress((int)percentComplete);
