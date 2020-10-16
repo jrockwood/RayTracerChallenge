@@ -11,6 +11,7 @@ namespace RayTracerChallenge.App
     using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
     using System.Windows.Forms;
+    using RayTracerChallenge.App.Library.Scenes;
     using RayTracerChallenge.App.Scenes;
     using RayTracerChallenge.Library;
 
