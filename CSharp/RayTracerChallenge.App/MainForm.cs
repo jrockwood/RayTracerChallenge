@@ -12,7 +12,6 @@ namespace RayTracerChallenge.App
     using System.Diagnostics.CodeAnalysis;
     using System.Windows.Forms;
     using RayTracerChallenge.App.Library.Scenes;
-    using RayTracerChallenge.App.Scenes;
     using RayTracerChallenge.Library;
 
     [SuppressMessage("ReSharper", "LocalizableElement")]
