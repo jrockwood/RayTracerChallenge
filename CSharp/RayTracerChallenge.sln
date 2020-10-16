@@ -14,15 +14,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 -Solution Items", "01 -S
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
+		Settings.XamlStyler = Settings.XamlStyler
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracerChallenge.App", "RayTracerChallenge.App\RayTracerChallenge.App.csproj", "{4BCEF519-2713-4E0A-A656-354DC27BC8B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracerChallenge.App.Wpf", "RayTracerChallenge.App.Wpf\RayTracerChallenge.App.Wpf.csproj", "{8AC80D9B-84C4-4423-83B3-71A4F5638793}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracerChallenge.App.Wpf", "RayTracerChallenge.App.Wpf\RayTracerChallenge.App.Wpf.csproj", "{8AC80D9B-84C4-4423-83B3-71A4F5638793}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracerChallenge.App.Library", "RayTracerChallenge.App.Library\RayTracerChallenge.App.Library.csproj", "{9CB43552-EE52-4A1F-95E8-5C4464CC169E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracerChallenge.App.Library", "RayTracerChallenge.App.Library\RayTracerChallenge.App.Library.csproj", "{9CB43552-EE52-4A1F-95E8-5C4464CC169E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracerChallenge.App.Library.Tests", "RayTracerChallenge.App.Library.Tests\RayTracerChallenge.App.Library.Tests.csproj", "{4719C7A1-A251-4D07-98A7-83CB6FDC97F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracerChallenge.App.Library.Tests", "RayTracerChallenge.App.Library.Tests\RayTracerChallenge.App.Library.Tests.csproj", "{4719C7A1-A251-4D07-98A7-83CB6FDC97F5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 - App", "02 - App", "{F378C8A4-B4C0-4EC7-84B4-6DE59BB76427}"
 EndProject
