@@ -8,11 +8,17 @@
 namespace RayTracerChallenge.App.Wpf
 {
     using System.Windows;
+    using RayTracerChallenge.App.Library.ViewModels;
 
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
+        private void OnStartup(object sender, StartupEventArgs e)
+        {
+            MainWindow = new MainWindow(new MainWindowViewModel());
+            MainWindow.Show();
+        }
     }
 }

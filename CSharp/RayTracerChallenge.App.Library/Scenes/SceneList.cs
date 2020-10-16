@@ -7,17 +7,55 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
 
-    public class SceneList
+    public class SceneList : ReadOnlyObservableCollection<Scene>
     {
+        //// ===========================================================================================================
+        //// Member Variables
+        //// ===========================================================================================================
+
+        private int _selectedIndex;
+
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
         public SceneList()
+            : base(CreateScenes())
         {
-            Scenes = new List<Scene>
+        }
+
+        //// ===========================================================================================================
+        //// Properties
+        //// ===========================================================================================================
+
+        public int SelectedIndex
+        {
+            get => _selectedIndex;
+            set
+            {
+                if (_selectedIndex == value)
+                {
+                    return;
+                }
+
+                _selectedIndex = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(SelectedIndex)));
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(SelectedScene)));
+            }
+        }
+
+        public Scene? SelectedScene => _selectedIndex >= 0 && _selectedIndex < Count ? Items[_selectedIndex] : null;
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
+        private static ObservableCollection<Scene> CreateScenes()
+        {
+            return new ObservableCollection<Scene>
             {
                 new Chapter2Cannonball(),
                 new Chapter4ClockFace(),
@@ -26,11 +64,5 @@ namespace RayTracerChallenge.App.Library.Scenes
                 new Chapter7SixSpheres(),
             };
         }
-
-        //// ===========================================================================================================
-        //// Properties
-        //// ===========================================================================================================
-
-        public IReadOnlyList<Scene> Scenes { get; }
     }
 }

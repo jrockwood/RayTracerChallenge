@@ -1,28 +1,30 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="MainWindow.xaml.cs" company="Justin Rockwood">
+// <copyright file="MainWindowViewModel.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.App.Wpf
+namespace RayTracerChallenge.App.Library.ViewModels
 {
-    using System.Windows;
-    using RayTracerChallenge.App.Library.ViewModels;
+    using RayTracerChallenge.App.Library.Scenes;
 
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public class MainWindowViewModel : Observable
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public MainWindow(MainWindowViewModel viewModel)
+        public MainWindowViewModel()
         {
-            InitializeComponent();
-            DataContext = viewModel;
+            Scenes = new SceneList();
+            Scenes.SelectedIndex = Scenes.Count > 0 ? Scenes.Count - 1 : -1;
         }
+
+        //// ===========================================================================================================
+        //// Properties
+        //// ===========================================================================================================
+
+        public SceneList Scenes { get; }
     }
 }
