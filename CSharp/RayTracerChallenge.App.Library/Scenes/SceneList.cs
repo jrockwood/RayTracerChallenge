@@ -7,6 +7,7 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
 
@@ -28,6 +29,12 @@ namespace RayTracerChallenge.App.Library.Scenes
         }
 
         //// ===========================================================================================================
+        //// Events
+        //// ===========================================================================================================
+
+        public event EventHandler? SelectedSceneChanged;
+
+        //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
@@ -44,6 +51,8 @@ namespace RayTracerChallenge.App.Library.Scenes
                 _selectedIndex = value;
                 OnPropertyChanged(new PropertyChangedEventArgs(nameof(SelectedIndex)));
                 OnPropertyChanged(new PropertyChangedEventArgs(nameof(SelectedScene)));
+
+                SelectedSceneChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

@@ -7,7 +7,10 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
+    using System;
     using System.ComponentModel;
+    using System.Threading;
+    using System.Threading.Tasks;
     using RayTracerChallenge.Library;
 
     /// <summary>
@@ -22,6 +25,8 @@ namespace RayTracerChallenge.App.Library.Scenes
         //// ===========================================================================================================
 
         private int _highestPercentageReached;
+        private IProgress<SceneRenderProgress>? _progress;
+        private CancellationToken? _cancellationToken;
 
         //// ===========================================================================================================
         //// Constructors
@@ -48,7 +53,8 @@ namespace RayTracerChallenge.App.Library.Scenes
         protected Canvas? CurrentlyRenderingCanvas { get; private set; }
         protected BackgroundWorker? Worker { get; private set; }
 
-        protected bool ShouldCancel => Worker?.CancellationPending ?? false;
+        protected bool ShouldCancel => (Worker?.CancellationPending ?? false) ||
+                                       (_cancellationToken?.IsCancellationRequested ?? false);
 
         //// ===========================================================================================================
         //// Methods
@@ -74,6 +80,30 @@ namespace RayTracerChallenge.App.Library.Scenes
             }
         }
 
+        public async Task<Canvas> RenderAsync(
+            IProgress<SceneRenderProgress>? progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            _progress = progress;
+            _cancellationToken = cancellationToken;
+
+            try
+            {
+                var canvas = new Canvas(CanvasWidth, CanvasHeight);
+                CurrentlyRenderingCanvas = canvas;
+                await Task.Run(() => RenderToCanvas(canvas), cancellationToken);
+                ReportProgress(100);
+
+                return canvas;
+            }
+            finally
+            {
+                _progress = null;
+                _cancellationToken = null;
+                CurrentlyRenderingCanvas = null;
+            }
+        }
+
         protected abstract void RenderToCanvas(Canvas canvas);
 
         protected void ReportProgress(int percentComplete)
@@ -84,7 +114,14 @@ namespace RayTracerChallenge.App.Library.Scenes
             }
 
             _highestPercentageReached = percentComplete;
+
+            if (CurrentlyRenderingCanvas == null)
+            {
+                throw new InvalidOperationException("Should not be reporting progress when there is no current canvas");
+            }
+
             Worker?.ReportProgress(percentComplete, CurrentlyRenderingCanvas);
+            _progress?.Report(new SceneRenderProgress(percentComplete, CurrentlyRenderingCanvas));
         }
 
         /// <summary>

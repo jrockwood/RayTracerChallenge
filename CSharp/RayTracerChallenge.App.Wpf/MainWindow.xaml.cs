@@ -22,7 +22,28 @@ namespace RayTracerChallenge.App.Wpf
         public MainWindow(MainWindowViewModel viewModel)
         {
             InitializeComponent();
+
+            ViewModel = viewModel;
             DataContext = viewModel;
+            RenderProgressControl.ViewModel = viewModel.RenderProcessViewModel;
+
+            RenderImage.DpiChanged += OnRenderImageDpiChanged;
+        }
+
+        //// ===========================================================================================================
+        //// Properties
+        //// ===========================================================================================================
+
+        public MainWindowViewModel ViewModel { get; }
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
+        private void OnRenderImageDpiChanged(object sender, DpiChangedEventArgs e)
+        {
+            ViewModel.RenderDpiX = e.NewDpi.PixelsPerInchX;
+            ViewModel.RenderDpiY = e.NewDpi.PixelsPerInchY;
         }
     }
 }

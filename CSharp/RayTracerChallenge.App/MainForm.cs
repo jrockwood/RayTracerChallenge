@@ -42,7 +42,7 @@ namespace RayTracerChallenge.App
 
         private void InitializeScenes()
         {
-            foreach (var scene in _sceneList.Scenes)
+            foreach (var scene in _sceneList)
             {
                 _sceneComboBox.Items.Add(scene);
             }
