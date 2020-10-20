@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // <copyright file="Camera.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
@@ -8,6 +8,7 @@
 namespace RayTracerChallenge.Library
 {
     using System;
+    using System.Threading;
 
     public class Camera
     {
@@ -143,14 +144,14 @@ namespace RayTracerChallenge.Library
         /// Uses the camera to render an image of the specified world.
         /// </summary>
         /// <param name="world">The world to render.</param>
-        /// <param name="shouldCancelFunc">
-        /// Optional function that is called during the rendering loop to see if the rendering should be cancelled.
+        /// <param name="cancellationToken">
+        /// Optional <see cref="CancellationToken"/> within the rendering loop to see if the rendering should be cancelled.
         /// </param>
         /// <returns>A <see cref="Canvas"/> containing the rendered image.</returns>
-        public Canvas Render(World world, Func<bool>? shouldCancelFunc = null)
+        public Canvas Render(World world, CancellationToken cancellationToken = default)
         {
             var canvas = new Canvas(CanvasWidth, CanvasHeight);
-            RenderToCanvas(canvas, world, shouldCancelFunc);
+            RenderToCanvas(canvas, world, cancellationToken);
             return canvas;
         }
 
@@ -161,11 +162,11 @@ namespace RayTracerChallenge.Library
         /// The canvas to render to. It should be the same size as <see cref="CanvasWidth"/> and <see cref="CanvasHeight"/>
         /// </param>
         /// <param name="world">The world to render.</param>
-        /// <param name="shouldCancelFunc">
-        /// Optional function that is called during the rendering loop to see if the rendering should be cancelled.
+        /// <param name="cancellationToken">
+        /// Optional <see cref="CancellationToken"/> within the rendering loop to see if the rendering should be cancelled.
         /// </param>
         /// <returns>A <see cref="Canvas"/> containing the rendered image.</returns>
-        public void RenderToCanvas(Canvas canvas, World world, Func<bool>? shouldCancelFunc = null)
+        public void RenderToCanvas(Canvas canvas, World world, CancellationToken cancellationToken = default)
         {
             // Make sure the canvas is the same size as this camera.
             if (canvas.Width != CanvasWidth || canvas.Height != CanvasHeight)
@@ -181,7 +182,7 @@ namespace RayTracerChallenge.Library
             for (int y = 0; y < CanvasHeight; y++)
             {
                 // Check for cancellation.
-                if (shouldCancelFunc?.Invoke() == true)
+                if (cancellationToken.IsCancellationRequested)
                 {
                     break;
                 }
@@ -189,7 +190,7 @@ namespace RayTracerChallenge.Library
                 for (int x = 0; x < CanvasWidth; x++)
                 {
                     // Check for cancellation.
-                    if (shouldCancelFunc?.Invoke() == true)
+                    if (cancellationToken.IsCancellationRequested)
                     {
                         break;
                     }

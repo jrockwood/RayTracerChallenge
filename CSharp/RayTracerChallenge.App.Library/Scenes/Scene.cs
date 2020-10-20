@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
-    using System.ComponentModel;
     using System.Threading;
     using System.Threading.Tasks;
     using RayTracerChallenge.Library;
@@ -51,34 +50,10 @@ namespace RayTracerChallenge.App.Library.Scenes
         public int CanvasHeight { get; }
 
         protected Canvas? CurrentlyRenderingCanvas { get; private set; }
-        protected BackgroundWorker? Worker { get; private set; }
-
-        protected bool ShouldCancel => (Worker?.CancellationPending ?? false) ||
-                                       (_cancellationToken?.IsCancellationRequested ?? false);
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
-
-        public Canvas Render(BackgroundWorker worker)
-        {
-            Worker = worker;
-
-            try
-            {
-                var canvas = new Canvas(CanvasWidth, CanvasHeight);
-                CurrentlyRenderingCanvas = canvas;
-                RenderToCanvas(canvas);
-                ReportProgress(100);
-
-                return canvas;
-            }
-            finally
-            {
-                Worker = null;
-                CurrentlyRenderingCanvas = null;
-            }
-        }
 
         public async Task<Canvas> RenderAsync(
             IProgress<SceneRenderProgress>? progress = null,
@@ -91,7 +66,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             {
                 var canvas = new Canvas(CanvasWidth, CanvasHeight);
                 CurrentlyRenderingCanvas = canvas;
-                await Task.Run(() => RenderToCanvas(canvas), cancellationToken);
+                await Task.Run(() => RenderToCanvas(canvas, cancellationToken), cancellationToken);
                 ReportProgress(100);
 
                 return canvas;
@@ -104,7 +79,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             }
         }
 
-        protected abstract void RenderToCanvas(Canvas canvas);
+        protected abstract void RenderToCanvas(Canvas canvas, CancellationToken cancellationToken = default);
 
         protected void ReportProgress(int percentComplete)
         {
@@ -120,7 +95,6 @@ namespace RayTracerChallenge.App.Library.Scenes
                 throw new InvalidOperationException("Should not be reporting progress when there is no current canvas");
             }
 
-            Worker?.ReportProgress(percentComplete, CurrentlyRenderingCanvas);
             _progress?.Report(new SceneRenderProgress(percentComplete, CurrentlyRenderingCanvas));
         }
 

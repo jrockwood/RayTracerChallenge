@@ -8,6 +8,7 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
+    using System.Threading;
     using RayTracerChallenge.Library;
 
     public sealed class Chapter4ClockFace : SimpleScene
@@ -21,7 +22,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override void RenderToCanvas(Canvas canvas)
+        protected override void RenderToCanvas(Canvas canvas, CancellationToken cancellationToken = default)
         {
             int centerX = canvas.Width / 2;
             int centerY = canvas.Height / 2;

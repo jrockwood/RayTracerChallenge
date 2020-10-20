@@ -7,6 +7,7 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
+    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
@@ -18,7 +19,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override void RenderToCanvas(Canvas canvas)
+        protected override void RenderToCanvas(Canvas canvas, CancellationToken cancellationToken = default)
         {
             var sphere = new Sphere(material: new Material(new Color(1, 0.2, 1)));
             var lightPosition = new Point(-10, 10, -10);
@@ -42,7 +43,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 for (int x = 0; x < canvas.Width; x++)
                 {
                     // See if we should stop.
-                    if (ShouldCancel)
+                    if (cancellationToken.IsCancellationRequested)
                     {
                         return;
                     }

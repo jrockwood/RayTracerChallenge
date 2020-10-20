@@ -7,6 +7,7 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
+    using System.Threading;
     using RayTracerChallenge.Library;
 
     /// <summary>
@@ -37,7 +38,7 @@ namespace RayTracerChallenge.App.Library.Scenes
 
         protected abstract void CreateScene(out World world, out Camera camera);
 
-        protected override void RenderToCanvas(Canvas canvas)
+        protected override void RenderToCanvas(Canvas canvas, CancellationToken cancellationToken = default)
         {
             // Create the scene if necessary.
             if (_world == null || _camera == null)
@@ -49,7 +50,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             _camera.RenderPercentCompleteChanged += CameraOnRenderPercentCompleteChanged;
             try
             {
-                _camera.RenderToCanvas(canvas, _world, shouldCancelFunc: () => Worker?.CancellationPending ?? false);
+                _camera.RenderToCanvas(canvas, _world, cancellationToken);
             }
             finally
             {
