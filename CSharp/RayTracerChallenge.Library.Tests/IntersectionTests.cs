@@ -17,8 +17,8 @@ namespace RayTracerChallenge.Library.Tests
         public void An_intersection_encapsulates_t_and_a_shape()
         {
             var s = new Sphere();
-            var i = new Intersection(3.5f, s);
-            i.T.Should().Be(3.5f);
+            var i = new Intersection(3.5, s);
+            i.T.Should().Be(3.5);
             i.Shape.Should().Be(s);
         }
     }

@@ -18,29 +18,29 @@ namespace RayTracerChallenge.Library.Tests
         {
             var matrix = new Matrix4x4(
                 1, 2, 3, 4,
-                5.5f, 6.5f, 7.5f, 8.5f,
+                5.5, 6.5, 7.5, 8.5,
                 9, 10, 11, 12,
-                13.5f, 14.5f, 15.5f, 16.5f);
+                13.5, 14.5, 15.5, 16.5);
 
             matrix.M00.Should().Be(1);
             matrix.M01.Should().Be(2);
             matrix.M02.Should().Be(3);
             matrix.M03.Should().Be(4);
 
-            matrix.M10.Should().Be(5.5f);
-            matrix.M11.Should().Be(6.5f);
-            matrix.M12.Should().Be(7.5f);
-            matrix.M13.Should().Be(8.5f);
+            matrix.M10.Should().Be(5.5);
+            matrix.M11.Should().Be(6.5);
+            matrix.M12.Should().Be(7.5);
+            matrix.M13.Should().Be(8.5);
 
             matrix.M20.Should().Be(9);
             matrix.M21.Should().Be(10);
             matrix.M22.Should().Be(11);
             matrix.M23.Should().Be(12);
 
-            matrix.M30.Should().Be(13.5f);
-            matrix.M31.Should().Be(14.5f);
-            matrix.M32.Should().Be(15.5f);
-            matrix.M33.Should().Be(16.5f);
+            matrix.M30.Should().Be(13.5);
+            matrix.M31.Should().Be(14.5);
+            matrix.M32.Should().Be(15.5);
+            matrix.M33.Should().Be(16.5);
         }
 
         //// ===========================================================================================================
@@ -63,10 +63,10 @@ namespace RayTracerChallenge.Library.Tests
         {
             var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
             var b = new Matrix4x4(
-                0.999999f, 2.000001f, 2.999999f, 4.000001f,
-                4.999999f, 6.000001f, 6.999999f, 8.000001f,
-                8.999999f, 10.000001f, 10.999999f, 12.000001f,
-                12.999999f, 14.000001f, 14.999999f, 16.000001f);
+                0.999999, 2.000001, 2.999999, 4.000001,
+                4.999999, 6.000001, 6.999999, 8.000001,
+                8.999999, 10.000001, 10.999999, 12.000001,
+                12.999999, 14.000001, 14.999999, 16.000001);
 
             a.Should().Be(b);
             (a == b).Should().BeTrue();
@@ -389,10 +389,10 @@ namespace RayTracerChallenge.Library.Tests
                 1, -3, 7, 4);
 
             var invertedMatrix = new Matrix4x4(
-                0.21805f, 0.45113f, 0.24060f, -0.04511f,
-                -0.80827f, -1.45677f, -0.44361f, 0.52068f,
-                -0.07895f, -0.22368f, -0.05263f, 0.19737f,
-                -0.52256f, -0.81391f, -0.30075f, 0.30639f);
+                0.21805, 0.45113, 0.24060, -0.04511,
+                -0.80827, -1.45677, -0.44361, 0.52068,
+                -0.07895, -0.22368, -0.05263, 0.19737,
+                -0.52256, -0.81391, -0.30075, 0.30639);
 
             matrix.Invert().Should().Be(invertedMatrix);
 
@@ -404,10 +404,10 @@ namespace RayTracerChallenge.Library.Tests
                 -3, 0, -9, -4);
 
             invertedMatrix = new Matrix4x4(
-                -0.15385f, -0.15385f, -0.28205f, -0.53846f,
-                -0.07692f, 0.12308f, 0.02564f, 0.03077f,
-                0.35897f, 0.35897f, 0.43590f, 0.92308f,
-                -0.69231f, -0.69231f, -0.76923f, -1.92308f);
+                -0.15385, -0.15385, -0.28205, -0.53846,
+                -0.07692, 0.12308, 0.02564, 0.03077,
+                0.35897, 0.35897, 0.43590, 0.92308,
+                -0.69231, -0.69231, -0.76923, -1.92308);
 
             matrix.Invert().Should().Be(invertedMatrix);
 
@@ -419,10 +419,10 @@ namespace RayTracerChallenge.Library.Tests
                 -7, 6, 6, 2);
 
             invertedMatrix = new Matrix4x4(
-                -0.04074f, -0.07778f, 0.14444f, -0.22222f,
-                -0.07778f, 0.03333f, 0.36667f, -0.33333f,
-                -0.02901f, -0.14630f, -0.10926f, 0.12963f,
-                0.17778f, 0.06667f, -0.26667f, 0.33333f);
+                -0.04074, -0.07778, 0.14444, -0.22222,
+                -0.07778, 0.03333, 0.36667, -0.33333,
+                -0.02901, -0.14630, -0.10926, 0.12963,
+                0.17778, 0.06667, -0.26667, 0.33333);
 
             matrix.Invert().Should().Be(invertedMatrix);
         }
@@ -533,10 +533,10 @@ namespace RayTracerChallenge.Library.Tests
         public void CreateRotationX_should_rotate_a_point_around_the_x_axis()
         {
             var point = new Point(0, 1, 0);
-            var halfQuarter = Matrix4x4.CreateRotationX(MathF.PI / 4);
-            var fullQuarter = Matrix4x4.CreateRotationX(MathF.PI / 2);
+            var halfQuarter = Matrix4x4.CreateRotationX(Math.PI / 4);
+            var fullQuarter = Matrix4x4.CreateRotationX(Math.PI / 2);
 
-            (halfQuarter * point).Should().Be(new Point(0, MathF.Sqrt(2) / 2, MathF.Sqrt(2) / 2));
+            (halfQuarter * point).Should().Be(new Point(0, Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             (fullQuarter * point).Should().Be(new Point(0, 0, 1));
         }
 
@@ -545,9 +545,9 @@ namespace RayTracerChallenge.Library.Tests
             CreateRotationX_should_rotate_a_point_around_the_x_axis_in_the_opposite_direction_by_multiplying_by_the_inverse_matrix()
         {
             var point = new Point(0, 1, 0);
-            var halfQuarter = Matrix4x4.CreateRotationX(MathF.PI / 4);
+            var halfQuarter = Matrix4x4.CreateRotationX(Math.PI / 4);
             var inverse = halfQuarter.Invert();
-            (inverse * point).Should().Be(new Point(0, MathF.Sqrt(2) / 2, -MathF.Sqrt(2) / 2));
+            (inverse * point).Should().Be(new Point(0, Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2));
         }
 
         //// ===========================================================================================================
@@ -558,10 +558,10 @@ namespace RayTracerChallenge.Library.Tests
         public void CreateRotationY_should_rotate_a_point_around_the_x_axis()
         {
             var point = new Point(0, 0, 1);
-            var halfQuarter = Matrix4x4.CreateRotationY(MathF.PI / 4);
-            var fullQuarter = Matrix4x4.CreateRotationY(MathF.PI / 2);
+            var halfQuarter = Matrix4x4.CreateRotationY(Math.PI / 4);
+            var fullQuarter = Matrix4x4.CreateRotationY(Math.PI / 2);
 
-            (halfQuarter * point).Should().Be(new Point(MathF.Sqrt(2) / 2, 0, MathF.Sqrt(2) / 2));
+            (halfQuarter * point).Should().Be(new Point(Math.Sqrt(2) / 2, 0, Math.Sqrt(2) / 2));
             (fullQuarter * point).Should().Be(new Point(1, 0, 0));
         }
 
@@ -573,10 +573,10 @@ namespace RayTracerChallenge.Library.Tests
         public void CreateRotationZ_should_rotate_a_point_around_the_x_axis()
         {
             var point = new Point(0, 1, 0);
-            var halfQuarter = Matrix4x4.CreateRotationZ(MathF.PI / 4);
-            var fullQuarter = Matrix4x4.CreateRotationZ(MathF.PI / 2);
+            var halfQuarter = Matrix4x4.CreateRotationZ(Math.PI / 4);
+            var fullQuarter = Matrix4x4.CreateRotationZ(Math.PI / 2);
 
-            (halfQuarter * point).Should().Be(new Point(-MathF.Sqrt(2) / 2, MathF.Sqrt(2) / 2, 0));
+            (halfQuarter * point).Should().Be(new Point(-Math.Sqrt(2) / 2, Math.Sqrt(2) / 2, 0));
             (fullQuarter * point).Should().Be(new Point(-1, 0, 0));
         }
 
@@ -640,7 +640,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Individual_transformations_are_applied_in_sequence()
         {
             var p = new Point(1, 0, 1);
-            var rotation = Matrix4x4.CreateRotationX(MathF.PI / 2);
+            var rotation = Matrix4x4.CreateRotationX(Math.PI / 2);
             var scaling = Matrix4x4.CreateScaling(5, 5, 5);
             var translation = Matrix4x4.CreateTranslation(10, 5, 7);
 
@@ -661,7 +661,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Chained_transformations_should_be_done_in_reverse_order()
         {
             var p = new Point(1, 0, 1);
-            var rotation = Matrix4x4.CreateRotationX(MathF.PI / 2);
+            var rotation = Matrix4x4.CreateRotationX(Math.PI / 2);
             var scaling = Matrix4x4.CreateScaling(5, 5, 5);
             var translation = Matrix4x4.CreateTranslation(10, 5, 7);
 
@@ -674,7 +674,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var p = new Point(1, 0, 1);
             var transform = Matrix4x4.Identity
-                .RotateX(MathF.PI / 2)
+                .RotateX(Math.PI / 2)
                 .Scale(5, 5, 5)
                 .Translate(10, 5, 7);
             (transform * p).Should().Be(new Point(15, 0, 7));
@@ -716,10 +716,10 @@ namespace RayTracerChallenge.Library.Tests
 
             // prettier-ignore
             var expected = new Matrix4x4(
-                -0.50709f, 0.50709f, 0.67612f, -2.36643f,
-                0.76772f, 0.60609f, 0.12122f, -2.82843f,
-                -0.35857f, 0.59761f, -0.71714f, 0.00000f,
-                0.00000f, 0.00000f, 0.00000f, 1.00000f);
+                -0.50709, 0.50709, 0.67612, -2.36643,
+                0.76772, 0.60609, 0.12122, -2.82843,
+                -0.35857, 0.59761, -0.71714, 0.00000,
+                0.00000, 0.00000, 0.00000, 1.00000);
 
             transform.Should().Be(expected);
         }

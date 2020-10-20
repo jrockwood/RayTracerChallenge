@@ -15,9 +15,9 @@ namespace RayTracerChallenge.App.Library.Extensions
         public static int ToRgb(this Color color)
         {
             Color scaled = color * 255;
-            byte r = (byte)Math.Clamp((int)MathF.Round(scaled.Red), 0, 255);
-            byte g = (byte)Math.Clamp((int)MathF.Round(scaled.Green), 0, 255);
-            byte b = (byte)Math.Clamp((int)MathF.Round(scaled.Blue), 0, 255);
+            byte r = (byte)Math.Clamp((int)Math.Round(scaled.Red), 0, 255);
+            byte g = (byte)Math.Clamp((int)Math.Round(scaled.Green), 0, 255);
+            byte b = (byte)Math.Clamp((int)Math.Round(scaled.Blue), 0, 255);
 
             return (r << 16) | (g << 8) | (b << 0);
         }

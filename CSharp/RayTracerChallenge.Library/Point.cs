@@ -21,12 +21,12 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public Point(float value)
+        public Point(double value)
         {
             X = Y = Z = value;
         }
 
-        public Point(float x, float y, float z)
+        public Point(double x, double y, double z)
         {
             X = x;
             Y = y;
@@ -37,9 +37,9 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float X { get; }
-        public float Y { get; }
-        public float Z { get; }
+        public double X { get; }
+        public double Y { get; }
+        public double Z { get; }
 
         //// ===========================================================================================================
         //// Operators

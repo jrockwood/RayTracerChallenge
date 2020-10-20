@@ -15,7 +15,7 @@ namespace RayTracerChallenge.Library.Tests
         [Test]
         public void Points_have_x_y_and_z_coordinates()
         {
-            var point = new Point(1f, 2f, 3f);
+            var point = new Point(1, 2, 3);
             point.X.Should().Be(1);
             point.Y.Should().Be(2);
             point.Z.Should().Be(3);
@@ -24,8 +24,8 @@ namespace RayTracerChallenge.Library.Tests
         [Test]
         public void Equality_should_be_equal_for_two_points_that_are_approximately_equal()
         {
-            var p1 = new Point(0.123456f, 0.123456f, 0.123456f);
-            var p2 = new Point(0.123457f, 0.123457f, 0.123457f);
+            var p1 = new Point(0.123456, 0.123456, 0.123456);
+            var p2 = new Point(0.123457, 0.123457, 0.123457);
             p1.Should().Be(p2);
             p1.GetHashCode().Should().Be(p2.GetHashCode());
             (p1 == p2).Should().BeTrue();

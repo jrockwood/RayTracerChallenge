@@ -20,10 +20,10 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public static readonly Color DefaultColor = Colors.White;
-        public const float DefaultAmbient = 0.1f;
-        public const float DefaultDiffuse = 0.9f;
-        public const float DefaultSpecular = 0.9f;
-        public const float DefaultShininess = 200.0f;
+        public const double DefaultAmbient = 0.1;
+        public const double DefaultDiffuse = 0.9;
+        public const double DefaultSpecular = 0.9;
+        public const double DefaultShininess = 200.0;
 
         //// ===========================================================================================================
         //// Constructors
@@ -31,10 +31,10 @@ namespace RayTracerChallenge.Library
 
         public Material(
             Color? color = null,
-            float ambient = DefaultAmbient,
-            float diffuse = DefaultDiffuse,
-            float specular = DefaultSpecular,
-            float shininess = DefaultShininess)
+            double ambient = DefaultAmbient,
+            double diffuse = DefaultDiffuse,
+            double specular = DefaultSpecular,
+            double shininess = DefaultShininess)
         {
             Color = color ?? DefaultColor;
             Ambient = VerifyValue(ambient, nameof(ambient));
@@ -48,10 +48,10 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public Color Color { get; }
-        public float Ambient { get; }
-        public float Diffuse { get; }
-        public float Specular { get; }
-        public float Shininess { get; }
+        public double Ambient { get; }
+        public double Diffuse { get; }
+        public double Specular { get; }
+        public double Shininess { get; }
 
         //// ===========================================================================================================
         //// Methods
@@ -62,22 +62,22 @@ namespace RayTracerChallenge.Library
             return new Material(value, Ambient, Diffuse, Specular, Shininess);
         }
 
-        public Material WithAmbient(float value)
+        public Material WithAmbient(double value)
         {
             return new Material(Color, value, Diffuse, Specular, Shininess);
         }
 
-        public Material WithDiffuse(float value)
+        public Material WithDiffuse(double value)
         {
             return new Material(Color, Ambient, value, Specular, Shininess);
         }
 
-        public Material WithSpecular(float value)
+        public Material WithSpecular(double value)
         {
             return new Material(Color, Ambient, Diffuse, value, Shininess);
         }
 
-        public Material WithShininess(float value)
+        public Material WithShininess(double value)
         {
             return new Material(Color, Ambient, Diffuse, Specular, value);
         }
@@ -95,7 +95,7 @@ namespace RayTracerChallenge.Library
 
             // lightDotNormal represents the cosine of the angle between the light vector and the normal
             // vector. A negative number means the light is on the other side of the surface.
-            float lightDotNormal = lightVector.Dot(normal);
+            double lightDotNormal = lightVector.Dot(normal);
 
             Color diffuse;
             Color specular;
@@ -113,7 +113,7 @@ namespace RayTracerChallenge.Library
                 // reflectDotEye represents the cosine of the angle between the reflection vector and the eye
                 // vector. A negative number means the light reflects away from the eye.
                 Vector reflectVector = lightVector.Negate().Reflect(normal);
-                float reflectDotEye = reflectVector.Dot(eye);
+                double reflectDotEye = reflectVector.Dot(eye);
 
                 if (reflectDotEye <= 0)
                 {
@@ -122,7 +122,7 @@ namespace RayTracerChallenge.Library
                 else
                 {
                     // Compute the specular contribution.
-                    float factor = MathF.Pow(reflectDotEye, Shininess);
+                    double factor = Math.Pow(reflectDotEye, Shininess);
                     specular = light.Intensity * Specular * factor;
                 }
             }
@@ -132,7 +132,7 @@ namespace RayTracerChallenge.Library
             return result;
         }
 
-        private static float VerifyValue(float value, string argName)
+        private static double VerifyValue(double value, string argName)
         {
             if (value < 0)
             {

@@ -20,7 +20,7 @@ namespace RayTracerChallenge.Library.Tests
         [Test]
         public void Vectors_have_x_y_and_z_coordinates()
         {
-            var vector = new Vector(1f, 2f, 3f);
+            var vector = new Vector(1, 2, 3);
             vector.X.Should().Be(1);
             vector.Y.Should().Be(2);
             vector.Z.Should().Be(3);
@@ -33,8 +33,8 @@ namespace RayTracerChallenge.Library.Tests
         [Test]
         public void Equality_should_be_equal_for_two_vectors_that_are_approximately_equal()
         {
-            var v1 = new Vector(0.123456f, 0.123456f, 0.123456f);
-            var v2 = new Vector(0.123457f, 0.123457f, 0.123457f);
+            var v1 = new Vector(0.123456, 0.123456, 0.123456);
+            var v2 = new Vector(0.123457, 0.123457, 0.123457);
             v1.Should().Be(v2);
             v1.GetHashCode().Should().Be(v2.GetHashCode());
             (v1 == v2).Should().BeTrue();
@@ -88,21 +88,21 @@ namespace RayTracerChallenge.Library.Tests
         public void Multiplying_a_vector_by_a_scalar()
         {
             var v = new Vector(1, -2, 3);
-            (v * 3.5f).Should().Be(new Vector(3.5f, -7, 10.5f));
+            (v * 3.5).Should().Be(new Vector(3.5, -7, 10.5));
         }
 
         [Test]
         public void Multiplying_a_vector_by_a_fraction()
         {
             var v = new Vector(1, -2, 3);
-            (v * 0.5f).Should().Be(new Vector(0.5f, -1, 1.5f));
+            (v * 0.5).Should().Be(new Vector(0.5, -1, 1.5));
         }
 
         [Test]
         public void Dividing_a_vector_by_a_scalar()
         {
             var v = new Vector(1, -2, 3);
-            (v / 2f).Should().Be(new Vector(0.5f, -1, 1.5f));
+            (v / 2).Should().Be(new Vector(0.5, -1, 1.5));
         }
 
         //// ===========================================================================================================
@@ -130,13 +130,13 @@ namespace RayTracerChallenge.Library.Tests
         [Test]
         public void Computing_the_magnitude_of_a_positive_vector()
         {
-            new Vector(1, 2, 3).Magnitude.Should().Be(MathF.Sqrt(14));
+            new Vector(1, 2, 3).Magnitude.Should().Be(Math.Sqrt(14));
         }
 
         [Test]
         public void Computing_the_magnitude_of_a_negative_vector()
         {
-            new Vector(-1, -2, -3).Magnitude.Should().Be(MathF.Sqrt(14));
+            new Vector(-1, -2, -3).Magnitude.Should().Be(Math.Sqrt(14));
         }
 
         //// ===========================================================================================================
@@ -147,7 +147,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Normalizing_a_vector_gives_a_unit_vector()
         {
             new Vector(4, 0, 0).Normalize().Should().Be(Vector.UnitX);
-            new Vector(1, 2, 3).Normalize().Should().Be(new Vector(0.26726f, 0.53452f, 0.80178f));
+            new Vector(1, 2, 3).Normalize().Should().Be(new Vector(0.26726, 0.53452, 0.80178));
         }
 
         [Test]
@@ -194,7 +194,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Reflect_should_reflect_a_vector_off_a_slanted_surface()
         {
             var vector = new Vector(0, -1, 0);
-            var normal = new Vector(MathF.Sqrt(2) / 2, MathF.Sqrt(2) / 2, 0);
+            var normal = new Vector(Math.Sqrt(2) / 2, Math.Sqrt(2) / 2, 0);
             var reflection = vector.Reflect(normal);
             reflection.Should().Be(new Vector(1, 0, 0));
         }

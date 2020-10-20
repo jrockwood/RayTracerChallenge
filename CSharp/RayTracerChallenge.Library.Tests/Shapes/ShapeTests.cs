@@ -73,8 +73,8 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
             var shape = new TestShape(Matrix4x4.CreateScaling(2, 2, 2));
             shape.Intersect(ray);
-            shape.SavedLocalRay!.Origin.Should().Be(new Point(0, 0, -2.5f));
-            shape.SavedLocalRay!.Direction.Should().Be(new Vector(0, 0, 0.5f));
+            shape.SavedLocalRay!.Origin.Should().Be(new Point(0, 0, -2.5));
+            shape.SavedLocalRay!.Direction.Should().Be(new Vector(0, 0, 0.5));
 
             shape = (TestShape)shape.WithTransform(Matrix4x4.CreateTranslation(5, 0, 0));
             shape.Intersect(ray);
@@ -86,16 +86,16 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         public void NormalAt_should_calculate_the_normal_ona_translated_shape()
         {
             var shape = new TestShape(Matrix4x4.CreateTranslation(0, 1, 0));
-            var normal = shape.NormalAt(new Point(0, 1.70711f, -0.70711f));
-            normal.Should().Be(new Vector(0, 0.70711f, -0.70711f));
+            var normal = shape.NormalAt(new Point(0, 1.70711, -0.70711));
+            normal.Should().Be(new Vector(0, 0.70711, -0.70711));
         }
 
         [Test]
         public void NormalAt_should_calculate_the_normal_on_a_transformed_shape()
         {
-            var shape = new TestShape(Matrix4x4.CreateRotationZ(MathF.PI / 5).Scale(1, 0.5f, 1));
-            var normal = shape.NormalAt(new Point(0, MathF.Sqrt(2) / 2, -MathF.Sqrt(2) / 2));
-            normal.Should().Be(new Vector(0, 0.97014f, -0.24254f));
+            var shape = new TestShape(Matrix4x4.CreateRotationZ(Math.PI / 5).Scale(1, 0.5, 1));
+            var normal = shape.NormalAt(new Point(0, Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2));
+            normal.Should().Be(new Vector(0, 0.97014, -0.24254));
         }
     }
 }

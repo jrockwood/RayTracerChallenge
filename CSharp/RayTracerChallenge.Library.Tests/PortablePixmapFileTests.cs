@@ -43,9 +43,9 @@ namespace RayTracerChallenge.Library.Tests
 
             var pixels = new Color[width * height];
             var file = new PortablePixmapFile(width, height, pixels);
-            pixels[0] = new Color(1.5f, 0f, 0f);
-            pixels[(1 * width) + 2] = new Color(0f, 0.5f, 0f);
-            pixels[(2 * width) + 4] = new Color(-0.5f, 0f, 1f);
+            pixels[0] = new Color(1.5, 0, 0);
+            pixels[(1 * width) + 2] = new Color(0, 0.5, 0);
+            pixels[(2 * width) + 4] = new Color(-0.5, 0, 1);
 
             string contents = await GetPpmContents(file);
             contents.Split('\n')
@@ -63,7 +63,7 @@ namespace RayTracerChallenge.Library.Tests
             const int width = 10;
             const int height = 2;
 
-            var pixels = Enumerable.Repeat(new Color(1f, 0.8f, 0.6f), width * height).ToArray();
+            var pixels = Enumerable.Repeat(new Color(1, 0.8, 0.6), width * height).ToArray();
             var file = new PortablePixmapFile(10, 2, pixels);
             string contents = await GetPpmContents(file);
             contents.Split('\n')

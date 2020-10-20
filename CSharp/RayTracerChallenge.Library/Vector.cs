@@ -24,12 +24,12 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public Vector(float value)
+        public Vector(double value)
         {
             X = Y = Z = value;
         }
 
-        public Vector(float x, float y, float z)
+        public Vector(double x, double y, double z)
         {
             X = x;
             Y = y;
@@ -40,11 +40,11 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float X { get; }
-        public float Y { get; }
-        public float Z { get; }
+        public double X { get; }
+        public double Y { get; }
+        public double Z { get; }
 
-        public float Magnitude => MathF.Sqrt(MathF.Pow(X, 2) + MathF.Pow(Y, 2) + MathF.Pow(Z, 2));
+        public double Magnitude => Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2) + Math.Pow(Z, 2));
 
         //// ===========================================================================================================
         //// Operators
@@ -90,22 +90,22 @@ namespace RayTracerChallenge.Library
             return new Vector(X - v.X, Y - v.Y, Z - v.Z);
         }
 
-        public static Vector operator *(Vector v, float scalar)
+        public static Vector operator *(Vector v, double scalar)
         {
             return v.Multiply(scalar);
         }
 
-        public Vector Multiply(float scalar)
+        public Vector Multiply(double scalar)
         {
             return new Vector(X * scalar, Y * scalar, Z * scalar);
         }
 
-        public static Vector operator /(Vector v, float scalar)
+        public static Vector operator /(Vector v, double scalar)
         {
             return v.Divide(scalar);
         }
 
-        public Vector Divide(float scalar)
+        public Vector Divide(double scalar)
         {
             return new Vector(X / scalar, Y / scalar, Z / scalar);
         }
@@ -150,11 +150,11 @@ namespace RayTracerChallenge.Library
 
         public Vector Normalize()
         {
-            float magnitude = Magnitude;
+            double magnitude = Magnitude;
             return new Vector(X / magnitude, Y / magnitude, Z / magnitude);
         }
 
-        public float Dot(Vector other)
+        public double Dot(Vector other)
         {
             return (X * other.X) + (Y * other.Y) + (Z * other.Z);
         }

@@ -39,19 +39,19 @@ namespace RayTracerChallenge.Library.Shapes
             Vector sphereToRay = localRay.Origin - Point.Zero;
 
             // Calculate the discriminant using this formula: b^2 - 4ac
-            float a = localRay.Direction.Dot(localRay.Direction);
-            float b = 2 * localRay.Direction.Dot(sphereToRay);
-            float c = sphereToRay.Dot(sphereToRay) - 1;
-            float discriminant = (b * b) - (4 * a * c);
+            double a = localRay.Direction.Dot(localRay.Direction);
+            double b = 2 * localRay.Direction.Dot(sphereToRay);
+            double c = sphereToRay.Dot(sphereToRay) - 1;
+            double discriminant = (b * b) - (4 * a * c);
 
             if (discriminant < 0)
             {
                 return new IntersectionList();
             }
 
-            float sqrtOfDiscriminant = MathF.Sqrt(discriminant);
-            float t1 = (-b - sqrtOfDiscriminant) / (2 * a);
-            float t2 = (-b + sqrtOfDiscriminant) / (2 * a);
+            double sqrtOfDiscriminant = Math.Sqrt(discriminant);
+            double t1 = (-b - sqrtOfDiscriminant) / (2 * a);
+            double t2 = (-b + sqrtOfDiscriminant) / (2 * a);
 
             return new IntersectionList(new Intersection(t1, this), new Intersection(t2, this));
         }

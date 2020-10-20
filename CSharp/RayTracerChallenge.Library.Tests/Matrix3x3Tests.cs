@@ -18,16 +18,16 @@ namespace RayTracerChallenge.Library.Tests
         {
             var matrix = new Matrix3x3(
                 1, 2, 3,
-                4.5f, 5.5f, 6.5f,
+                4.5, 5.5, 6.5,
                 7, 8, 9);
 
             matrix.M00.Should().Be(1);
             matrix.M01.Should().Be(2);
             matrix.M02.Should().Be(3);
 
-            matrix.M10.Should().Be(4.5f);
-            matrix.M11.Should().Be(5.5f);
-            matrix.M12.Should().Be(6.5f);
+            matrix.M10.Should().Be(4.5);
+            matrix.M11.Should().Be(5.5);
+            matrix.M12.Should().Be(6.5);
 
             matrix.M20.Should().Be(7);
             matrix.M21.Should().Be(8);
@@ -50,9 +50,9 @@ namespace RayTracerChallenge.Library.Tests
         {
             var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
             var b = new Matrix3x3(
-                0.999999f, 2.000001f, 2.999999f,
-                4.000001f, 4.999999f, 6.000001f,
-                6.999999f, 8.000001f, 8.999999f);
+                0.999999, 2.000001, 2.999999,
+                4.000001, 4.999999, 6.000001,
+                6.999999, 8.000001, 8.999999);
 
             a.Should().Be(b);
             (a == b).Should().BeTrue();

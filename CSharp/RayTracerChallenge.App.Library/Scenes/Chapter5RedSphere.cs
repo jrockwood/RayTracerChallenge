@@ -27,17 +27,17 @@ namespace RayTracerChallenge.App.Library.Scenes
             var sphere = new Sphere();
 
             var rayOrigin = new Point(0, 0, -5);
-            const float wallZ = 10f;
-            const float wallSize = 7.0f;
+            const double wallZ = 10;
+            const double wallSize = 7.0;
 
-            float pixelSize = wallSize / canvas.Width;
-            const float halfWallSize = wallSize / 2;
+            double pixelSize = wallSize / canvas.Width;
+            const double halfWallSize = wallSize / 2;
 
             // For each row of pixels in the canvas...
             for (int y = 0; y < canvas.Height; y++)
             {
                 // Compute the world y coordinate (top = +half, bottom = -half).
-                float worldY = halfWallSize - (pixelSize * y);
+                double worldY = halfWallSize - (pixelSize * y);
 
                 // For each pixel in the row...
                 for (int x = 0; x < canvas.Width; x++)
@@ -49,7 +49,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                     }
 
                     // Compute the world x coordinate (left = -half, right = +half).
-                    float worldX = -halfWallSize + (pixelSize * x);
+                    double worldX = -halfWallSize + (pixelSize * x);
 
                     // Describe the point on the wall that the ray will target.
                     var position = new Point(worldX, worldY, wallZ);

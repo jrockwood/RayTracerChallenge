@@ -30,9 +30,9 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public Matrix3x3(
-            float m00, float m01, float m02,
-            float m10, float m11, float m12,
-            float m20, float m21, float m22)
+            double m00, double m01, double m02,
+            double m10, double m11, double m12,
+            double m20, double m21, double m22)
         {
             M00 = m00;
             M01 = m01;
@@ -51,7 +51,7 @@ namespace RayTracerChallenge.Library
         //// Indexers
         //// ===========================================================================================================
 
-        public float this[int row, int col] =>
+        public double this[int row, int col] =>
             (row, col) switch
             {
                 (0, 0) => M00,
@@ -72,23 +72,23 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float M00 { get; }
-        public float M01 { get; }
-        public float M02 { get; }
+        public double M00 { get; }
+        public double M01 { get; }
+        public double M02 { get; }
 
-        public float M10 { get; }
-        public float M11 { get; }
-        public float M12 { get; }
+        public double M10 { get; }
+        public double M11 { get; }
+        public double M12 { get; }
 
-        public float M20 { get; }
-        public float M21 { get; }
-        public float M22 { get; }
+        public double M20 { get; }
+        public double M21 { get; }
+        public double M22 { get; }
 
-        public float Determinant
+        public double Determinant
         {
             get
             {
-                float result = 0;
+                double result = 0;
                 for (int column = 0; column <= 2; column++)
                 {
                     result += this[0, column] * Cofactor(0, column);
@@ -169,15 +169,15 @@ namespace RayTracerChallenge.Library
             return new Matrix2x2(this[row0, col0], this[row0, col1], this[row1, col0], this[row1, col1]);
         }
 
-        internal float Minor(int row, int column)
+        internal double Minor(int row, int column)
         {
             var submatrix = Submatrix(row, column);
             return submatrix.Determinant;
         }
 
-        internal float Cofactor(int row, int column)
+        internal double Cofactor(int row, int column)
         {
-            float minor = Minor(row, column);
+            double minor = Minor(row, column);
 
             // If row + column is odd, then we need to negate the minor.
             if ((row + column) % 2 == 1)

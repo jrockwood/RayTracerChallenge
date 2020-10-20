@@ -18,7 +18,7 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public Intersection(float t, Shape shape)
+        public Intersection(double t, Shape shape)
         {
             T = t;
             Shape = shape;
@@ -28,7 +28,7 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float T { get; }
+        public double T { get; }
         public Shape Shape { get; }
     }
 }

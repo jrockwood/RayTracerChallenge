@@ -19,7 +19,7 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         private IntersectionState(
-            float t,
+            double t,
             Shape shape,
             Point point,
             Point overPoint,
@@ -40,7 +40,7 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float T { get; }
+        public double T { get; }
         public Shape Shape { get; }
 
         public Point Point { get; }
@@ -57,7 +57,7 @@ namespace RayTracerChallenge.Library
         public static IntersectionState Create(Intersection intersection, Ray ray)
         {
             // Copy the intersection's properties for convenience.
-            float t = intersection.T;
+            double t = intersection.T;
             Shape shape = intersection.Shape;
 
             // Precompute some useful values.
