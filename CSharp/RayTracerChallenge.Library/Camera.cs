@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // <copyright file="Camera.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
@@ -9,6 +9,7 @@ namespace RayTracerChallenge.Library
 {
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
 
     public class Camera
     {
@@ -179,30 +180,37 @@ namespace RayTracerChallenge.Library
 
             int totalPixels = CanvasWidth * CanvasHeight;
 
-            for (int y = 0; y < CanvasHeight; y++)
-            {
-                // Check for cancellation.
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    break;
-                }
+            // Run the loop in parallel.
+            var parallelOptions = new ParallelOptions { CancellationToken = cancellationToken };
 
-                for (int x = 0; x < CanvasWidth; x++)
+            Parallel.For(
+                0,
+                CanvasHeight,
+                parallelOptions,
+                (int y, ParallelLoopState state) =>
                 {
                     // Check for cancellation.
-                    if (cancellationToken.IsCancellationRequested)
+                    if (state.ShouldExitCurrentIteration)
                     {
-                        break;
+                        return;
                     }
 
-                    Ray ray = RayForPixel(x, y);
-                    Color color = world.ColorAt(ray);
-                    canvas.SetPixel(x, y, color);
+                    for (int x = 0; x < CanvasWidth; x++)
+                    {
+                        // Check for cancellation.
+                        if (state.ShouldExitCurrentIteration)
+                        {
+                            return;
+                        }
 
-                    // Report the progress.
-                    RenderPercentComplete = (int)((((y * CanvasWidth) + x) / (double)totalPixels) * 100.0);
-                }
-            }
+                        Ray ray = RayForPixel(x, y);
+                        Color color = world.ColorAt(ray);
+                        canvas.SetPixel(x, y, color);
+
+                        // Report the progress.
+                        RenderPercentComplete = (int)((((y * CanvasWidth) + x) / (double)totalPixels) * 100.0);
+                    }
+                });
 
             // Report that we're done.
             RenderPercentComplete = 100;
