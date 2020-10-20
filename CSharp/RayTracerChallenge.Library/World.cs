@@ -42,6 +42,11 @@ namespace RayTracerChallenge.Library
 
         public ImmutableArray<Shape> Shapes { get; }
 
+        public World WithAddedShapes(params Shape[] shapes)
+        {
+            return new World(Light, Shapes.AddRange(shapes));
+        }
+
         public World WithShapes(ImmutableArray<Shape> value)
         {
             return new World(Light, value);
@@ -76,7 +81,15 @@ namespace RayTracerChallenge.Library
 
         internal Color ShadeHit(IntersectionState state)
         {
-            Color color = state.Shape.Material.CalculateLighting(Light, state.Point, state.Eye, state.Normal);
+            bool isShadowed = IsShadowed(state.OverPoint);
+
+            Color color = state.Shape.Material.CalculateLighting(
+                Light,
+                state.Point,
+                state.Eye,
+                state.Normal,
+                isShadowed);
+
             return color;
         }
 
@@ -100,6 +113,19 @@ namespace RayTracerChallenge.Library
             var state = IntersectionState.Create(hit, ray);
             Color color = ShadeHit(state);
             return color;
+        }
+
+        public bool IsShadowed(Point point)
+        {
+            Vector pointToLightVector = Light.Position - point;
+            float distance = pointToLightVector.Magnitude;
+            Vector direction = pointToLightVector.Normalize();
+
+            var ray = new Ray(point, direction);
+            IntersectionList intersections = Intersect(ray);
+            Intersection? hit = intersections.Hit;
+
+            return hit?.T < distance;
         }
 
         /// <summary>

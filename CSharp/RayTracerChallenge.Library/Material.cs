@@ -82,7 +82,7 @@ namespace RayTracerChallenge.Library
             return new Material(Color, Ambient, Diffuse, Specular, value);
         }
 
-        public Color CalculateLighting(Light light, Point point, Vector eye, Vector normal)
+        public Color CalculateLighting(Light light, Point point, Vector eye, Vector normal, bool isInShadow)
         {
             // Combine the surface color with the light's color/intensity.
             Color effectiveColor = Color * light.Intensity;
@@ -128,7 +128,7 @@ namespace RayTracerChallenge.Library
             }
 
             // Add the three contributions together to get the final shading.
-            var result = ambient + diffuse + specular;
+            Color result = isInShadow ? ambient : ambient + diffuse + specular;
             return result;
         }
 

@@ -45,7 +45,7 @@ namespace RayTracerChallenge.Library.Tests
         //// ===========================================================================================================
 
         [Test]
-        public void Shading_an_intersection()
+        public void ShadeHit_should_shade_an_intersection()
         {
             var world = World.CreateDefaultWorld();
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
@@ -57,7 +57,7 @@ namespace RayTracerChallenge.Library.Tests
         }
 
         [Test]
-        public void Shading_an_intersection_from_the_inside()
+        public void ShadeHit_should_shade_an_intersection_from_the_inside()
         {
             var world = World.CreateDefaultWorld().WithLight(new PointLight(new Point(0, 0.25f, 0), Colors.White));
             var ray = new Ray(new Point(0, 0, 0), Vector.UnitZ);
@@ -66,6 +66,23 @@ namespace RayTracerChallenge.Library.Tests
             var state = IntersectionState.Create(intersection, ray);
             Color color = world.ShadeHit(state);
             color.Should().Be(new Color(0.90498f, 0.90498f, 0.90498f));
+        }
+
+        [Test]
+        public void ShadeHit_should_shade_an_intersection_in_shadow()
+        {
+            var sphere1 = new Sphere();
+            var sphere2 = new Sphere(Matrix4x4.CreateTranslation(0, 0, 10));
+            var world = World.CreateDefaultWorld()
+                .WithLight(new PointLight(new Point(0, 0, -10), Colors.White))
+                .WithAddedShapes(sphere1, sphere2);
+
+            var ray = new Ray(new Point(0, 0, 5), Vector.UnitZ);
+            var intersection = new Intersection(4, sphere2);
+            var state = IntersectionState.Create(intersection, ray);
+
+            Color color = world.ShadeHit(state);
+            color.Should().Be(new Color(0.1f, 0.1f, 0.1f));
         }
 
         //// ===========================================================================================================
@@ -101,6 +118,42 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, 0.75f), -Vector.UnitZ);
             Color color = world.ColorAt(ray);
             color.Should().Be(inner.Material.Color);
+        }
+
+        //// ===========================================================================================================
+        //// IsShadowed Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void IsShadowed_should_return_false_when_nothing_is_collinear_with_the_point_and_the_light()
+        {
+            var world = World.CreateDefaultWorld();
+            var p = new Point(0, 10, 0);
+            world.IsShadowed(p).Should().BeFalse();
+        }
+
+        [Test]
+        public void IsShadowed_should_return_true_when_an_object_is_between_the_point_and_the_light()
+        {
+            var world = World.CreateDefaultWorld();
+            var p = new Point(10, -10, 10);
+            world.IsShadowed(p).Should().BeTrue();
+        }
+
+        [Test]
+        public void IsShadowed_should_return_false_when_an_object_is_behind_the_light()
+        {
+            var world = World.CreateDefaultWorld();
+            var p = new Point(-20, 20, -20);
+            world.IsShadowed(p).Should().BeFalse();
+        }
+
+        [Test]
+        public void IsShadowed_should_return_false_when_an_object_is_behind_the_point()
+        {
+            var world = World.CreateDefaultWorld();
+            var p = new Point(-2, 2, -2);
+            world.IsShadowed(p).Should().BeFalse();
         }
     }
 }

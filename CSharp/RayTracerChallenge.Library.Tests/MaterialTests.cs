@@ -62,7 +62,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal);
+            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(1.9f, 1.9f, 1.9f));
         }
 
@@ -72,7 +72,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, MathF.Sqrt(2) / 2, -MathF.Sqrt(2) / 2);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal);
+            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(1.0f, 1.0f, 1.0f));
         }
 
@@ -82,7 +82,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 10, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal);
+            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(0.7364f, 0.7364f, 0.7364f));
         }
 
@@ -92,7 +92,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, -MathF.Sqrt(2) / 2, -MathF.Sqrt(2) / 2);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 10, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal);
+            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(1.63639f, 1.63639f, 1.63639f));
         }
 
@@ -102,7 +102,17 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, 10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal);
+            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
+            color.Should().Be(new Color(0.1f, 0.1f, 0.1f));
+        }
+
+        [Test]
+        public void Lighting_with_the_surface_in_shadow()
+        {
+            var eye = new Vector(0, 0, -1);
+            var normal = new Vector(0, 0, -1);
+            var light = new PointLight(new Point(0, 0, -10), Colors.White);
+            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, isInShadow: true);
             color.Should().Be(new Color(0.1f, 0.1f, 0.1f));
         }
     }
