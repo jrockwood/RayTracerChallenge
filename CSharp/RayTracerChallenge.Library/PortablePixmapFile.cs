@@ -104,7 +104,7 @@ namespace RayTracerChallenge.Library
                 return string.Join('\n', _lines) + '\n' + _lineBuilder;
             }
 
-            private LineBuilder AppendColorComponent(float scaledComponent)
+            private LineBuilder AppendColorComponent(double scaledComponent)
             {
                 string clamped = Math.Clamp((int)Math.Round(scaledComponent), 0, 255)
                     .ToString(CultureInfo.InvariantCulture);

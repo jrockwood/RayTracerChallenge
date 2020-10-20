@@ -25,7 +25,7 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public Matrix2x2(float m00, float m01, float m10, float m11)
+        public Matrix2x2(double m00, double m01, double m10, double m11)
         {
             M00 = m00;
             M01 = m01;
@@ -37,7 +37,7 @@ namespace RayTracerChallenge.Library
         //// Indexers
         //// ===========================================================================================================
 
-        public float this[int row, int col] =>
+        public double this[int row, int col] =>
             (row, col) switch
             {
                 (0, 0) => M00,
@@ -51,12 +51,12 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float M00 { get; }
-        public float M01 { get; }
-        public float M10 { get; }
-        public float M11 { get; }
+        public double M00 { get; }
+        public double M01 { get; }
+        public double M10 { get; }
+        public double M11 { get; }
 
-        public float Determinant => (M00 * M11) - (M01 * M10);
+        public double Determinant => (M00 * M11) - (M01 * M10);
 
         //// ===========================================================================================================
         //// Equality Members

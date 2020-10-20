@@ -51,5 +51,17 @@ namespace RayTracerChallenge.Library.Tests
             // Normal would have been (0, 0, 1) but is inverted!
             state.Normal.Should().Be(new Vector(0, 0, -1));
         }
+
+        [Test]
+        public void Precomputing_the_hit_should_offset_the_point()
+        {
+            var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
+            var shape = new Sphere(Matrix4x4.CreateTranslation(0, 0, 1));
+            var intersection = new Intersection(5, shape);
+            var state = IntersectionState.Create(intersection, ray);
+
+            state.OverPoint.Z.Should().BeLessThan(-NumberExtensions.Epsilon / 2);
+            state.Point.Z.Should().BeGreaterThan(state.OverPoint.Z);
+        }
     }
 }

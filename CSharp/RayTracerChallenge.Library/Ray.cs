@@ -30,7 +30,7 @@ namespace RayTracerChallenge.Library
         //// Methods
         //// ===========================================================================================================
 
-        public Point PositionAt(float t)
+        public Point PositionAt(double t)
         {
             return Origin + (Direction * t);
         }

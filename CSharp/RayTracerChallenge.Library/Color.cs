@@ -15,7 +15,7 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public Color(float red, float green, float blue)
+        public Color(double red, double green, double blue)
         {
             Red = red;
             Green = green;
@@ -26,9 +26,9 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float Red { get; }
-        public float Green { get; }
-        public float Blue { get; }
+        public double Red { get; }
+        public double Green { get; }
+        public double Blue { get; }
 
         //// ===========================================================================================================
         //// Operators
@@ -49,7 +49,7 @@ namespace RayTracerChallenge.Library
             return new Color(c.Red * scalar, c.Green * scalar, c.Blue * scalar);
         }
 
-        public static Color operator *(Color c, float scalar)
+        public static Color operator *(Color c, double scalar)
         {
             return new Color(c.Red * scalar, c.Green * scalar, c.Blue * scalar);
         }
@@ -102,15 +102,15 @@ namespace RayTracerChallenge.Library
 
     public static class Colors
     {
-        public static readonly Color White = new Color(1f, 1f, 1f);
-        public static readonly Color Black = new Color(0f, 0f, 0f);
+        public static readonly Color White = new Color(1, 1, 1);
+        public static readonly Color Black = new Color(0, 0, 0);
 
-        public static readonly Color Red = new Color(1f, 0f, 0f);
-        public static readonly Color Green = new Color(0f, 1f, 0f);
-        public static readonly Color Blue = new Color(0f, 0f, 1f);
+        public static readonly Color Red = new Color(1, 0, 0);
+        public static readonly Color Green = new Color(0, 1, 0);
+        public static readonly Color Blue = new Color(0, 0, 1);
 
-        public static readonly Color Yellow = new Color(1f, 1f, 0f);
-        public static readonly Color Magenta = new Color(1f, 0f, 1f);
-        public static readonly Color Cyan = new Color(0f, 1f, 1f);
+        public static readonly Color Yellow = new Color(1, 1, 0);
+        public static readonly Color Magenta = new Color(1, 0, 1);
+        public static readonly Color Cyan = new Color(0, 1, 1);
     }
 }

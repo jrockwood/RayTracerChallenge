@@ -16,12 +16,12 @@ namespace RayTracerChallenge.Library.Tests
         [Test]
         public void A_2x2_matrix_should_store_the_rows_and_columns()
         {
-            var matrix = new Matrix2x2(1, 2, 3.5f, 4.5f);
+            var matrix = new Matrix2x2(1, 2, 3.5, 4.5);
 
             matrix.M00.Should().Be(1);
             matrix.M01.Should().Be(2);
-            matrix.M10.Should().Be(3.5f);
-            matrix.M11.Should().Be(4.5f);
+            matrix.M10.Should().Be(3.5);
+            matrix.M11.Should().Be(4.5);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Equality_should_be_true_for_roughly_equivalent_matrices()
         {
             var a = new Matrix2x2(1, 2, 3, 4);
-            var b = new Matrix2x2(0.999999f, 2.000001f, 2.999999f, 4.000001f);
+            var b = new Matrix2x2(0.999999, 2.000001, 2.999999, 4.000001);
             a.Should().Be(b);
             (a == b).Should().BeTrue();
             (a != b).Should().BeFalse();
@@ -61,7 +61,7 @@ namespace RayTracerChallenge.Library.Tests
         public void ToString_should_display_in_a_friendly_square()
         {
             new Matrix2x2(1, 2, 3, 4).ToString().Should().Be("|1 2|\n|3 4|");
-            new Matrix2x2(1.1f, 2.22f, 3.333f, 4.4444f).ToString().Should().Be("|1.1 2.22|\n|3.333 4.4444|");
+            new Matrix2x2(1.1, 2.22, 3.333, 4.4444).ToString().Should().Be("|1.1 2.22|\n|3.333 4.4444|");
         }
 
         [Test]

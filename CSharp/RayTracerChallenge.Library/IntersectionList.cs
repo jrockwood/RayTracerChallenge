@@ -44,7 +44,7 @@ namespace RayTracerChallenge.Library
 
         public int Count => _intersections.Length;
 
-        public IEnumerable<float> Ts => _intersections.Select(x => x.T);
+        public IEnumerable<double> Ts => _intersections.Select(x => x.T);
         public IEnumerable<Shape> Shapes => _intersections.Select(x => x.Shape);
 
         public Intersection? Hit => _intersections.FirstOrDefault(x => x.T >= 0);

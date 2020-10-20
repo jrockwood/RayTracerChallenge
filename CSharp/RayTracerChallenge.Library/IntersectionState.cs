@@ -18,11 +18,19 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        private IntersectionState(float t, Shape shape, Point point, Vector eye, Vector normal, bool isInside)
+        private IntersectionState(
+            double t,
+            Shape shape,
+            Point point,
+            Point overPoint,
+            Vector eye,
+            Vector normal,
+            bool isInside)
         {
             T = t;
             Shape = shape;
             Point = point;
+            OverPoint = overPoint;
             Eye = eye;
             Normal = normal;
             IsInside = isInside;
@@ -32,9 +40,12 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float T { get; }
+        public double T { get; }
         public Shape Shape { get; }
+
         public Point Point { get; }
+        public Point OverPoint { get; }
+
         public Vector Eye { get; }
         public Vector Normal { get; }
         public bool IsInside { get; }
@@ -46,7 +57,7 @@ namespace RayTracerChallenge.Library
         public static IntersectionState Create(Intersection intersection, Ray ray)
         {
             // Copy the intersection's properties for convenience.
-            float t = intersection.T;
+            double t = intersection.T;
             Shape shape = intersection.Shape;
 
             // Precompute some useful values.
@@ -61,7 +72,9 @@ namespace RayTracerChallenge.Library
                 normal = -normal;
             }
 
-            return new IntersectionState(t, shape, point, eye, normal, isInside);
+            Point overPoint = point + (normal * NumberExtensions.Epsilon);
+
+            return new IntersectionState(t, shape, point, overPoint, eye, normal, isInside);
         }
     }
 }

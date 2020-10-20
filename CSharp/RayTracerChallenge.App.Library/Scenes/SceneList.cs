@@ -71,6 +71,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 new Chapter5RedSphere(),
                 new Chapter6ShadedSphere(),
                 new Chapter7SixSpheres(),
+                new Chapter8ShadowPuppets(),
             };
         }
     }

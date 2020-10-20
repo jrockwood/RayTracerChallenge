@@ -24,7 +24,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
             var sphere = new Sphere();
             var points = sphere.Intersect(ray).Ts;
-            points.Should().HaveCount(2).And.ContainInOrder(4.0f, 6.0f);
+            points.Should().HaveCount(2).And.ContainInOrder(4.0, 6.0);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var ray = new Ray(Point.Zero, Vector.UnitZ);
             var s = new Sphere();
             var xs = s.Intersect(ray);
-            xs.Ts.Should().HaveCount(2).And.ContainInOrder(-1.0f, 1.0f);
+            xs.Ts.Should().HaveCount(2).And.ContainInOrder(-1.0, 1.0);
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var ray = new Ray(new Point(0, 0, 5), Vector.UnitZ);
             var s = new Sphere();
             var xs = s.Intersect(ray);
-            xs.Ts.Should().HaveCount(2).And.ContainInOrder(-6.0f, -4.0f);
+            xs.Ts.Should().HaveCount(2).And.ContainInOrder(-6.0, -4.0);
         }
 
         //// ===========================================================================================================
@@ -104,7 +104,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         public void NormalAt_should_return_the_normal_on_a_sphere_at_a_non_axial_point()
         {
             var sphere = new Sphere();
-            float sqrt3Over3 = MathF.Sqrt(3) / 3;
+            double sqrt3Over3 = Math.Sqrt(3) / 3;
             var normal = sphere.NormalAt(new Point(sqrt3Over3, sqrt3Over3, sqrt3Over3));
             normal.Should().Be(new Vector(sqrt3Over3, sqrt3Over3, sqrt3Over3));
         }
@@ -113,7 +113,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         public void NormalAt_should_return_a_normalized_vector()
         {
             var sphere = new Sphere();
-            float sqrt3Over3 = MathF.Sqrt(3) / 3;
+            double sqrt3Over3 = Math.Sqrt(3) / 3;
             var normal = sphere.NormalAt(new Point(sqrt3Over3, sqrt3Over3, sqrt3Over3));
             normal.Should().Be(normal.Normalize());
         }

@@ -30,7 +30,7 @@ namespace RayTracerChallenge.Library.Tests
             ray.PositionAt(0).Should().Be(new Point(2, 3, 4));
             ray.PositionAt(1).Should().Be(new Point(3, 3, 4));
             ray.PositionAt(-1).Should().Be(new Point(1, 3, 4));
-            ray.PositionAt(2.5f).Should().Be(new Point(4.5f, 3, 4));
+            ray.PositionAt(2.5).Should().Be(new Point(4.5, 3, 4));
         }
 
         [Test]

@@ -29,10 +29,10 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public Matrix4x4(
-            float m00, float m01, float m02, float m03,
-            float m10, float m11, float m12, float m13,
-            float m20, float m21, float m22, float m23,
-            float m30, float m31, float m32, float m33)
+            double m00, double m01, double m02, double m03,
+            double m10, double m11, double m12, double m13,
+            double m20, double m21, double m22, double m23,
+            double m30, double m31, double m32, double m33)
         {
             M00 = m00;
             M01 = m01;
@@ -59,7 +59,7 @@ namespace RayTracerChallenge.Library
         //// Indexers
         //// ===========================================================================================================
 
-        public float this[int row, int col] =>
+        public double this[int row, int col] =>
             (row, col) switch
             {
                 (0, 0) => M00,
@@ -89,31 +89,31 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public float M00 { get; }
-        public float M01 { get; }
-        public float M02 { get; }
-        public float M03 { get; }
+        public double M00 { get; }
+        public double M01 { get; }
+        public double M02 { get; }
+        public double M03 { get; }
 
-        public float M10 { get; }
-        public float M11 { get; }
-        public float M12 { get; }
-        public float M13 { get; }
+        public double M10 { get; }
+        public double M11 { get; }
+        public double M12 { get; }
+        public double M13 { get; }
 
-        public float M20 { get; }
-        public float M21 { get; }
-        public float M22 { get; }
-        public float M23 { get; }
+        public double M20 { get; }
+        public double M21 { get; }
+        public double M22 { get; }
+        public double M23 { get; }
 
-        public float M30 { get; }
-        public float M31 { get; }
-        public float M32 { get; }
-        public float M33 { get; }
+        public double M30 { get; }
+        public double M31 { get; }
+        public double M32 { get; }
+        public double M33 { get; }
 
-        public float Determinant
+        public double Determinant
         {
             get
             {
-                float result = 0;
+                double result = 0;
 
                 for (int column = 0; column <= 3; column++)
                 {
@@ -172,9 +172,9 @@ namespace RayTracerChallenge.Library
 
         public Point Multiply(Point point)
         {
-            float x = (M00 * point.X) + (M01 * point.Y) + (M02 * point.Z) + M03;
-            float y = (M10 * point.X) + (M11 * point.Y) + (M12 * point.Z) + M13;
-            float z = (M20 * point.X) + (M21 * point.Y) + (M22 * point.Z) + M23;
+            double x = (M00 * point.X) + (M01 * point.Y) + (M02 * point.Z) + M03;
+            double y = (M10 * point.X) + (M11 * point.Y) + (M12 * point.Z) + M13;
+            double z = (M20 * point.X) + (M21 * point.Y) + (M22 * point.Z) + M23;
 
             return new Point(x, y, z);
         }
@@ -186,9 +186,9 @@ namespace RayTracerChallenge.Library
 
         public Vector Multiply(Vector vector)
         {
-            float x = (M00 * vector.X) + (M01 * vector.Y) + (M02 * vector.Z);
-            float y = (M10 * vector.X) + (M11 * vector.Y) + (M12 * vector.Z);
-            float z = (M20 * vector.X) + (M21 * vector.Y) + (M22 * vector.Z);
+            double x = (M00 * vector.X) + (M01 * vector.Y) + (M02 * vector.Z);
+            double y = (M10 * vector.X) + (M11 * vector.Y) + (M12 * vector.Z);
+            double z = (M20 * vector.X) + (M21 * vector.Y) + (M22 * vector.Z);
 
             return new Vector(x, y, z);
         }
@@ -288,15 +288,15 @@ namespace RayTracerChallenge.Library
                 this[row2, col0], this[row2, col1], this[row2, col2]);
         }
 
-        internal float Minor(int row, int column)
+        internal double Minor(int row, int column)
         {
             var submatrix = Submatrix(row, column);
             return submatrix.Determinant;
         }
 
-        internal float Cofactor(int row, int column)
+        internal double Cofactor(int row, int column)
         {
-            float minor = Minor(row, column);
+            double minor = Minor(row, column);
 
             // If row + column is odd, then we need to negate the minor.
             if ((row + column) % 2 == 1)
@@ -315,20 +315,20 @@ namespace RayTracerChallenge.Library
             }
 
             // Initialize the new matrix.
-            float[][] newMatrix = new float[4][];
+            double[][] newMatrix = new double[4][];
             for (int row = 0; row < 4; row++)
             {
-                newMatrix[row] = new float[4];
+                newMatrix[row] = new double[4];
             }
 
             // Calculate the determinant outside of the loop.
-            float determinant = Determinant;
+            double determinant = Determinant;
 
             for (int row = 0; row < 4; row++)
             {
                 for (int col = 0; col < 4; col++)
                 {
-                    float c = Cofactor(row, col);
+                    double c = Cofactor(row, col);
 
                     // Note the "col, row" here instead of "row, col", which transposes the matrix.
                     newMatrix[col][row] = c / determinant;
@@ -342,7 +342,7 @@ namespace RayTracerChallenge.Library
                 newMatrix[3][0], newMatrix[3][1], newMatrix[3][2], newMatrix[3][3]);
         }
 
-        public static Matrix4x4 CreateTranslation(float x, float y, float z)
+        public static Matrix4x4 CreateTranslation(double x, double y, double z)
         {
             return new Matrix4x4(
                 1, 0, 0, x,
@@ -351,12 +351,12 @@ namespace RayTracerChallenge.Library
                 0, 0, 0, 1);
         }
 
-        public Matrix4x4 Translate(float x, float y, float z)
+        public Matrix4x4 Translate(double x, double y, double z)
         {
             return CreateTranslation(x, y, z) * this;
         }
 
-        public static Matrix4x4 CreateScaling(float x, float y, float z)
+        public static Matrix4x4 CreateScaling(double x, double y, double z)
         {
             return new Matrix4x4(
                 x, 0, 0, 0,
@@ -365,15 +365,15 @@ namespace RayTracerChallenge.Library
                 0, 0, 0, 1);
         }
 
-        public Matrix4x4 Scale(float x, float y, float z)
+        public Matrix4x4 Scale(double x, double y, double z)
         {
             return CreateScaling(x, y, z) * this;
         }
 
-        public static Matrix4x4 CreateRotationX(float radians)
+        public static Matrix4x4 CreateRotationX(double radians)
         {
-            float cos = MathF.Cos(radians);
-            float sin = MathF.Sin(radians);
+            double cos = Math.Cos(radians);
+            double sin = Math.Sin(radians);
 
             return new Matrix4x4(
                 1, 0, 0, 0,
@@ -382,15 +382,15 @@ namespace RayTracerChallenge.Library
                 0, 0, 0, 1);
         }
 
-        public Matrix4x4 RotateX(float radians)
+        public Matrix4x4 RotateX(double radians)
         {
             return CreateRotationX(radians) * this;
         }
 
-        public static Matrix4x4 CreateRotationY(float radians)
+        public static Matrix4x4 CreateRotationY(double radians)
         {
-            float cos = MathF.Cos(radians);
-            float sin = MathF.Sin(radians);
+            double cos = Math.Cos(radians);
+            double sin = Math.Sin(radians);
 
             return new Matrix4x4(
                 cos, 0, sin, 0,
@@ -399,15 +399,15 @@ namespace RayTracerChallenge.Library
                 0, 0, 0, 1);
         }
 
-        public Matrix4x4 RotateY(float radians)
+        public Matrix4x4 RotateY(double radians)
         {
             return CreateRotationY(radians) * this;
         }
 
-        public static Matrix4x4 CreateRotationZ(float radians)
+        public static Matrix4x4 CreateRotationZ(double radians)
         {
-            float cos = MathF.Cos(radians);
-            float sin = MathF.Sin(radians);
+            double cos = Math.Cos(radians);
+            double sin = Math.Sin(radians);
 
             return new Matrix4x4(
                 cos, -sin, 0, 0,
@@ -416,12 +416,12 @@ namespace RayTracerChallenge.Library
                 0, 0, 0, 1);
         }
 
-        public Matrix4x4 RotateZ(float radians)
+        public Matrix4x4 RotateZ(double radians)
         {
             return CreateRotationZ(radians) * this;
         }
 
-        public static Matrix4x4 CreateShearing(float xy, float xz, float yx, float yz, float zx, float zy)
+        public static Matrix4x4 CreateShearing(double xy, double xz, double yx, double yz, double zx, double zy)
         {
             return new Matrix4x4(
                 1, xy, xz, 0,
@@ -430,7 +430,7 @@ namespace RayTracerChallenge.Library
                 0, 0, 0, 1);
         }
 
-        public Matrix4x4 Shear(float xy, float xz, float yx, float yz, float zx, float zy)
+        public Matrix4x4 Shear(double xy, double xz, double yx, double yz, double zx, double zy)
         {
             return CreateShearing(xy, xz, yx, yz, zx, zy) * this;
         }

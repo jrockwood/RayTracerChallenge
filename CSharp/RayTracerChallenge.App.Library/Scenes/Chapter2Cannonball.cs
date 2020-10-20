@@ -32,12 +32,12 @@ namespace RayTracerChallenge.App.Library.Scenes
         protected override void RenderToCanvas(Canvas canvas)
         {
             var start = new Point(0, 1, 0);
-            var velocity = new Vector(1, 1.8f, 0).Normalize() * 11.25f;
+            var velocity = new Vector(1, 1.8, 0).Normalize() * 11.25;
             var cannonball = new Projectile(start, velocity);
 
             // gravity is -0.1 unit/tick and wind is -0.01 unit/tick
-            var gravity = new Vector(0, -0.1f, 0);
-            var wind = new Vector(-0.01f, 0, 0);
+            var gravity = new Vector(0, -0.1, 0);
+            var wind = new Vector(-0.01, 0, 0);
             var environment = new Environment(gravity, wind);
 
             var color = Colors.Magenta;
@@ -46,8 +46,8 @@ namespace RayTracerChallenge.App.Library.Scenes
             while (cannonball.Position.Y > 0)
             {
                 cannonball = Tick(environment, cannonball);
-                int pointX = (int)MathF.Round(cannonball.Position.X);
-                int pointY = (int)MathF.Round(canvas.Height - cannonball.Position.Y);
+                int pointX = (int)Math.Round(cannonball.Position.X);
+                int pointY = (int)Math.Round(canvas.Height - cannonball.Position.Y);
                 canvas.FillRect(
                     top: pointY - pixelBorderSize,
                     left: pointX - pixelBorderSize,

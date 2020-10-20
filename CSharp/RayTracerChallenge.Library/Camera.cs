@@ -15,8 +15,8 @@ namespace RayTracerChallenge.Library
         //// Member Variables
         //// ===========================================================================================================
 
-        private readonly float _halfWidth;
-        private readonly float _halfHeight;
+        private readonly double _halfWidth;
+        private readonly double _halfHeight;
 
         private int _renderPercentComplete;
         private Canvas? _currentRenderingCanvas;
@@ -25,7 +25,7 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public Camera(int canvasWidth, int canvasHeight, float fieldOfView, Matrix4x4? transform = null)
+        public Camera(int canvasWidth, int canvasHeight, double fieldOfView, Matrix4x4? transform = null)
         {
             CanvasWidth = canvasWidth;
             CanvasHeight = canvasHeight;
@@ -33,8 +33,8 @@ namespace RayTracerChallenge.Library
             Transform = transform ?? Matrix4x4.Identity;
 
             // Calculate the pixel size and store some other calculations used in RayForPixel.
-            float halfView = MathF.Tan(fieldOfView / 2);
-            float aspect = (float)canvasWidth / canvasHeight;
+            double halfView = Math.Tan(fieldOfView / 2);
+            double aspect = (double)canvasWidth / canvasHeight;
 
             if (aspect >= 1)
             {
@@ -74,7 +74,7 @@ namespace RayTracerChallenge.Library
         /// Gets an angle the describes how much the camera can see. When the field of view is small, the view will be
         /// "zoomed in," magnifying a smaller area of the scene.
         /// </summary>
-        public float FieldOfView { get; }
+        public double FieldOfView { get; }
 
         /// <summary>
         /// Gets a matrix describing how the world should be oriented relative to the camera.
@@ -84,7 +84,7 @@ namespace RayTracerChallenge.Library
         /// <summary>
         /// Gets the size in world-space units of the pixels on the canvas.
         /// </summary>
-        public float PixelSize { get; }
+        public double PixelSize { get; }
 
         /// <summary>
         /// Gets the current render percent complete.
@@ -122,13 +122,13 @@ namespace RayTracerChallenge.Library
         public Ray RayForPixel(int x, int y)
         {
             // The offset from the edge of the canvas to the pixel's center.
-            float offsetX = (x + 0.5f) * PixelSize;
-            float offsetY = (y + 0.5f) * PixelSize;
+            double offsetX = (x + 0.5) * PixelSize;
+            double offsetY = (y + 0.5) * PixelSize;
 
             // The untransformed coordinates of the pixel in world space. (Remember that the camera looks
             // towards -z, so +x is to the *left*).
-            float worldX = _halfWidth - offsetX;
-            float worldY = _halfHeight - offsetY;
+            double worldX = _halfWidth - offsetX;
+            double worldY = _halfHeight - offsetY;
 
             // Using the camera matrix, transform the canvas point and the origin, and then compute the
             // ray's direction vector. (Remember that the canvas is at z=-1).
@@ -199,7 +199,7 @@ namespace RayTracerChallenge.Library
                     canvas.SetPixel(x, y, color);
 
                     // Report the progress.
-                    RenderPercentComplete = (int)((((y * CanvasWidth) + x) / (float)totalPixels) * 100.0f);
+                    RenderPercentComplete = (int)((((y * CanvasWidth) + x) / (double)totalPixels) * 100.0);
                 }
             }
 

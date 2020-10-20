@@ -14,16 +14,16 @@ namespace RayTracerChallenge.Library
     /// </summary>
     public static class NumberExtensions
     {
-        public const float Epsilon = 0.00001f;
+        public const double Epsilon = 0.00001;
 
-        public static bool IsApproximatelyEqual(this float number, float other)
+        public static bool IsApproximatelyEqual(this double number, double other)
         {
-            return MathF.Abs(number - other) < Epsilon;
+            return Math.Abs(number - other) < Epsilon;
         }
 
-        public static float RoundToEpsilon(this float number)
+        public static double RoundToEpsilon(this double number)
         {
-            return MathF.Round(number, digits: 5);
+            return Math.Round(number, digits: 5);
         }
     }
 }

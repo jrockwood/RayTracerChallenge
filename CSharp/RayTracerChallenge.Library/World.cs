@@ -42,6 +42,11 @@ namespace RayTracerChallenge.Library
 
         public ImmutableArray<Shape> Shapes { get; }
 
+        public World WithAddedShapes(params Shape[] shapes)
+        {
+            return new World(Light, Shapes.AddRange(shapes));
+        }
+
         public World WithShapes(ImmutableArray<Shape> value)
         {
             return new World(Light, value);
@@ -76,7 +81,15 @@ namespace RayTracerChallenge.Library
 
         internal Color ShadeHit(IntersectionState state)
         {
-            Color color = state.Shape.Material.CalculateLighting(Light, state.Point, state.Eye, state.Normal);
+            bool isShadowed = IsShadowed(state.OverPoint);
+
+            Color color = state.Shape.Material.CalculateLighting(
+                Light,
+                state.OverPoint,
+                state.Eye,
+                state.Normal,
+                isShadowed);
+
             return color;
         }
 
@@ -102,6 +115,19 @@ namespace RayTracerChallenge.Library
             return color;
         }
 
+        public bool IsShadowed(Point point)
+        {
+            Vector pointToLightVector = Light.Position - point;
+            double distance = pointToLightVector.Magnitude;
+            Vector direction = pointToLightVector.Normalize();
+
+            var ray = new Ray(point, direction);
+            IntersectionList intersections = Intersect(ray);
+            Intersection? hit = intersections.Hit;
+
+            return hit != null && hit.T < distance;
+        }
+
         /// <summary>
         /// Creates a world used in unit tests. The light source is at (-10, 10, -10) and contains two concentric
         /// spheres, where the outermost is a unit sphere and the innermost has a radius of 0.5. Both lie at the origin.
@@ -110,8 +136,8 @@ namespace RayTracerChallenge.Library
         {
             var light = new PointLight(new Point(-10, 10, -10), Colors.White);
             var sphere1 = new Sphere(
-                material: new Material(new Color(0.8f, 1.0f, 0.6f), diffuse: 0.7f, specular: 0.2f));
-            var sphere2 = new Sphere(Matrix4x4.CreateScaling(0.5f, 0.5f, 0.5f));
+                material: new Material(new Color(0.8, 1.0, 0.6), diffuse: 0.7, specular: 0.2));
+            var sphere2 = new Sphere(Matrix4x4.CreateScaling(0.5, 0.5, 0.5));
 
             return new World(light, sphere1, sphere2);
         }
