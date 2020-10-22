@@ -47,7 +47,7 @@ namespace RayTracerChallenge.Library.Shapes
             return LocalIntersect(localRay);
         }
 
-        protected abstract IntersectionList LocalIntersect(Ray localRay);
+        protected internal abstract IntersectionList LocalIntersect(Ray localRay);
 
         public Vector NormalAt(Point worldPoint)
         {
@@ -57,6 +57,6 @@ namespace RayTracerChallenge.Library.Shapes
             return worldNormal.Normalize();
         }
 
-        protected abstract Vector LocalNormalAt(Point localPoint);
+        protected internal abstract Vector LocalNormalAt(Point localPoint);
     }
 }
