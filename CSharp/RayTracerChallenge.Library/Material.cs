@@ -9,6 +9,8 @@ namespace RayTracerChallenge.Library
 {
     using System;
     using RayTracerChallenge.Library.Lights;
+    using RayTracerChallenge.Library.Patterns;
+    using RayTracerChallenge.Library.Shapes;
 
     /// <summary>
     /// Immutable class representing a surface material.
@@ -31,12 +33,14 @@ namespace RayTracerChallenge.Library
 
         public Material(
             Color? color = null,
+            Pattern? pattern = null,
             double ambient = DefaultAmbient,
             double diffuse = DefaultDiffuse,
             double specular = DefaultSpecular,
             double shininess = DefaultShininess)
         {
             Color = color ?? DefaultColor;
+            Pattern = pattern;
             Ambient = VerifyValue(ambient, nameof(ambient));
             Diffuse = VerifyValue(diffuse, nameof(diffuse));
             Specular = VerifyValue(specular, nameof(specular));
@@ -48,6 +52,8 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public Color Color { get; }
+        public Pattern? Pattern { get; }
+
         public double Ambient { get; }
         public double Diffuse { get; }
         public double Specular { get; }
@@ -59,33 +65,47 @@ namespace RayTracerChallenge.Library
 
         public Material WithColor(Color value)
         {
-            return new Material(value, Ambient, Diffuse, Specular, Shininess);
+            return new Material(value, Pattern, Ambient, Diffuse, Specular, Shininess);
+        }
+
+        public Material WithPattern(Pattern? value)
+        {
+            return new Material(Color, value, Ambient, Diffuse, Specular, Shininess);
         }
 
         public Material WithAmbient(double value)
         {
-            return new Material(Color, value, Diffuse, Specular, Shininess);
+            return new Material(Color, Pattern, value, Diffuse, Specular, Shininess);
         }
 
         public Material WithDiffuse(double value)
         {
-            return new Material(Color, Ambient, value, Specular, Shininess);
+            return new Material(Color, Pattern, Ambient, value, Specular, Shininess);
         }
 
         public Material WithSpecular(double value)
         {
-            return new Material(Color, Ambient, Diffuse, value, Shininess);
+            return new Material(Color, Pattern, Ambient, Diffuse, value, Shininess);
         }
 
         public Material WithShininess(double value)
         {
-            return new Material(Color, Ambient, Diffuse, Specular, value);
+            return new Material(Color, Pattern, Ambient, Diffuse, Specular, value);
         }
 
-        public Color CalculateLighting(Light light, Point point, Vector eye, Vector normal, bool isInShadow)
+        public Color CalculateLighting(
+            Shape shape,
+            Light light,
+            Point point,
+            Vector eye,
+            Vector normal,
+            bool isInShadow)
         {
+            // Get the color from the pattern if it exists.
+            Color color = Pattern?.ColorOnShapeAt(shape, point) ?? Color;
+
             // Combine the surface color with the light's color/intensity.
-            Color effectiveColor = Color * light.Intensity;
+            Color effectiveColor = color * light.Intensity;
 
             // Find the direction to the light source.
             Vector lightVector = (light.Position - point).Normalize();

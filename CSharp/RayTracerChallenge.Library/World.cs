@@ -84,6 +84,7 @@ namespace RayTracerChallenge.Library
             bool isShadowed = IsShadowed(state.OverPoint);
 
             Color color = state.Shape.Material.CalculateLighting(
+                state.Shape,
                 Light,
                 state.OverPoint,
                 state.Eye,

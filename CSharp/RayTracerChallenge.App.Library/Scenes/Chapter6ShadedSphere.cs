@@ -69,7 +69,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                         Point point = ray.PositionAt(hit.T);
                         Vector normal = hit.Shape.NormalAt(point);
                         Vector eye = ray.Direction.Negate();
-                        color = hit.Shape.Material.CalculateLighting(light, point, eye, normal, false);
+                        color = hit.Shape.Material.CalculateLighting(hit.Shape, light, point, eye, normal, false);
                         canvas.SetPixel(x, y, color);
                     }
 
