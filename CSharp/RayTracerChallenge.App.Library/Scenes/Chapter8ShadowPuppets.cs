@@ -8,11 +8,12 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
+    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
-    public class Chapter8ShadowPuppets : ComplexScene
+    public class Chapter8ShadowPuppets : Scene
     {
         public Chapter8ShadowPuppets()
             : base(
@@ -23,7 +24,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override void CreateScene(out World world, out Camera camera)
+        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
         {
             var sphereMaterial = new Material(ambient: 0.2, diffuse: 0.8, specular: 0.3, shininess: 200);
             var wristMaterial = sphereMaterial.WithColor(new Color(0.1, 1, 1));
@@ -54,10 +55,13 @@ namespace RayTracerChallenge.App.Library.Scenes
                 pinkyMaterial);
 
             var light = new PointLight(new Point(0, 0, -100), Colors.White);
-            world = new World(light, backdrop, wrist, palm, thumb, index, middle, ring, pinky);
+            var world = new World(light, backdrop, wrist, palm, thumb, index, middle, ring, pinky);
 
             var cameraTransform = Matrix4x4.CreateLookAt(new Point(40, 0, -70), new Point(0, 0, -5), Vector.UnitY);
-            camera = new Camera(CanvasWidth, CanvasHeight, 0.524, cameraTransform);
+            var camera = new Camera(CanvasWidth, CanvasHeight, 0.524, cameraTransform);
+
+            Canvas canvas = camera.Render(world, progress, cancellationToken);
+            return canvas;
         }
     }
 }

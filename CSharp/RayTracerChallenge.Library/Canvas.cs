@@ -8,29 +8,33 @@
 namespace RayTracerChallenge.Library
 {
     using System;
-    using System.Linq;
+    using System.Collections.Immutable;
 
     /// <summary>
-    /// Represents a canvas that contains a color for every pixel.
+    /// Represents an immutable canvas that contains a color for every pixel.
     /// </summary>
-    public class Canvas
+    public sealed class Canvas : ICanvas
     {
         //// ===========================================================================================================
         //// Member Variables
         //// ===========================================================================================================
 
-        private readonly Color[] _pixels;
+        private ImmutableArray<Color> _pixels;
 
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public Canvas(int width, int height)
+        internal Canvas(int width, int height, ImmutableArray<Color> pixels)
         {
+            if (pixels.Length != width * height)
+            {
+                throw new ArgumentException("The pixel array should be size 'width * height'.");
+            }
+
             Width = width;
             Height = height;
-
-            _pixels = Enumerable.Repeat(Colors.Black, width * height).ToArray();
+            _pixels = pixels;
         }
 
         //// ===========================================================================================================
@@ -48,23 +52,6 @@ namespace RayTracerChallenge.Library
         {
             int index = CalculateIndex(x, y);
             return _pixels[index];
-        }
-
-        public void SetPixel(int x, int y, Color color)
-        {
-            int index = CalculateIndex(x, y);
-            _pixels[index] = color;
-        }
-
-        public void FillRect(int top, int left, int bottom, int right, Color color)
-        {
-            for (int x = Math.Max(0, left); x <= Math.Min(right, Width - 1); x++)
-            {
-                for (int y = Math.Max(0, top); y <= Math.Min(bottom, Height - 1); y++)
-                {
-                    SetPixel(x, y, color);
-                }
-            }
         }
 
         private int CalculateIndex(int x, int y)

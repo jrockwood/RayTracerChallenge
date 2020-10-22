@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="RenderPercentCompleteEventArgs.cs" company="Justin Rockwood">
+// <copyright file="RenderProgressStep.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -7,21 +7,21 @@
 
 namespace RayTracerChallenge.Library
 {
-    using System;
-
     /// <summary>
-    /// Event args for the <see cref="Camera.RenderPercentCompleteChanged"/> event.
+    /// Contains information about a camera's render progress.
     /// </summary>
-    public sealed class RenderPercentCompleteEventArgs : EventArgs
+    public sealed class RenderProgressStep
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public RenderPercentCompleteEventArgs(int percentComplete, Canvas canvas)
+        public RenderProgressStep(int percentComplete, int pixelX, int pixelY, Color pixelColor)
         {
             PercentComplete = percentComplete;
-            Canvas = canvas;
+            PixelX = pixelX;
+            PixelY = pixelY;
+            PixelColor = pixelColor;
         }
 
         //// ===========================================================================================================
@@ -29,9 +29,8 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public int PercentComplete { get; }
-
-        public string PercentCompleteAsString => PercentComplete + "%";
-
-        public Canvas Canvas { get; }
+        public int PixelX { get; }
+        public int PixelY { get; }
+        public Color PixelColor { get; }
     }
 }

@@ -7,17 +7,17 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
-    using RayTracerChallenge.Library;
+    using System.Windows.Media.Imaging;
 
     public sealed class SceneRenderProgress
     {
-        public SceneRenderProgress(int percentComplete, Canvas canvas)
+        public SceneRenderProgress(int percentComplete, BitmapSource renderedBitmap)
         {
             PercentComplete = percentComplete;
-            Canvas = canvas;
+            RenderedBitmap = renderedBitmap;
         }
 
         public int PercentComplete { get; }
-        public Canvas Canvas { get; }
+        public BitmapSource RenderedBitmap { get; }
     }
 }

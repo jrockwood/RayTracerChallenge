@@ -104,7 +104,7 @@
                 <Image x:Name="RenderImage"
                        Width="{Binding Scenes.SelectedScene.CanvasWidth, Mode=OneWay}"
                        Height="{Binding Scenes.SelectedScene.CanvasHeight, Mode=OneWay}"
-                       Source="{Binding CanvasBitmap, Mode=OneWay}" />
+                       Source="{Binding RenderedBitmap, Mode=OneWay}" />
               </Border>
             </Grid>
           </ScrollViewer>

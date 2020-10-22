@@ -7,10 +7,12 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
+    using System;
+    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Shapes;
 
-    public class Chapter5RedSphere : SimpleScene
+    public class Chapter5RedSphere : Scene
     {
         public Chapter5RedSphere()
             : base(
@@ -21,9 +23,10 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override void RenderToCanvas(Canvas canvas)
+        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
         {
-            var color = Colors.Red;
+            var canvas = new MutableCanvas(CanvasWidth, CanvasHeight);
+
             var sphere = new Sphere();
 
             var rayOrigin = new Point(0, 0, -5);
@@ -32,6 +35,7 @@ namespace RayTracerChallenge.App.Library.Scenes
 
             double pixelSize = wallSize / canvas.Width;
             const double halfWallSize = wallSize / 2;
+            double totalPixels = canvas.Width * canvas.Height;
 
             // For each row of pixels in the canvas...
             for (int y = 0; y < canvas.Height; y++)
@@ -43,9 +47,9 @@ namespace RayTracerChallenge.App.Library.Scenes
                 for (int x = 0; x < canvas.Width; x++)
                 {
                     // See if we should stop.
-                    if (ShouldCancel)
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        return;
+                        return canvas.ToImmutable();
                     }
 
                     // Compute the world x coordinate (left = -half, right = +half).
@@ -58,15 +62,21 @@ namespace RayTracerChallenge.App.Library.Scenes
                     var ray = new Ray(rayOrigin, (position - rayOrigin).Normalize());
                     var intersections = sphere.Intersect(ray);
 
+                    var color = Colors.Black;
                     if (intersections.Hit != null)
                     {
+                        color = Colors.Red;
                         canvas.SetPixel(x, y, color);
                     }
 
                     // Report the progress.
-                    ReportProgress(x, y);
+                    double pixelsRendered = (y * CanvasWidth) + x;
+                    int percentComplete = (int)Math.Round((pixelsRendered / totalPixels) * 100.0);
+                    progress.Report(new RenderProgressStep(percentComplete, x, y, color));
                 }
             }
+
+            return canvas.ToImmutable();
         }
     }
 }

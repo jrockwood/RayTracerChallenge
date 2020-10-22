@@ -23,16 +23,23 @@ namespace RayTracerChallenge.App.Library.Commands
         //// Member Variables
         //// ===========================================================================================================
 
+        public const double DefaultDpi = 96.0;
+
         private Scene? _scene;
-        private Canvas? _renderedCanvas;
+        private BitmapSource? _renderedBitmap;
+        private double _dpiX;
+        private double _dpiY;
 
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public RenderSceneCommand(Scene? scene = null)
+        public RenderSceneCommand(double dpiX = DefaultDpi, double dpiY = DefaultDpi, Scene? scene = null)
         {
-            Scene = scene;
+            _dpiX = dpiX;
+            _dpiY = dpiY;
+            _scene = scene;
+            IsEnabled = scene != null;
         }
 
         //// ===========================================================================================================
@@ -47,20 +54,45 @@ namespace RayTracerChallenge.App.Library.Commands
 
         public bool IsRendering { get; private set; }
 
+        public double DpiX
+        {
+            get => _dpiX;
+            set
+            {
+                ValidateNotRendering();
+                SetProperty(ref _dpiX, value);
+            }
+        }
+
+        public double DpiY
+        {
+            get => _dpiY;
+            set
+            {
+                ValidateNotRendering();
+                SetProperty(ref _dpiY, value);
+            }
+        }
+
         public Scene? Scene
         {
             get => _scene;
             set
             {
-                SetProperty(ref _scene, value);
-                IsEnabled = value != null;
+                ValidateNotRendering();
+
+                if (SetProperty(ref _scene, value))
+                {
+                    IsEnabled = value != null;
+                    RenderedBitmap = null;
+                }
             }
         }
 
-        public Canvas? RenderedCanvas
+        public BitmapSource? RenderedBitmap
         {
-            get => _renderedCanvas;
-            private set => SetProperty(ref _renderedCanvas, value);
+            get => _renderedBitmap;
+            private set => SetProperty(ref _renderedBitmap, value);
         }
 
         //// ===========================================================================================================
@@ -77,22 +109,32 @@ namespace RayTracerChallenge.App.Library.Commands
             }
 
             IsRendering = true;
-            RenderedCanvas = null;
+            RenderedBitmap = null;
             try
             {
                 var renderProgress = new Progress<SceneRenderProgress>(p =>
                 {
-                    RenderedCanvas = p.Canvas;
+                    RenderedBitmap = p.RenderedBitmap;
                     progress?.Report(p.PercentComplete);
                     RenderProgressChanged?.Invoke(this, p);
                 });
 
-                RenderedCanvas = await Scene.RenderAsync(renderProgress, cancellationToken);
-                RenderProgressChanged?.Invoke(this, new SceneRenderProgress(100, RenderedCanvas));
+                await Scene.RenderAsync(_dpiX, _dpiY, renderProgress, cancellationToken);
+                RenderProgressChanged?.Invoke(
+                    this,
+                    new SceneRenderProgress(100, RenderedBitmap ?? throw new InvalidOperationException()));
             }
             finally
             {
                 IsRendering = false;
+            }
+        }
+
+        private void ValidateNotRendering()
+        {
+            if (IsRendering)
+            {
+                throw new InvalidOperationException("Cannot set DPI while rendering.");
             }
         }
     }
