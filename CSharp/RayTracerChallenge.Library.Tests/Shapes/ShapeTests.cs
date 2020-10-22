@@ -33,13 +33,13 @@ namespace RayTracerChallenge.Library.Tests.Shapes
                 return new TestShape(Transform, value);
             }
 
-            protected override IntersectionList LocalIntersect(Ray localRay)
+            protected internal override IntersectionList LocalIntersect(Ray localRay)
             {
                 SavedLocalRay = localRay;
                 return new IntersectionList();
             }
 
-            protected override Vector LocalNormalAt(Point localPoint)
+            protected internal override Vector LocalNormalAt(Point localPoint)
             {
                 return new Vector(localPoint.X, localPoint.Y, localPoint.Z);
             }
