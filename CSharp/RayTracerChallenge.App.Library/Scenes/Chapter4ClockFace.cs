@@ -11,7 +11,7 @@ namespace RayTracerChallenge.App.Library.Scenes
     using System.Threading;
     using RayTracerChallenge.Library;
 
-    public sealed class Chapter4ClockFace : SimpleScene
+    public sealed class Chapter4ClockFace : Scene
     {
         public Chapter4ClockFace()
             : base(
@@ -22,8 +22,10 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override void RenderToCanvas(Canvas canvas, CancellationToken cancellationToken = default)
+        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
         {
+            var canvas = new MutableCanvas(CanvasWidth, CanvasHeight);
+
             int centerX = canvas.Width / 2;
             int centerY = canvas.Height / 2;
             double clockRadius = Math.Min(canvas.Width * (3d / 8), canvas.Height * (3d / 8));
@@ -52,6 +54,8 @@ namespace RayTracerChallenge.App.Library.Scenes
                     right: x + pixelBorderSize,
                     color);
             }
+
+            return canvas.ToImmutable();
         }
     }
 }

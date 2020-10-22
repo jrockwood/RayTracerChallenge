@@ -1,27 +1,28 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="SimpleScene.cs" company="Justin Rockwood">
+// <copyright file="ICanvas.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.App.Library.Scenes
+namespace RayTracerChallenge.Library
 {
-    using RayTracerChallenge.Library;
-
     /// <summary>
-    /// Abstract base class for a simple scene that doesn't use a <see cref="World"/> or <see cref="Camera"/> and should
-    /// take less than 1-2 seconds to render. Inherit from <see cref="ComplexScene"/> for most scenes.
+    /// Represents a canvas that contains a color for every pixel.
     /// </summary>
-    public abstract class SimpleScene : Scene
+    public interface ICanvas
     {
         //// ===========================================================================================================
-        //// Constructors
+        //// Properties
         //// ===========================================================================================================
 
-        protected SimpleScene(string title, string description, int canvasWidth, int canvasHeight)
-            : base(title, description, canvasWidth, canvasHeight)
-        {
-        }
+        int Width { get; }
+        int Height { get; }
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
+        Color GetPixel(int x, int y);
     }
 }

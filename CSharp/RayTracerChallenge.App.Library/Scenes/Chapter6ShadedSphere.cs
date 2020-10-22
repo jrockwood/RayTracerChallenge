@@ -7,20 +7,23 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
+    using System;
     using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
-    public class Chapter6ShadedSphere : SimpleScene
+    public class Chapter6ShadedSphere : Scene
     {
         public Chapter6ShadedSphere()
             : base("Chapter 6 - Shaded Sphere", "Renders a shaded sphere. Tests materials and lighting.", 400, 400)
         {
         }
 
-        protected override void RenderToCanvas(Canvas canvas, CancellationToken cancellationToken = default)
+        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
         {
+            var canvas = new MutableCanvas(CanvasWidth, CanvasHeight);
+
             var sphere = new Sphere(material: new Material(new Color(1, 0.2, 1)));
             var lightPosition = new Point(-10, 10, -10);
             var lightColor = Colors.White;
@@ -32,6 +35,7 @@ namespace RayTracerChallenge.App.Library.Scenes
 
             double pixelSize = wallSize / canvas.Width;
             const double halfWallSize = wallSize / 2;
+            double totalPixels = canvas.Width * canvas.Height;
 
             // For each row of pixels in the canvas...
             for (int y = 0; y < canvas.Height; y++)
@@ -45,7 +49,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                     // See if we should stop.
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        return;
+                        return canvas.ToImmutable();
                     }
 
                     // Compute the world x coordinate (left = -half, right = +half).
@@ -59,19 +63,24 @@ namespace RayTracerChallenge.App.Library.Scenes
                     IntersectionList intersections = sphere.Intersect(ray);
                     Intersection? hit = intersections.Hit;
 
+                    Color color = Colors.Black;
                     if (hit != null)
                     {
                         Point point = ray.PositionAt(hit.T);
                         Vector normal = hit.Shape.NormalAt(point);
                         Vector eye = ray.Direction.Negate();
-                        Color color = hit.Shape.Material.CalculateLighting(light, point, eye, normal, false);
+                        color = hit.Shape.Material.CalculateLighting(light, point, eye, normal, false);
                         canvas.SetPixel(x, y, color);
                     }
 
                     // Report the progress.
-                    ReportProgress(x, y);
+                    double pixelsRendered = (y * CanvasWidth) + x;
+                    int percentComplete = (int)Math.Round((pixelsRendered / totalPixels) * 100.0);
+                    progress.Report(new RenderProgressStep(percentComplete, x, y, color));
                 }
             }
+
+            return canvas.ToImmutable();
         }
     }
 }

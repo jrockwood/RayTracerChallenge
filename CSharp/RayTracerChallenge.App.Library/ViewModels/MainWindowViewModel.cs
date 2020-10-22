@@ -8,10 +8,9 @@
 namespace RayTracerChallenge.App.Library.ViewModels
 {
     using System;
-    using System.Windows.Media;
+    using System.ComponentModel;
     using System.Windows.Media.Imaging;
     using RayTracerChallenge.App.Library.Commands;
-    using RayTracerChallenge.App.Library.Extensions;
     using RayTracerChallenge.App.Library.Scenes;
 
     public class MainWindowViewModel : Observable
@@ -21,9 +20,6 @@ namespace RayTracerChallenge.App.Library.ViewModels
         //// ===========================================================================================================
 
         private readonly RenderSceneCommand _startCommand;
-        private WriteableBitmap? _canvasBitmap;
-        private double _renderDpiX;
-        private double _renderDpiY;
 
         //// ===========================================================================================================
         //// Constructors
@@ -35,14 +31,13 @@ namespace RayTracerChallenge.App.Library.ViewModels
             Scenes.SelectedSceneChanged += OnSelectedSceneChanged;
 
             _startCommand = new RenderSceneCommand();
-            _startCommand.RenderProgressChanged += OnRenderProgressChanged;
+            _startCommand.RenderProgressChanged += OnStartCommandRenderProgressChanged;
+            _startCommand.PropertyChanged += OnStartCommandPropertyChanged;
 
             RenderProcessViewModel = new LongRunningProcessProgressViewModel(_startCommand)
             {
                 StartButtonText = "Render"
             };
-
-            _renderDpiX = _renderDpiY = 96;
 
             // Set the selected index last so that all of the event handlers will run.
             Scenes.SelectedIndex = Scenes.Count > 0 ? Scenes.Count - 1 : -1;
@@ -54,66 +49,54 @@ namespace RayTracerChallenge.App.Library.ViewModels
 
         public double RenderDpiX
         {
-            get => _renderDpiX;
-            set
-            {
-                if (SetProperty(ref _renderDpiX, value))
-                {
-                    ResetCanvasBitmap();
-                }
-            }
+            get => _startCommand.DpiX;
+            set => _startCommand.DpiX = value;
         }
 
         public double RenderDpiY
         {
-            get => _renderDpiY;
-            set
-            {
-                if (SetProperty(ref _renderDpiY, value))
-                {
-                    ResetCanvasBitmap();
-                }
-            }
+            get => _startCommand.DpiY;
+            set => _startCommand.DpiY = value;
         }
 
         public SceneList Scenes { get; }
 
         public LongRunningProcessProgressViewModel RenderProcessViewModel { get; }
 
-        public WriteableBitmap? CanvasBitmap
-        {
-            get => _canvasBitmap;
-            set => SetProperty(ref _canvasBitmap, value);
-        }
+        public BitmapSource? RenderedBitmap => _startCommand.RenderedBitmap;
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
-        private void ResetCanvasBitmap()
-        {
-            RenderProcessViewModel.Reset();
-            CanvasBitmap = null;
-        }
-
         private void OnSelectedSceneChanged(object? sender, EventArgs e)
         {
             var scene = Scenes.SelectedScene;
             _startCommand.Scene = scene;
-            ResetCanvasBitmap();
+            RenderProcessViewModel.Reset();
         }
 
-        private void OnRenderProgressChanged(object? sender, SceneRenderProgress e)
+        private void OnStartCommandRenderProgressChanged(object? sender, SceneRenderProgress e)
         {
-            if (CanvasBitmap == null)
+            OnPropertyChanged(nameof(RenderedBitmap));
+        }
+
+        private void OnStartCommandPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                int width = e.Canvas.Width;
-                int height = e.Canvas.Height;
+                case nameof(RenderSceneCommand.DpiX):
+                    OnPropertyChanged(nameof(RenderDpiX));
+                    break;
 
-                CanvasBitmap = new WriteableBitmap(width, height, RenderDpiX, RenderDpiY, PixelFormats.Bgr24, null);
+                case nameof(RenderSceneCommand.DpiY):
+                    OnPropertyChanged(nameof(RenderDpiY));
+                    break;
+
+                case nameof(RenderSceneCommand.RenderedBitmap):
+                    OnPropertyChanged(nameof(RenderedBitmap));
+                    break;
             }
-
-            e.Canvas.RenderToWriteableBitmap(CanvasBitmap);
         }
     }
 }

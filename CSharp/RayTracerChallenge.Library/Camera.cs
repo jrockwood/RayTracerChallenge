@@ -8,6 +8,7 @@
 namespace RayTracerChallenge.Library
 {
     using System;
+    using System.Collections.Immutable;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -19,9 +20,6 @@ namespace RayTracerChallenge.Library
 
         private readonly double _halfWidth;
         private readonly double _halfHeight;
-
-        private int _renderPercentComplete;
-        private Canvas? _currentRenderingCanvas;
 
         //// ===========================================================================================================
         //// Constructors
@@ -53,12 +51,6 @@ namespace RayTracerChallenge.Library
         }
 
         //// ===========================================================================================================
-        //// Events
-        //// ===========================================================================================================
-
-        public event EventHandler<RenderPercentCompleteEventArgs>? RenderPercentCompleteChanged;
-
-        //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
@@ -88,30 +80,6 @@ namespace RayTracerChallenge.Library
         /// </summary>
         public double PixelSize { get; }
 
-        /// <summary>
-        /// Gets the current render percent complete.
-        /// </summary>
-        public int RenderPercentComplete
-        {
-            get => _renderPercentComplete;
-            set
-            {
-                if (_renderPercentComplete == value)
-                {
-                    return;
-                }
-
-                if (_currentRenderingCanvas != null)
-                {
-                    RenderPercentCompleteChanged?.Invoke(
-                        this,
-                        new RenderPercentCompleteEventArgs(value, _currentRenderingCanvas));
-                }
-
-                _renderPercentComplete = value;
-            }
-        }
-
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
@@ -134,9 +102,9 @@ namespace RayTracerChallenge.Library
 
             // Using the camera matrix, transform the canvas point and the origin, and then compute the
             // ray's direction vector. (Remember that the canvas is at z=-1).
-            Point pixel = Transform.Invert().Multiply(new Point(worldX, worldY, -1));
-            Point origin = Transform.Invert().Multiply(new Point(0, 0, 0));
-            Vector direction = pixel.Subtract(origin).Normalize();
+            Point pixel = Transform.Invert() * new Point(worldX, worldY, -1);
+            Point origin = Transform.Invert() * new Point(0, 0, 0);
+            Vector direction = (pixel - origin).Normalize();
 
             return new Ray(origin, direction);
         }
@@ -145,49 +113,29 @@ namespace RayTracerChallenge.Library
         /// Uses the camera to render an image of the specified world.
         /// </summary>
         /// <param name="world">The world to render.</param>
+        /// <param name="progress">Provides a way to communicate progress.</param>
         /// <param name="cancellationToken">
         /// Optional <see cref="CancellationToken"/> within the rendering loop to see if the rendering should be cancelled.
         /// </param>
         /// <returns>A <see cref="Canvas"/> containing the rendered image.</returns>
-        public Canvas Render(World world, CancellationToken cancellationToken = default)
+        public Canvas Render(
+            World world,
+            IProgress<RenderProgressStep>? progress = null,
+            CancellationToken cancellationToken = default)
         {
-            var canvas = new Canvas(CanvasWidth, CanvasHeight);
-            RenderToCanvas(canvas, world, cancellationToken);
-            return canvas;
-        }
-
-        /// <summary>
-        /// Uses the camera to render an image of the specified world.
-        /// </summary>
-        /// <param name="canvas">
-        /// The canvas to render to. It should be the same size as <see cref="CanvasWidth"/> and <see cref="CanvasHeight"/>
-        /// </param>
-        /// <param name="world">The world to render.</param>
-        /// <param name="cancellationToken">
-        /// Optional <see cref="CancellationToken"/> within the rendering loop to see if the rendering should be cancelled.
-        /// </param>
-        /// <returns>A <see cref="Canvas"/> containing the rendered image.</returns>
-        public void RenderToCanvas(Canvas canvas, World world, CancellationToken cancellationToken = default)
-        {
-            // Make sure the canvas is the same size as this camera.
-            if (canvas.Width != CanvasWidth || canvas.Height != CanvasHeight)
-            {
-                throw new ArgumentException("Canvas must be the same size as the camera", nameof(canvas));
-            }
-
-            // Cache the canvas so that it can be passed in the RenderPercentCompleteChanged event handler
-            _currentRenderingCanvas = canvas;
-
-            int totalPixels = CanvasWidth * CanvasHeight;
+            int width = CanvasWidth;
+            int height = CanvasHeight;
+            int totalPixels = width * height;
+            var pixels = new Color[totalPixels];
+            int totalRenderedPixels = 0;
 
             // Run the loop in parallel.
             var parallelOptions = new ParallelOptions { CancellationToken = cancellationToken };
-
-            Parallel.For(
+            var parallelLoopResult = Parallel.For(
                 0,
-                CanvasHeight,
+                totalPixels,
                 parallelOptions,
-                (int y, ParallelLoopState state) =>
+                (int index, ParallelLoopState state) =>
                 {
                     // Check for cancellation.
                     if (state.ShouldExitCurrentIteration)
@@ -195,28 +143,32 @@ namespace RayTracerChallenge.Library
                         return;
                     }
 
-                    for (int x = 0; x < CanvasWidth; x++)
+                    // Calculate the coordinates of the pixel from the index.
+                    int y = index / width;
+                    int x = index % width;
+
+                    // Run the ray tracing algorithm to get the color of the pixel.
+                    Ray ray = RayForPixel(x, y);
+                    Color color = world.ColorAt(ray);
+                    pixels[index] = color;
+
+                    if (progress == null)
                     {
-                        // Check for cancellation.
-                        if (state.ShouldExitCurrentIteration)
-                        {
-                            return;
-                        }
-
-                        Ray ray = RayForPixel(x, y);
-                        Color color = world.ColorAt(ray);
-                        canvas.SetPixel(x, y, color);
-
-                        // Report the progress.
-                        RenderPercentComplete = (int)((((y * CanvasWidth) + x) / (double)totalPixels) * 100.0);
+                        return;
                     }
+
+                    // Update the number of pixels processed so we can calculate the progress.
+                    int renderedPixelCount = Interlocked.Increment(ref totalRenderedPixels);
+
+                    // Report the progress.
+                    int percentComplete = (int)Math.Round((renderedPixelCount / (double)totalPixels) * 100.0);
+                    var renderProgress = new RenderProgressStep(percentComplete, x, y, color);
+                    progress.Report(renderProgress);
                 });
 
-            // Report that we're done.
-            RenderPercentComplete = 100;
-
-            // Clear the cached canvas.
-            _currentRenderingCanvas = null;
+            // Create a canvas from the pixel data.
+            var canvas = new Canvas(width, height, pixels.ToImmutableArray());
+            return canvas;
         }
     }
 }

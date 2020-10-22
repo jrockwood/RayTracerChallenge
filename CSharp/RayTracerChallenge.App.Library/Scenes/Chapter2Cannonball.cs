@@ -11,7 +11,7 @@ namespace RayTracerChallenge.App.Library.Scenes
     using System.Threading;
     using RayTracerChallenge.Library;
 
-    public sealed class Chapter2Cannonball : SimpleScene
+    public sealed class Chapter2Cannonball : Scene
     {
         //// ===========================================================================================================
         //// Constructors
@@ -30,7 +30,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         //// Methods
         //// ===========================================================================================================
 
-        protected override void RenderToCanvas(Canvas canvas, CancellationToken cancellationToken = default)
+        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
         {
             var start = new Point(0, 1, 0);
             var velocity = new Vector(1, 1.8, 0).Normalize() * 11.25;
@@ -44,6 +44,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             var color = Colors.Magenta;
             const int pixelBorderSize = 2;
 
+            var canvas = new MutableCanvas(CanvasWidth, CanvasHeight);
             while (cannonball.Position.Y > 0)
             {
                 cannonball = Tick(environment, cannonball);
@@ -56,6 +57,8 @@ namespace RayTracerChallenge.App.Library.Scenes
                     right: pointX + pixelBorderSize,
                     color);
             }
+
+            return canvas.ToImmutable();
         }
 
         private static Projectile Tick(Environment environment, Projectile projectile)
