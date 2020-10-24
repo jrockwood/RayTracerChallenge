@@ -7,6 +7,8 @@
 
 namespace RayTracerChallenge.Library
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Contains information about a camera's render progress.
     /// </summary>
@@ -16,12 +18,11 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public RenderProgressStep(int percentComplete, int pixelX, int pixelY, Color pixelColor)
+        public RenderProgressStep(int percentComplete, int row, IEnumerable<Color> pixels)
         {
             PercentComplete = percentComplete;
-            PixelX = pixelX;
-            PixelY = pixelY;
-            PixelColor = pixelColor;
+            Row = row;
+            Pixels = pixels;
         }
 
         //// ===========================================================================================================
@@ -29,8 +30,7 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public int PercentComplete { get; }
-        public int PixelX { get; }
-        public int PixelY { get; }
-        public Color PixelColor { get; }
+        public int Row { get; }
+        public IEnumerable<Color> Pixels { get; }
     }
 }

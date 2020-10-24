@@ -63,21 +63,20 @@ namespace RayTracerChallenge.App.Library.Scenes
                     IntersectionList intersections = sphere.Intersect(ray);
                     Intersection? hit = intersections.Hit;
 
-                    Color color = Colors.Black;
                     if (hit != null)
                     {
                         Point point = ray.PositionAt(hit.T);
                         Vector normal = hit.Shape.NormalAt(point);
                         Vector eye = ray.Direction.Negate();
-                        color = hit.Shape.Material.CalculateLighting(hit.Shape, light, point, eye, normal, false);
+                        Color color = hit.Shape.Material.CalculateLighting(hit.Shape, light, point, eye, normal, false);
                         canvas.SetPixel(x, y, color);
                     }
-
-                    // Report the progress.
-                    double pixelsRendered = (y * CanvasWidth) + x;
-                    int percentComplete = (int)Math.Round((pixelsRendered / totalPixels) * 100.0);
-                    progress.Report(new RenderProgressStep(percentComplete, x, y, color));
                 }
+
+                // Report the progress.
+                double pixelsRendered = (y * CanvasWidth) + CanvasWidth;
+                int percentComplete = (int)Math.Round((pixelsRendered / totalPixels) * 100.0);
+                progress.Report(new RenderProgressStep(percentComplete, y, canvas.GetRow(y)));
             }
 
             return canvas.ToImmutable();

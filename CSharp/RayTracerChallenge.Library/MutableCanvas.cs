@@ -8,6 +8,7 @@
 namespace RayTracerChallenge.Library
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using System.Threading;
@@ -71,6 +72,11 @@ namespace RayTracerChallenge.Library
                     int index = CalculateIndex(x, y);
                     _pixels[index] = color;
                 });
+        }
+
+        public IEnumerable<Color> GetRow(int y)
+        {
+            return new CanvasRowEnumerator(y * Width, Width, _pixels);
         }
 
         public void FillRect(int top, int left, int bottom, int right, Color color)

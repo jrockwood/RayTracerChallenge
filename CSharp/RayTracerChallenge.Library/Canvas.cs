@@ -8,6 +8,7 @@
 namespace RayTracerChallenge.Library
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     /// <summary>
@@ -52,6 +53,11 @@ namespace RayTracerChallenge.Library
         {
             int index = CalculateIndex(x, y);
             return _pixels[index];
+        }
+
+        public IEnumerable<Color> GetRow(int y)
+        {
+            return new CanvasRowEnumerator(y * Width, Width, _pixels);
         }
 
         private int CalculateIndex(int x, int y)
