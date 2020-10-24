@@ -25,11 +25,6 @@ namespace RayTracerChallenge.Library.Tests.Patterns
             {
                 return new Color(point.X, point.Y, point.Z);
             }
-
-            public override Pattern WithTransform(Matrix4x4 value)
-            {
-                return new TestPattern(value);
-            }
         }
 
         [Test]

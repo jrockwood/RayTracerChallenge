@@ -29,21 +29,6 @@ namespace RayTracerChallenge.Library.Patterns
         public Color Color1 { get; }
         public Color Color2 { get; }
 
-        public StripePattern WithColor1(Color value)
-        {
-            return new StripePattern(value, Color2, Transform);
-        }
-
-        public StripePattern WithColor2(Color value)
-        {
-            return new StripePattern(Color1, value, Transform);
-        }
-
-        public override Pattern WithTransform(Matrix4x4 value)
-        {
-            return new StripePattern(Color1, Color2, value);
-        }
-
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================

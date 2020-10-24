@@ -31,21 +31,6 @@ namespace RayTracerChallenge.Library.Tests.Patterns
         }
 
         [Test]
-        public void WithX_methods_should_return_a_copy_with_the_value_changed()
-        {
-            var pattern = new StripePattern(Colors.White, Colors.Black);
-            pattern.WithColor1(Colors.Red)
-                .Should()
-                .BeEquivalentTo(new StripePattern(Colors.Red, Colors.Black, Matrix4x4.Identity));
-            pattern.WithColor2(Colors.Green)
-                .Should()
-                .BeEquivalentTo(new StripePattern(Colors.White, Colors.Green, Matrix4x4.Identity));
-            pattern.WithTransform(Matrix4x4.CreateScaling(2, 2, 2))
-                .Should()
-                .BeEquivalentTo(new StripePattern(Colors.White, Colors.Black, Matrix4x4.CreateScaling(2, 2, 2)));
-        }
-
-        [Test]
         public void ColorAt_should_return_the_same_color_for_every_z_coordinate()
         {
             var pattern = new StripePattern(Colors.White, Colors.Black);

@@ -29,21 +29,6 @@ namespace RayTracerChallenge.Library.Patterns
         public Color Color1 { get; }
         public Color Color2 { get; }
 
-        public CheckerPattern WithColor1(Color value)
-        {
-            return new CheckerPattern(value, Color2, Transform);
-        }
-
-        public CheckerPattern WithColor2(Color value)
-        {
-            return new CheckerPattern(Color1, value, Transform);
-        }
-
-        public override Pattern WithTransform(Matrix4x4 value)
-        {
-            return new CheckerPattern(Color1, Color2, value);
-        }
-
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================

@@ -29,21 +29,6 @@ namespace RayTracerChallenge.Library.Patterns
         public Color Color1 { get; }
         public Color Color2 { get; }
 
-        public GradientPattern WithColor1(Color value)
-        {
-            return new GradientPattern(value, Color2, Transform);
-        }
-
-        public GradientPattern WithColor2(Color value)
-        {
-            return new GradientPattern(Color1, value, Transform);
-        }
-
-        public override Pattern WithTransform(Matrix4x4 value)
-        {
-            return new GradientPattern(Color1, Color2, value);
-        }
-
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================

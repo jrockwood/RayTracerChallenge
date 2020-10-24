@@ -32,8 +32,6 @@ namespace RayTracerChallenge.Library.Patterns
 
         public abstract Color ColorAt(Point point);
 
-        public abstract Pattern WithTransform(Matrix4x4 value);
-
         public Color ColorOnShapeAt(Shape shape, Point worldPoint)
         {
             Point shapePoint = shape.Transform.Invert() * worldPoint;

@@ -29,21 +29,6 @@ namespace RayTracerChallenge.Library.Patterns
         public Color Color1 { get; }
         public Color Color2 { get; }
 
-        public RingPattern WithColor1(Color value)
-        {
-            return new RingPattern(value, Color2, Transform);
-        }
-
-        public RingPattern WithColor2(Color value)
-        {
-            return new RingPattern(Color1, value, Transform);
-        }
-
-        public override Pattern WithTransform(Matrix4x4 value)
-        {
-            return new RingPattern(Color1, Color2, value);
-        }
-
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
