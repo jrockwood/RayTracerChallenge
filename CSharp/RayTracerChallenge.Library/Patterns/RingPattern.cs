@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // <copyright file="RingPattern.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
@@ -26,7 +26,8 @@ namespace RayTracerChallenge.Library.Patterns
 
         public override Color ColorAt(Point point)
         {
-            return Math.Sqrt((point.X * point.X) + (point.Z * point.Z)) % 2 == 0 ? Color1 : Color2;
+            double distance = Math.Sqrt((point.X * point.X) + (point.Z * point.Z));
+            return Math.Floor(distance) % 2 == 0 ? Color1 : Color2;
         }
     }
 }
