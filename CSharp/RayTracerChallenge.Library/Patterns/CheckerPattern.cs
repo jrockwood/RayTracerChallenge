@@ -9,25 +9,16 @@ namespace RayTracerChallenge.Library.Patterns
 {
     using System;
 
-    public class CheckerPattern : Pattern
+    public class CheckerPattern : AlternatingPattern
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
         public CheckerPattern(Color color1, Color color2, Matrix4x4? transform = null)
-            : base(transform)
+            : base(color1, color2, transform)
         {
-            Color1 = color1;
-            Color2 = color2;
         }
-
-        //// ===========================================================================================================
-        //// Properties
-        //// ===========================================================================================================
-
-        public Color Color1 { get; }
-        public Color Color2 { get; }
 
         //// ===========================================================================================================
         //// Methods
