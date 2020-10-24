@@ -38,7 +38,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                     .RotateY(-Math.PI / 6)
                     .Translate(0.4, 0, 0));
 
-            var gradientPattern = new GradientPattern(
+            var gradientPattern = new RadialGradientPattern(
                 Colors.Green,
                 Colors.Yellow,
                 Matrix4x4.Identity);
@@ -51,7 +51,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             // Shapes
             var floor = new Plane(
                 Matrix4x4.CreateRotationY(Math.PI / 4),
-                new Material(pattern: checkerPattern, specular: 0));
+                new Material(pattern: gradientPattern, specular: 0));
 
             var left1 = new Sphere(
                 Matrix4x4.CreateScaling(0.33, 0.33, 0.33).Translate(-2, 0.33, -0.75),
