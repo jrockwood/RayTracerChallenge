@@ -17,8 +17,8 @@ namespace RayTracerChallenge.Library.Tests.Patterns
         public void Ctor_should_store_the_two_colors_for_the_stripe()
         {
             var pattern = new StripePattern(Colors.White, Colors.Black);
-            pattern.Color1.Should().Be(Colors.White);
-            pattern.Color2.Should().Be(Colors.Black);
+            pattern.Pattern1.Should().BeEquivalentTo(new SolidColorPattern(Colors.White));
+            pattern.Pattern2.Should().BeEquivalentTo(new SolidColorPattern(Colors.Black));
         }
 
         [Test]

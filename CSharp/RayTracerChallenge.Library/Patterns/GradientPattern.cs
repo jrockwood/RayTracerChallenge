@@ -9,16 +9,25 @@ namespace RayTracerChallenge.Library.Patterns
 {
     using System;
 
-    public class GradientPattern : AlternatingPattern
+    public class GradientPattern : Pattern
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
         public GradientPattern(Color color1, Color color2, Matrix4x4? transform = null)
-            : base(color1, color2, transform)
+            : base(transform)
         {
+            Color1 = color1;
+            Color2 = color2;
         }
+
+        //// ===========================================================================================================
+        //// Properties
+        //// ===========================================================================================================
+
+        public Color Color1 { get; }
+        public Color Color2 { get; }
 
         //// ===========================================================================================================
         //// Methods

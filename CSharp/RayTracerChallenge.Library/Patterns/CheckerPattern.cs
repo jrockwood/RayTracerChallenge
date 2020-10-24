@@ -20,13 +20,20 @@ namespace RayTracerChallenge.Library.Patterns
         {
         }
 
+        public CheckerPattern(Pattern pattern1, Pattern pattern2, Matrix4x4? transform = null)
+            : base(pattern1, pattern2, transform)
+        {
+        }
+
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
         public override Color ColorAt(Point point)
         {
-            return (Math.Floor(point.X) + Math.Floor(point.Y) + Math.Floor(point.Z)) % 2 == 0 ? Color1 : Color2;
+            return (Math.Floor(point.X) + Math.Floor(point.Y) + Math.Floor(point.Z)) % 2 == 0
+                ? Pattern1.ColorAt(ToPattern1Point(point))
+                : Pattern2.ColorAt(ToPattern2Point(point));
         }
     }
 }
