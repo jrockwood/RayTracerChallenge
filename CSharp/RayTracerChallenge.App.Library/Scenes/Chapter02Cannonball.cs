@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="Chapter2Cannonball.cs" company="Justin Rockwood">
+// <copyright file="Chapter02Cannonball.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -11,13 +11,13 @@ namespace RayTracerChallenge.App.Library.Scenes
     using System.Threading;
     using RayTracerChallenge.Library;
 
-    public sealed class Chapter2Cannonball : Scene
+    public sealed class Chapter02Cannonball : Scene
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public Chapter2Cannonball()
+        public Chapter02Cannonball()
             : base(
                 "Chapter 2 - Cannonball",
                 "Traces the trajectory of a cannonball. Tests points, vectors, and the canvas.",

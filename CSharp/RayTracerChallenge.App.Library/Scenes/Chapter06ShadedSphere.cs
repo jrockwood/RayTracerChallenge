@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="Chapter5RedSphere.cs" company="Justin Rockwood">
+// <copyright file="Chapter06ShadedSphere.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -10,16 +10,13 @@ namespace RayTracerChallenge.App.Library.Scenes
     using System;
     using System.Threading;
     using RayTracerChallenge.Library;
+    using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
-    public class Chapter5RedSphere : Scene
+    public class Chapter06ShadedSphere : Scene
     {
-        public Chapter5RedSphere()
-            : base(
-                "Chapter 5 - Red Sphere",
-                "Renders a sphere without any lighting. Tests ray intersections with a sphere.",
-                400,
-                400)
+        public Chapter06ShadedSphere()
+            : base("Chapter 6 - Shaded Sphere", "Renders a shaded sphere. Tests materials and lighting.", 400, 400)
         {
         }
 
@@ -27,10 +24,13 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
             var canvas = new MutableCanvas(CanvasWidth, CanvasHeight);
 
-            var sphere = new Sphere();
+            var sphere = new Sphere(material: new Material(new Color(1, 0.2, 1)));
+            var lightPosition = new Point(-10, 10, -10);
+            var lightColor = Colors.White;
+            var light = new PointLight(lightPosition, lightColor);
 
             var rayOrigin = new Point(0, 0, -5);
-            const double wallZ = 10;
+            const int wallZ = 10;
             const double wallSize = 7.0;
 
             double pixelSize = wallSize / canvas.Width;
@@ -60,11 +60,16 @@ namespace RayTracerChallenge.App.Library.Scenes
 
                     // Cast the ray into the scene to see what it hits.
                     var ray = new Ray(rayOrigin, (position - rayOrigin).Normalize());
-                    var intersections = sphere.Intersect(ray);
+                    IntersectionList intersections = sphere.Intersect(ray);
+                    Intersection? hit = intersections.Hit;
 
-                    if (intersections.Hit != null)
+                    if (hit != null)
                     {
-                        canvas.SetPixel(x, y, Colors.Red);
+                        Point point = ray.PositionAt(hit.T);
+                        Vector normal = hit.Shape.NormalAt(point);
+                        Vector eye = ray.Direction.Negate();
+                        Color color = hit.Shape.Material.CalculateLighting(hit.Shape, light, point, eye, normal, false);
+                        canvas.SetPixel(x, y, color);
                     }
                 }
 

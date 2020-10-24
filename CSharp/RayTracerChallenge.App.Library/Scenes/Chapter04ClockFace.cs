@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="Chapter4ClockFace.cs" company="Justin Rockwood">
+// <copyright file="Chapter04ClockFace.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -11,9 +11,9 @@ namespace RayTracerChallenge.App.Library.Scenes
     using System.Threading;
     using RayTracerChallenge.Library;
 
-    public sealed class Chapter4ClockFace : Scene
+    public sealed class Chapter04ClockFace : Scene
     {
-        public Chapter4ClockFace()
+        public Chapter04ClockFace()
             : base(
                 "Chapter 4 - Clock Face",
                 "Draws dots representing a clock face. Tests matrix transformations",
