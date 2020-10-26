@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.Library
 {
     using System;
-    using System.Collections.Immutable;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -126,31 +125,31 @@ namespace RayTracerChallenge.Library
             int width = CanvasWidth;
             int height = CanvasHeight;
             int totalPixels = width * height;
-            var pixels = new Color[totalPixels];
             int totalRenderedPixels = 0;
+            var canvas = new MutableCanvas(width, height);
 
-            // Run the loop in parallel.
+            // Run the loop in parallel for each row.
             var parallelOptions = new ParallelOptions { CancellationToken = cancellationToken };
             var parallelLoopResult = Parallel.For(
                 0,
-                totalPixels,
+                height,
                 parallelOptions,
-                (int index, ParallelLoopState state) =>
+                (int y, ParallelLoopState state) =>
                 {
-                    // Check for cancellation.
-                    if (state.ShouldExitCurrentIteration)
+                    for (int x = 0; x < width; x++)
                     {
-                        return;
+                        // Check for cancellation.
+                        if (state.ShouldExitCurrentIteration)
+                        {
+                            return;
+                        }
+
+                        // Run the ray tracing algorithm to get the color of the pixel.
+                        Ray ray = RayForPixel(x, y);
+                        Color color = world.ColorAt(ray);
+
+                        canvas.SetPixel(x, y, color);
                     }
-
-                    // Calculate the coordinates of the pixel from the index.
-                    int y = index / width;
-                    int x = index % width;
-
-                    // Run the ray tracing algorithm to get the color of the pixel.
-                    Ray ray = RayForPixel(x, y);
-                    Color color = world.ColorAt(ray);
-                    pixels[index] = color;
 
                     if (progress == null)
                     {
@@ -158,17 +157,17 @@ namespace RayTracerChallenge.Library
                     }
 
                     // Update the number of pixels processed so we can calculate the progress.
-                    int renderedPixelCount = Interlocked.Increment(ref totalRenderedPixels);
+                    int renderedPixelCount = Interlocked.Add(ref totalRenderedPixels, width);
 
                     // Report the progress.
                     int percentComplete = (int)Math.Round((renderedPixelCount / (double)totalPixels) * 100.0);
-                    var renderProgress = new RenderProgressStep(percentComplete, x, y, color);
-                    progress.Report(renderProgress);
+                    var progressStep = new RenderProgressStep(percentComplete, y, canvas.GetRow(y));
+
+                    progress.Report(progressStep);
                 });
 
             // Create a canvas from the pixel data.
-            var canvas = new Canvas(width, height, pixels.ToImmutableArray());
-            return canvas;
+            return canvas.ToImmutable();
         }
     }
 }

@@ -11,6 +11,8 @@ namespace RayTracerChallenge.Library.Tests
     using FluentAssertions;
     using NUnit.Framework;
     using RayTracerChallenge.Library.Lights;
+    using RayTracerChallenge.Library.Patterns;
+    using RayTracerChallenge.Library.Shapes;
 
     public class MaterialTests
     {
@@ -62,7 +64,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
+            Color color = new Material().CalculateLighting(new Sphere(), light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(1.9, 1.9, 1.9));
         }
 
@@ -72,7 +74,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
+            Color color = new Material().CalculateLighting(new Sphere(), light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(1.0, 1.0, 1.0));
         }
 
@@ -82,7 +84,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 10, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
+            Color color = new Material().CalculateLighting(new Sphere(), light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(0.7364, 0.7364, 0.7364));
         }
 
@@ -92,7 +94,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, -Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 10, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
+            Color color = new Material().CalculateLighting(new Sphere(), light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(1.63639, 1.63639, 1.63639));
         }
 
@@ -102,7 +104,7 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, 10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, false);
+            Color color = new Material().CalculateLighting(new Sphere(), light, Point.Zero, eye, normal, false);
             color.Should().Be(new Color(0.1, 0.1, 0.1));
         }
 
@@ -112,8 +114,25 @@ namespace RayTracerChallenge.Library.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), Colors.White);
-            Color color = new Material().CalculateLighting(light, Point.Zero, eye, normal, isInShadow: true);
+            Color color = new Material().CalculateLighting(new Sphere(), light, Point.Zero, eye, normal, isInShadow: true);
             color.Should().Be(new Color(0.1, 0.1, 0.1));
+        }
+
+        [Test]
+        public void Lighting_with_a_pattern_applied()
+        {
+            var material = new Material(
+                pattern: new StripePattern(Colors.White, Colors.Black),
+                ambient: 1,
+                diffuse: 0,
+                specular: 0);
+            var eye = new Vector(0, 0, -1);
+            var normal = new Vector(0, 0, -1);
+            var light = new PointLight(new Point(0, 0, -10), Colors.White);
+            Color color1 = material.CalculateLighting(new Sphere(), light, new Point(0.9, 0, 0), eye, normal, false);
+            Color color2 = material.CalculateLighting(new Sphere(), light, new Point(1.1, 0, 0), eye, normal, false);
+            color1.Should().Be(Colors.White);
+            color2.Should().Be(Colors.Black);
         }
     }
 }

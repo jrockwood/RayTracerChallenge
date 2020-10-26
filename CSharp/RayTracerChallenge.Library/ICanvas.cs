@@ -7,6 +7,8 @@
 
 namespace RayTracerChallenge.Library
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represents a canvas that contains a color for every pixel.
     /// </summary>
@@ -24,5 +26,7 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         Color GetPixel(int x, int y);
+
+        IEnumerable<Color> GetRow(int y);
     }
 }

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="Chapter9Planes.cs" company="Justin Rockwood">
+// <copyright file="Chapter09Planes.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -13,9 +13,9 @@ namespace RayTracerChallenge.App.Library.Scenes
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
-    public class Chapter9Planes : Scene
+    public class Chapter09Planes : Scene
     {
-        public Chapter9Planes()
+        public Chapter09Planes()
             : base(
                 "Chapter 9 - Planes",
                 "Renders three spheres on a plane. Tests the plane shape.",

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="Chapter7SixSpheres.cs" company="Justin Rockwood">
+// <copyright file="Chapter07SixSpheres.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -13,9 +13,9 @@ namespace RayTracerChallenge.App.Library.Scenes
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
-    public class Chapter7SixSpheres : Scene
+    public class Chapter07SixSpheres : Scene
     {
-        public Chapter7SixSpheres()
+        public Chapter07SixSpheres()
             : base(
                 "Chapter 7 - Six Spheres",
                 "Renders three flattened spheres as walls and a floor and three additional spheres of different sizes. Tests the camera and world.",

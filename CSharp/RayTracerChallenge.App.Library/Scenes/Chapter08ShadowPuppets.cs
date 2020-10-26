@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="Chapter8ShadowPuppets.cs" company="Justin Rockwood">
+// <copyright file="Chapter08ShadowPuppets.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -13,9 +13,9 @@ namespace RayTracerChallenge.App.Library.Scenes
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
-    public class Chapter8ShadowPuppets : Scene
+    public class Chapter08ShadowPuppets : Scene
     {
-        public Chapter8ShadowPuppets()
+        public Chapter08ShadowPuppets()
             : base(
                 "Chapter 8 - Shadow Puppets",
                 "Renders a bunch of spheres that cast a shadow in the shape of a dog head.",

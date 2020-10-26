@@ -1,36 +1,43 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="RenderProgressStep.cs" company="Justin Rockwood">
+// <copyright file="Pattern.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.Library
+namespace RayTracerChallenge.Library.Patterns
 {
-    using System.Collections.Generic;
+    using RayTracerChallenge.Library.Shapes;
 
-    /// <summary>
-    /// Contains information about a camera's render progress.
-    /// </summary>
-    public sealed class RenderProgressStep
+    public abstract class Pattern
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public RenderProgressStep(int percentComplete, int row, IEnumerable<Color> pixels)
+        protected Pattern(Matrix4x4? transform = null)
         {
-            PercentComplete = percentComplete;
-            Row = row;
-            Pixels = pixels;
+            Transform = transform ?? Matrix4x4.Identity;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public int PercentComplete { get; }
-        public int Row { get; }
-        public IEnumerable<Color> Pixels { get; }
+        public Matrix4x4 Transform { get; }
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
+        public abstract Color ColorAt(Point point);
+
+        public Color ColorOnShapeAt(Shape shape, Point worldPoint)
+        {
+            Point shapePoint = shape.Transform.Invert() * worldPoint;
+            Point patternPoint = Transform.Invert() * shapePoint;
+            Color color = ColorAt(patternPoint);
+            return color;
+        }
     }
 }

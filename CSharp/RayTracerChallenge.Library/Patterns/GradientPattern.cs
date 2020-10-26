@@ -1,36 +1,44 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="RenderProgressStep.cs" company="Justin Rockwood">
+// <copyright file="GradientPattern.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.Library
+namespace RayTracerChallenge.Library.Patterns
 {
-    using System.Collections.Generic;
+    using System;
 
-    /// <summary>
-    /// Contains information about a camera's render progress.
-    /// </summary>
-    public sealed class RenderProgressStep
+    public class GradientPattern : Pattern
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public RenderProgressStep(int percentComplete, int row, IEnumerable<Color> pixels)
+        public GradientPattern(Color color1, Color color2, Matrix4x4? transform = null)
+            : base(transform)
         {
-            PercentComplete = percentComplete;
-            Row = row;
-            Pixels = pixels;
+            Color1 = color1;
+            Color2 = color2;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public int PercentComplete { get; }
-        public int Row { get; }
-        public IEnumerable<Color> Pixels { get; }
+        public Color Color1 { get; }
+        public Color Color2 { get; }
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
+        public override Color ColorAt(Point point)
+        {
+            Color distance = Color2 - Color1;
+            double fraction = point.X - Math.Floor(point.X);
+            Color color = Color1 + (distance * fraction);
+            return color;
+        }
     }
 }

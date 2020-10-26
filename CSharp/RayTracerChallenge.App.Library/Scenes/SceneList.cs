@@ -66,13 +66,16 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
             return new ObservableCollection<Scene>
             {
-                new Chapter2Cannonball(),
-                new Chapter4ClockFace(),
-                new Chapter5RedSphere(),
-                new Chapter6ShadedSphere(),
-                new Chapter7SixSpheres(),
-                new Chapter8ShadowPuppets(),
-                new Chapter9Planes(),
+                new Chapter02Cannonball(),
+                new Chapter04ClockFace(),
+                new Chapter05RedSphere(),
+                new Chapter06ShadedSphere(),
+                new Chapter07SixSpheres(),
+                new Chapter08ShadowPuppets(),
+                new Chapter09Planes(),
+                new Chapter10Patterns(),
+                new Chapter10PerturbedPattern(),
+                new Chapter10PerlinPattern(),
             };
         }
     }

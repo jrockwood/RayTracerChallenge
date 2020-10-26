@@ -1,36 +1,40 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="RenderProgressStep.cs" company="Justin Rockwood">
+// <copyright file="SolidColorPattern.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------------
 
-namespace RayTracerChallenge.Library
+namespace RayTracerChallenge.Library.Patterns
 {
-    using System.Collections.Generic;
-
     /// <summary>
-    /// Contains information about a camera's render progress.
+    /// Pattern that returns the same color for every point.
     /// </summary>
-    public sealed class RenderProgressStep
+    public class SolidColorPattern : Pattern
     {
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public RenderProgressStep(int percentComplete, int row, IEnumerable<Color> pixels)
+        public SolidColorPattern(Color color, Matrix4x4? transform = null)
+            : base(transform)
         {
-            PercentComplete = percentComplete;
-            Row = row;
-            Pixels = pixels;
+            Color = color;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public int PercentComplete { get; }
-        public int Row { get; }
-        public IEnumerable<Color> Pixels { get; }
+        public Color Color { get; }
+
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
+
+        public override Color ColorAt(Point point)
+        {
+            return Color;
+        }
     }
 }
