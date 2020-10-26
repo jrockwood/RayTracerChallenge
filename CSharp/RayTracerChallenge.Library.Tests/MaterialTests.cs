@@ -17,7 +17,7 @@ namespace RayTracerChallenge.Library.Tests
     public class MaterialTests
     {
         [Test]
-        public void The_default_material()
+        public void Ctor_should_use_default_values()
         {
             var m = new Material();
             m.Color.Should().Be(Material.DefaultColor);
@@ -25,6 +25,21 @@ namespace RayTracerChallenge.Library.Tests
             m.Diffuse.Should().Be(Material.DefaultDiffuse);
             m.Specular.Should().Be(Material.DefaultSpecular);
             m.Shininess.Should().Be(Material.DefaultShininess);
+        }
+
+        [Test]
+        public void Ctor_should_use_the_default_reflectivity_value()
+        {
+            var m = new Material();
+            m.Reflective.Should().Be(Material.DefaultReflective);
+        }
+
+        [Test]
+        public void Ctor_should_use_the_default_transparency_and_refractive_index()
+        {
+            var m = new Material();
+            m.Transparency.Should().Be(Material.DefaultTransparency);
+            m.RefractiveIndex.Should().Be(Material.DefaultRefractiveIndex);
         }
 
         [Test]

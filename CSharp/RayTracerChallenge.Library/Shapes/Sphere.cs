@@ -24,6 +24,11 @@ namespace RayTracerChallenge.Library.Shapes
         //// Methods
         //// ===========================================================================================================
 
+        public static Sphere CreateGlassSphere()
+        {
+            return new Sphere(material: new Material(transparency: 1, refractiveIndex: 1.5));
+        }
+
         public override Shape WithTransform(Matrix4x4 value)
         {
             return new Sphere(value, Material);

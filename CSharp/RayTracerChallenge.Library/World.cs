@@ -7,6 +7,7 @@
 
 namespace RayTracerChallenge.Library
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using RayTracerChallenge.Library.Lights;
@@ -14,6 +15,12 @@ namespace RayTracerChallenge.Library
 
     public class World
     {
+        //// ===========================================================================================================
+        //// Member Variables
+        //// ===========================================================================================================
+
+        public const int MaxRecursion = 5;
+
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
@@ -79,11 +86,11 @@ namespace RayTracerChallenge.Library
             return new IntersectionList(hits);
         }
 
-        internal Color ShadeHit(IntersectionState state)
+        internal Color ShadeHit(IntersectionState state, int maxRecursion = MaxRecursion)
         {
             bool isShadowed = IsShadowed(state.OverPoint);
 
-            Color color = state.Shape.Material.CalculateLighting(
+            Color surfaceColor = state.Shape.Material.CalculateLighting(
                 state.Shape,
                 Light,
                 state.OverPoint,
@@ -91,17 +98,28 @@ namespace RayTracerChallenge.Library
                 state.Normal,
                 isShadowed);
 
-            return color;
+            Color reflectedColor = ReflectedColor(state, maxRecursion);
+            Color refractedColor = RefractedColor(state, maxRecursion);
+
+            Material material = state.Shape.Material;
+            if (material.Reflective > 0 && material.Transparency > 0)
+            {
+                double reflectance = state.Schlick();
+                return surfaceColor + (reflectedColor * reflectance) + (refractedColor * (1 - reflectance));
+            }
+
+            return surfaceColor + reflectedColor + refractedColor;
         }
 
         /// <summary>
         /// Finds the color of the first shape that is hit for the given ray.
         /// </summary>
         /// <param name="ray">The ray to use for hit testing.</param>
+        /// <param name="maxRecursion">The maximum number of additional rays to use for reflection.</param>
         /// <returns>
         /// The color for the part of the shape that the ray hits, or <see cref="Colors.Black"/> if no shape is hit.
         /// </returns>
-        public Color ColorAt(Ray ray)
+        public Color ColorAt(Ray ray, int maxRecursion = MaxRecursion)
         {
             IntersectionList intersections = Intersect(ray);
             Intersection? hit = intersections.Hit;
@@ -111,8 +129,8 @@ namespace RayTracerChallenge.Library
                 return Colors.Black;
             }
 
-            var state = IntersectionState.Create(hit, ray);
-            Color color = ShadeHit(state);
+            var state = IntersectionState.Create(hit, ray, intersections);
+            Color color = ShadeHit(state, maxRecursion);
             return color;
         }
 
@@ -127,6 +145,56 @@ namespace RayTracerChallenge.Library
             Intersection? hit = intersections.Hit;
 
             return hit != null && hit.T < distance;
+        }
+
+        public Color ReflectedColor(IntersectionState state, int maxRecursion = MaxRecursion)
+        {
+            if (maxRecursion <= 0 || state.Shape.Material.Reflective == 0)
+            {
+                return Colors.Black;
+            }
+
+            var reflectedRay = new Ray(state.OverPoint, state.Reflection);
+            Color color = ColorAt(reflectedRay, maxRecursion - 1);
+            Color reflectedColor = color * state.Shape.Material.Reflective;
+            return reflectedColor;
+        }
+
+        public Color RefractedColor(IntersectionState state, int maxRecursion = MaxRecursion)
+        {
+            if (maxRecursion <= 0 || state.Shape.Material.Transparency == 0)
+            {
+                return Colors.Black;
+            }
+
+            // Find the ratio of the first index of refraction to the second. This is inverted from the definition of
+            // Snell's Law, which is sin(theta_i) / sin(theta_t) = n2 / n1.
+            double nRatio = state.N1 / state.N2;
+
+            // cos(theta_i) is the same as the dot product of the two vectors.
+            double cosI = state.Eye.Dot(state.Normal);
+
+            // Find sin(theta_t)^2 via trigonometric identity.
+            double sin2T = nRatio * nRatio * (1 - (cosI * cosI));
+
+            // Total internal reflection - there is no refraction.
+            if (sin2T > 1)
+            {
+                return Colors.Black;
+            }
+
+            // Find cos(theta_t) via trigonometric identity.
+            double cosT = Math.Sqrt(1.0 - sin2T);
+
+            // Compute the direction of the refracted ray.
+            Vector direction = (state.Normal * ((nRatio * cosI) - cosT)) - (state.Eye * nRatio);
+
+            // Create the refracted ray.
+            var refractedRay = new Ray(state.UnderPoint, direction);
+
+            // Find the color of the refracted ray, making sure to multiply by the transparency value to account for any opacity.
+            Color color = ColorAt(refractedRay, maxRecursion - 1) * state.Shape.Material.Transparency;
+            return color;
         }
 
         /// <summary>
