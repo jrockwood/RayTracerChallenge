@@ -31,7 +31,7 @@ namespace RayTracerChallenge.Library.Patterns
 
         public override Color ColorAt(Point point)
         {
-            return Math.Floor(point.X) % 2 == 0
+            return Math.Floor(point.X + NumberExtensions.Epsilon) % 2 == 0
                 ? Pattern1.ColorAt(ToPattern1Point(point))
                 : Pattern2.ColorAt(ToPattern2Point(point));
         }
