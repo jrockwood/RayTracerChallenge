@@ -26,6 +26,15 @@ namespace RayTracerChallenge.Library
         public const double DefaultDiffuse = 0.9;
         public const double DefaultSpecular = 0.9;
         public const double DefaultShininess = 200.0;
+        public const double DefaultReflective = 0;
+        public const double DefaultTransparency = 0;
+        public const double DefaultRefractiveIndex = VacuumRefractiveIndex;
+
+        public const double VacuumRefractiveIndex = 1;
+        public const double AirRefractiveIndex = 1.00029;
+        public const double WaterRefractiveIndex = 1.333;
+        public const double GlassRefractiveIndex = 1.52;
+        public const double DiamondRefractiveIndex = 2.417;
 
         //// ===========================================================================================================
         //// Constructors
@@ -37,7 +46,10 @@ namespace RayTracerChallenge.Library
             double ambient = DefaultAmbient,
             double diffuse = DefaultDiffuse,
             double specular = DefaultSpecular,
-            double shininess = DefaultShininess)
+            double shininess = DefaultShininess,
+            double reflective = DefaultReflective,
+            double transparency = DefaultTransparency,
+            double refractiveIndex = DefaultRefractiveIndex)
         {
             Color = color ?? DefaultColor;
             Pattern = pattern;
@@ -45,6 +57,9 @@ namespace RayTracerChallenge.Library
             Diffuse = VerifyValue(diffuse, nameof(diffuse));
             Specular = VerifyValue(specular, nameof(specular));
             Shininess = VerifyValue(shininess, nameof(shininess));
+            Reflective = VerifyValue(reflective, nameof(reflective));
+            Transparency = VerifyValue(transparency, nameof(transparency));
+            RefractiveIndex = VerifyValue(refractiveIndex, nameof(refractiveIndex));
         }
 
         //// ===========================================================================================================
@@ -59,38 +74,138 @@ namespace RayTracerChallenge.Library
         public double Specular { get; }
         public double Shininess { get; }
 
+        public double Reflective { get; }
+        public double Transparency { get; }
+        public double RefractiveIndex { get; }
+
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
         public Material WithColor(Color value)
         {
-            return new Material(value, Pattern, Ambient, Diffuse, Specular, Shininess);
+            return new Material(
+                value,
+                Pattern,
+                Ambient,
+                Diffuse,
+                Specular,
+                Shininess,
+                Reflective,
+                Transparency,
+                RefractiveIndex);
         }
 
         public Material WithPattern(Pattern? value)
         {
-            return new Material(Color, value, Ambient, Diffuse, Specular, Shininess);
+            return new Material(
+                Color,
+                value,
+                Ambient,
+                Diffuse,
+                Specular,
+                Shininess,
+                Reflective,
+                Transparency,
+                RefractiveIndex);
         }
 
         public Material WithAmbient(double value)
         {
-            return new Material(Color, Pattern, value, Diffuse, Specular, Shininess);
+            return new Material(
+                Color,
+                Pattern,
+                value,
+                Diffuse,
+                Specular,
+                Shininess,
+                Reflective,
+                Transparency,
+                RefractiveIndex);
         }
 
         public Material WithDiffuse(double value)
         {
-            return new Material(Color, Pattern, Ambient, value, Specular, Shininess);
+            return new Material(
+                Color,
+                Pattern,
+                Ambient,
+                value,
+                Specular,
+                Shininess,
+                Reflective,
+                Transparency,
+                RefractiveIndex);
         }
 
         public Material WithSpecular(double value)
         {
-            return new Material(Color, Pattern, Ambient, Diffuse, value, Shininess);
+            return new Material(
+                Color,
+                Pattern,
+                Ambient,
+                Diffuse,
+                value,
+                Shininess,
+                Reflective,
+                Transparency,
+                RefractiveIndex);
         }
 
         public Material WithShininess(double value)
         {
-            return new Material(Color, Pattern, Ambient, Diffuse, Specular, value);
+            return new Material(
+                Color,
+                Pattern,
+                Ambient,
+                Diffuse,
+                Specular,
+                value,
+                Reflective,
+                Transparency,
+                RefractiveIndex);
+        }
+
+        public Material WithReflective(double value)
+        {
+            return new Material(
+                Color,
+                Pattern,
+                Ambient,
+                Diffuse,
+                Specular,
+                Shininess,
+                value,
+                Transparency,
+                RefractiveIndex);
+        }
+
+        public Material WithTransparency(double value)
+        {
+            return new Material(
+                Color,
+                Pattern,
+                Ambient,
+                Diffuse,
+                Specular,
+                Shininess,
+                Reflective,
+                value,
+                RefractiveIndex);
+        }
+
+        public Material WithRefractiveIndex(double value)
+        {
+            return new Material(
+                Color,
+                Pattern,
+                Ambient,
+                Diffuse,
+                Specular,
+                Shininess,
+                Reflective,
+                Transparency,
+                value);
         }
 
         public Color CalculateLighting(

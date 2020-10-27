@@ -32,7 +32,7 @@ namespace RayTracerChallenge.Library.Patterns
         public override Color ColorAt(Point point)
         {
             double distance = Math.Sqrt((point.X * point.X) + (point.Z * point.Z));
-            return Math.Floor(distance) % 2 == 0
+            return Math.Floor(distance + NumberExtensions.Epsilon) % 2 == 0
                 ? Pattern1.ColorAt(ToPattern1Point(point))
                 : Pattern2.ColorAt(ToPattern2Point(point));
         }

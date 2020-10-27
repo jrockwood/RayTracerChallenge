@@ -117,5 +117,18 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var normal = sphere.NormalAt(new Point(sqrt3Over3, sqrt3Over3, sqrt3Over3));
             normal.Should().Be(normal.Normalize());
         }
+
+        //// ===========================================================================================================
+        //// CreateGlassSphere Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void CreateGlassSphere_should_create_a_sphere_with_a_glassy_material()
+        {
+            var sphere = Sphere.CreateGlassSphere();
+            sphere.Transform.Should().Be(Matrix4x4.Identity);
+            sphere.Material.Transparency.Should().Be(1.0);
+            sphere.Material.RefractiveIndex.Should().Be(1.5);
+        }
     }
 }

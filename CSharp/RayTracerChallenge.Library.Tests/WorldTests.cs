@@ -7,10 +7,12 @@
 
 namespace RayTracerChallenge.Library.Tests
 {
+    using System;
     using FluentAssertions;
     using NUnit.Framework;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
+    using RayTracerChallenge.Library.Tests.Patterns;
 
     public class WorldTests
     {
@@ -51,7 +53,7 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
             Shape shape = world.Shapes[0];
             var intersection = new Intersection(4, shape);
-            var state = IntersectionState.Create(intersection, ray);
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
             Color color = world.ShadeHit(state);
             color.Should().Be(new Color(0.38066, 0.47583, 0.2855));
         }
@@ -63,7 +65,7 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, 0), Vector.UnitZ);
             Shape shape = world.Shapes[1];
             var intersection = new Intersection(0.5, shape);
-            var state = IntersectionState.Create(intersection, ray);
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
             Color color = world.ShadeHit(state);
             color.Should().Be(new Color(0.90498, 0.90498, 0.90498));
         }
@@ -79,10 +81,69 @@ namespace RayTracerChallenge.Library.Tests
 
             var ray = new Ray(new Point(0, 0, 5), Vector.UnitZ);
             var intersection = new Intersection(4, sphere2);
-            var state = IntersectionState.Create(intersection, ray);
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
 
             Color color = world.ShadeHit(state);
             color.Should().Be(new Color(0.1, 0.1, 0.1));
+        }
+
+        /// <summary>
+        /// Add a reflective plane to the default scene, just below the spheres, and orient a ray so it strikes the
+        /// plane, reflects upward, and hits the outermost sphere.
+        /// </summary>
+        [Test]
+        public void ShadeHit_should_calculate_the_reflected_color_for_a_reflective_material()
+        {
+            var world = World.CreateDefaultWorld();
+            var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
+            world = world.WithAddedShapes(floor);
+
+            var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+            var intersection = new Intersection(Math.Sqrt(2), floor);
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
+
+            var color = world.ShadeHit(state);
+            color.Should().Be(new Color(0.87675, 0.92434, 0.82917));
+        }
+
+        /// <summary>
+        /// Add a glass floor to the default world, positioned just below the two default spheres, and add a new,
+        /// colored sphere below the floor. Cast a ray diagonally toward the floor, with the expectation that it will
+        /// refract and eventually strike the colored ball. Because the plan is only semitransparent, the resulting
+        /// color should combine the refracted color of the ball and the color of the plane.
+        /// </summary>
+        [Test]
+        public void ShadeHit_should_calculate_the_shade_color_with_a_transparent_material()
+        {
+            var floor = new Plane(
+                Matrix4x4.CreateTranslation(0, -1, 0),
+                new Material(transparency: 0.5, refractiveIndex: 1.5));
+
+            var ball = new Sphere(Matrix4x4.CreateTranslation(0, -3.5, -0.5), new Material(Colors.Red, ambient: 0.5));
+            var world = World.CreateDefaultWorld().WithAddedShapes(floor, ball);
+
+            var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+            var intersections = new IntersectionList(new Intersection(Math.Sqrt(2), floor));
+            var state = IntersectionState.Create(intersections[0], ray, intersections);
+            Color color = world.ShadeHit(state, 5);
+            color.Should().Be(new Color(0.93642, 0.68642, 0.68642));
+        }
+
+        [Test]
+        public void ShadeHit_should_calculate_the_shade_color_with_a_reflective_and_transparent_material()
+        {
+            var floor = new Plane(
+                Matrix4x4.CreateTranslation(0, -1, 0),
+                new Material(reflective: 0.5, transparency: 0.5, refractiveIndex: 1.5));
+
+            var ball = new Sphere(Matrix4x4.CreateTranslation(0, -3.5, -0.5), new Material(Colors.Red, ambient: 0.5));
+            var world = World.CreateDefaultWorld().WithAddedShapes(floor, ball);
+
+            var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+            var intersections = new IntersectionList(new Intersection(Math.Sqrt(2), floor));
+            var state = IntersectionState.Create(intersections[0], ray, intersections);
+            Color color = world.ShadeHit(state, 5);
+            color.Should().Be(new Color(0.93391, 0.69643, 0.69243));
         }
 
         //// ===========================================================================================================
@@ -120,6 +181,19 @@ namespace RayTracerChallenge.Library.Tests
             color.Should().Be(inner.Material.Color);
         }
 
+        [Test]
+        public void ColorAt_should_avoid_infinite_recursion_with_two_parallel_mirrors()
+        {
+            var lower = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 1));
+            var upper = new Plane(Matrix4x4.CreateTranslation(0, 1, 0), new Material(reflective: 1));
+            var world = World.CreateDefaultWorld()
+                .WithLight(new PointLight(Point.Zero, Colors.White))
+                .WithShapes(lower, upper);
+            var ray = new Ray(Point.Zero, Vector.UnitY);
+            Color color = world.ColorAt(ray);
+            color.Should().Be(new Color(11.4, 11.4, 11.4));
+        }
+
         //// ===========================================================================================================
         //// IsShadowed Tests
         //// ===========================================================================================================
@@ -154,6 +228,123 @@ namespace RayTracerChallenge.Library.Tests
             var world = World.CreateDefaultWorld();
             var p = new Point(-2, 2, -2);
             world.IsShadowed(p).Should().BeFalse();
+        }
+
+        //// ===========================================================================================================
+        //// ReflectedColor Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void ReflectedColor_should_return_black_for_the_reflected_color_of_a_non_reflective_surface()
+        {
+            var world = World.CreateDefaultWorld();
+            var ray = new Ray(Point.Zero, Vector.UnitZ);
+            var shape = world.Shapes[1].WithMaterial(m => m.WithAmbient(1));
+            world = world.WithShapes(world.Shapes.Replace(world.Shapes[1], shape));
+
+            var intersection = new Intersection(1, shape);
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
+            Color color = world.ReflectedColor(state);
+            color.Should().Be(Colors.Black);
+        }
+
+        /// <summary>
+        /// Add a reflective plane to the default scene, just below the spheres, and orient a ray so it strikes the
+        /// plane, reflects upward, and hits the outermost sphere.
+        /// </summary>
+        [Test]
+        public void ReflectedColor_should_calculate_the_reflected_color_for_a_reflective_material()
+        {
+            var world = World.CreateDefaultWorld();
+            var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
+            world = world.WithAddedShapes(floor);
+
+            var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+            var intersection = new Intersection(Math.Sqrt(2), floor);
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
+
+            Color color = world.ReflectedColor(state);
+            color.Should().Be(new Color(0.190332, 0.23791, 0.14274));
+        }
+
+        [Test]
+        public void ReflectedColor_should_only_allow_a_maximum_recursion_depth()
+        {
+            var world = World.CreateDefaultWorld();
+            var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
+            world = world.WithAddedShapes(floor);
+
+            var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+            var intersection = new Intersection(Math.Sqrt(2), floor);
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
+
+            Color color = world.ReflectedColor(state, 0);
+            color.Should().Be(Colors.Black);
+        }
+
+        //// ===========================================================================================================
+        //// RefractedColor Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void RefractedColor_should_return_black_for_the_refracted_color_with_an_opaque_surface()
+        {
+            var world = World.CreateDefaultWorld();
+            var shape = world.Shapes[0];
+            var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
+            var intersections = new IntersectionList(new Intersection(4, shape), new Intersection(6, shape));
+            var state = IntersectionState.Create(intersections[0], ray, intersections);
+            Color color = world.RefractedColor(state, 5);
+            color.Should().Be(Colors.Black);
+        }
+
+        [Test]
+        public void RefractedColor_should_return_the_refracted_color_at_the_maximum_recursive_depth()
+        {
+            var world = World.CreateDefaultWorld();
+            var shape = world.Shapes[0].WithMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
+            world = world.WithShapes(world.Shapes.SetItem(0, shape));
+            var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
+            var intersections = new IntersectionList(new Intersection(4, shape), new Intersection(6, shape));
+            var state = IntersectionState.Create(intersections[0], ray, intersections);
+            Color color = world.RefractedColor(state, 0);
+            color.Should().Be(Colors.Black);
+        }
+
+        [Test]
+        public void RefractedColor_should_return_black_for_the_refracted_color_under_total_internal_reflection()
+        {
+            var world = World.CreateDefaultWorld();
+            var shape = world.Shapes[0].WithMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
+            world = world.WithShapes(world.Shapes.SetItem(0, shape));
+            var ray = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), Vector.UnitY);
+            var intersections = new IntersectionList(
+                new Intersection(-Math.Sqrt(2) / 2, shape),
+                new Intersection(Math.Sqrt(2) / 2, shape));
+
+            // Note this time we're inside the sphere, so we need to look at intersections[1], not 0.
+            var state = IntersectionState.Create(intersections[1], ray, intersections);
+            Color color = world.RefractedColor(state, 5);
+            color.Should().Be(Colors.Black);
+        }
+
+        [Test]
+        public void RefractedColor_should_return_the_refracted_color_with_a_refracted_ray()
+        {
+            var world = World.CreateDefaultWorld();
+            var a = world.Shapes[0].WithMaterial(m => m.WithAmbient(1).WithPattern(new PatternTests.TestPattern()));
+            var b = world.Shapes[1].WithMaterial(m => m.WithTransparency(1).WithRefractiveIndex(1.5));
+            world = world.WithShapes(a, b);
+
+            var ray = new Ray(new Point(0, 0, 0.1), Vector.UnitY);
+            var intersections = new IntersectionList(
+                new Intersection(-0.9899, a),
+                new Intersection(-0.4899, b),
+                new Intersection(0.4899, b),
+                new Intersection(0.9899, a));
+            var state = IntersectionState.Create(intersections[2], ray, intersections);
+            Color color = world.RefractedColor(state, 5);
+            color.Should().Be(new Color(0, 0.99887, 0.04722));
         }
     }
 }
