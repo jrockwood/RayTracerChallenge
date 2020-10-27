@@ -77,6 +77,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 new Chapter10PerturbedPattern(),
                 new Chapter10PerlinPattern(),
                 new Chapter11Reflections(),
+                new Chapter12TableInARoom(),
             };
         }
     }

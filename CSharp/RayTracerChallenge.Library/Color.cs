@@ -105,8 +105,9 @@ namespace RayTracerChallenge.Library
         public static readonly Color White = new Color(1, 1, 1);
         public static readonly Color Black = new Color(0, 0, 0);
 
-        public static readonly Color LightGray = new Color(0.75, 0.75, 0.75);
+        public static readonly Color DarkGray = new Color(0.25, 0.25, 0.25);
         public static readonly Color Gray = new Color(0.5, 0.5, 0.5);
+        public static readonly Color LightGray = new Color(0.75, 0.75, 0.75);
 
         public static readonly Color Red = new Color(1, 0, 0);
         public static readonly Color Green = new Color(0, 1, 0);
