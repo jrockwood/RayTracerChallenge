@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // <copyright file="Matrix4x4.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
@@ -8,6 +8,7 @@
 namespace RayTracerChallenge.Library
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Represents an immutable 4x4 matrix.
@@ -307,39 +308,172 @@ namespace RayTracerChallenge.Library
             return minor;
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public Matrix4x4 Invert()
         {
-            if (!IsInvertible)
+            // The following is copied from the .NET implementation
+            // (https://referencesource.microsoft.com/#System.Numerics/System/Numerics/Matrix4x4.cs). In performance
+            // testing, this method was a bottleneck, so this implementation is used, which is much faster, although
+            // much harder to read.
+
+            //                                       -1
+            // If you have matrix M, inverse Matrix M   can compute
+            //
+            //     -1       1
+            //    M   = --------- A
+            //            det(M)
+            //
+            // A is adjugate (adjoint) of M, where,
+            //
+            //      T
+            // A = C
+            //
+            // C is Cofactor matrix of M, where,
+            //           i + j
+            // C   = (-1)      * det(M  )
+            //  ij                    ij
+            //
+            //     [ a b c d ]
+            // M = [ e f g h ]
+            //     [ i j k l ]
+            //     [ m n o p ]
+            //
+            // First Row
+            //           2 | f g h |
+            // C   = (-1)  | j k l | = + ( f ( kp - lo ) - g ( jp - ln ) + h ( jo - kn ) )
+            //  11         | n o p |
+            //
+            //           3 | e g h |
+            // C   = (-1)  | i k l | = - ( e ( kp - lo ) - g ( ip - lm ) + h ( io - km ) )
+            //  12         | m o p |
+            //
+            //           4 | e f h |
+            // C   = (-1)  | i j l | = + ( e ( jp - ln ) - f ( ip - lm ) + h ( in - jm ) )
+            //  13         | m n p |
+            //
+            //           5 | e f g |
+            // C   = (-1)  | i j k | = - ( e ( jo - kn ) - f ( io - km ) + g ( in - jm ) )
+            //  14         | m n o |
+            //
+            // Second Row
+            //           3 | b c d |
+            // C   = (-1)  | j k l | = - ( b ( kp - lo ) - c ( jp - ln ) + d ( jo - kn ) )
+            //  21         | n o p |
+            //
+            //           4 | a c d |
+            // C   = (-1)  | i k l | = + ( a ( kp - lo ) - c ( ip - lm ) + d ( io - km ) )
+            //  22         | m o p |
+            //
+            //           5 | a b d |
+            // C   = (-1)  | i j l | = - ( a ( jp - ln ) - b ( ip - lm ) + d ( in - jm ) )
+            //  23         | m n p |
+            //
+            //           6 | a b c |
+            // C   = (-1)  | i j k | = + ( a ( jo - kn ) - b ( io - km ) + c ( in - jm ) )
+            //  24         | m n o |
+            //
+            // Third Row
+            //           4 | b c d |
+            // C   = (-1)  | f g h | = + ( b ( gp - ho ) - c ( fp - hn ) + d ( fo - gn ) )
+            //  31         | n o p |
+            //
+            //           5 | a c d |
+            // C   = (-1)  | e g h | = - ( a ( gp - ho ) - c ( ep - hm ) + d ( eo - gm ) )
+            //  32         | m o p |
+            //
+            //           6 | a b d |
+            // C   = (-1)  | e f h | = + ( a ( fp - hn ) - b ( ep - hm ) + d ( en - fm ) )
+            //  33         | m n p |
+            //
+            //           7 | a b c |
+            // C   = (-1)  | e f g | = - ( a ( fo - gn ) - b ( eo - gm ) + c ( en - fm ) )
+            //  34         | m n o |
+            //
+            // Fourth Row
+            //           5 | b c d |
+            // C   = (-1)  | f g h | = - ( b ( gl - hk ) - c ( fl - hj ) + d ( fk - gj ) )
+            //  41         | j k l |
+            //
+            //           6 | a c d |
+            // C   = (-1)  | e g h | = + ( a ( gl - hk ) - c ( el - hi ) + d ( ek - gi ) )
+            //  42         | i k l |
+            //
+            //           7 | a b d |
+            // C   = (-1)  | e f h | = - ( a ( fl - hj ) - b ( el - hi ) + d ( ej - fi ) )
+            //  43         | i j l |
+            //
+            //           8 | a b c |
+            // C   = (-1)  | e f g | = + ( a ( fk - gj ) - b ( ek - gi ) + c ( ej - fi ) )
+            //  44         | i j k |
+            //
+            // Cost of operation
+            // 53 adds, 104 multiplies, and 1 div.
+
+            double a = M00, b = M01, c = M02, d = M03;
+            double e = M10, f = M11, g = M12, h = M13;
+            double i = M20, j = M21, k = M22, l = M23;
+            double m = M30, n = M31, o = M32, p = M33;
+
+            double kp_lo = (k * p) - (l * o);
+            double jp_ln = (j * p) - (l * n);
+            double jo_kn = (j * o) - (k * n);
+            double ip_lm = (i * p) - (l * m);
+            double io_km = (i * o) - (k * m);
+            double in_jm = (i * n) - (j * m);
+
+            double a11 = +(((f * kp_lo) - (g * jp_ln)) + (h * jo_kn));
+            double a12 = -(((e * kp_lo) - (g * ip_lm)) + (h * io_km));
+            double a13 = +(((e * jp_ln) - (f * ip_lm)) + (h * in_jm));
+            double a14 = -(((e * jo_kn) - (f * io_km)) + (g * in_jm));
+
+            double det = (a * a11) + (b * a12) + (c * a13) + (d * a14);
+
+            if (Math.Abs(det) < double.Epsilon)
             {
                 throw new InvalidOperationException("The matrix is not invertible");
             }
 
-            // Initialize the new matrix.
-            double[][] newMatrix = new double[4][];
-            for (int row = 0; row < 4; row++)
-            {
-                newMatrix[row] = new double[4];
-            }
+            double invDet = 1.0 / det;
 
-            // Calculate the determinant outside of the loop.
-            double determinant = Determinant;
+            double result_M00 = a11 * invDet;
+            double result_M10 = a12 * invDet;
+            double result_M20 = a13 * invDet;
+            double result_M30 = a14 * invDet;
 
-            for (int row = 0; row < 4; row++)
-            {
-                for (int col = 0; col < 4; col++)
-                {
-                    double c = Cofactor(row, col);
+            double result_M01 = -(((b * kp_lo) - (c * jp_ln)) + (d * jo_kn)) * invDet;
+            double result_M11 = +(((a * kp_lo) - (c * ip_lm)) + (d * io_km)) * invDet;
+            double result_M21 = -(((a * jp_ln) - (b * ip_lm)) + (d * in_jm)) * invDet;
+            double result_M31 = +(((a * jo_kn) - (b * io_km)) + (c * in_jm)) * invDet;
 
-                    // Note the "col, row" here instead of "row, col", which transposes the matrix.
-                    newMatrix[col][row] = c / determinant;
-                }
-            }
+            double gp_ho = (g * p) - (h * o);
+            double fp_hn = (f * p) - (h * n);
+            double fo_gn = (f * o) - (g * n);
+            double ep_hm = (e * p) - (h * m);
+            double eo_gm = (e * o) - (g * m);
+            double en_fm = (e * n) - (f * m);
+
+            double result_M02 = +(((b * gp_ho) - (c * fp_hn)) + (d * fo_gn)) * invDet;
+            double result_M12 = -(((a * gp_ho) - (c * ep_hm)) + (d * eo_gm)) * invDet;
+            double result_M22 = +(((a * fp_hn) - (b * ep_hm)) + (d * en_fm)) * invDet;
+            double result_M32 = -(((a * fo_gn) - (b * eo_gm)) + (c * en_fm)) * invDet;
+
+            double gl_hk = (g * l) - (h * k);
+            double fl_hj = (f * l) - (h * j);
+            double fk_gj = (f * k) - (g * j);
+            double el_hi = (e * l) - (h * i);
+            double ek_gi = (e * k) - (g * i);
+            double ej_fi = (e * j) - (f * i);
+
+            double result_M03 = -(((b * gl_hk) - (c * fl_hj)) + (d * fk_gj)) * invDet;
+            double result_M13 = +(((a * gl_hk) - (c * el_hi)) + (d * ek_gi)) * invDet;
+            double result_M23 = -(((a * fl_hj) - (b * el_hi)) + (d * ej_fi)) * invDet;
+            double result_M33 = +(((a * fk_gj) - (b * ek_gi)) + (c * ej_fi)) * invDet;
 
             return new Matrix4x4(
-                newMatrix[0][0], newMatrix[0][1], newMatrix[0][2], newMatrix[0][3],
-                newMatrix[1][0], newMatrix[1][1], newMatrix[1][2], newMatrix[1][3],
-                newMatrix[2][0], newMatrix[2][1], newMatrix[2][2], newMatrix[2][3],
-                newMatrix[3][0], newMatrix[3][1], newMatrix[3][2], newMatrix[3][3]);
+                result_M00, result_M01, result_M02, result_M03,
+                result_M10, result_M11, result_M12, result_M13,
+                result_M20, result_M21, result_M22, result_M23,
+                result_M30, result_M31, result_M32, result_M33);
         }
 
         public static Matrix4x4 CreateTranslation(double x, double y, double z)
