@@ -12,7 +12,7 @@ namespace RayTracerChallenge.Library
     /// <summary>
     /// Represents an immutable 3x3 matrix.
     /// </summary>
-    public sealed class Matrix3x3 : IEquatable<Matrix3x3>
+    public readonly struct Matrix3x3 : IEquatable<Matrix3x3>
     {
         //// ===========================================================================================================
         //// Member Variables
@@ -102,18 +102,8 @@ namespace RayTracerChallenge.Library
         //// Equality Members
         //// ===========================================================================================================
 
-        public bool Equals(Matrix3x3? other)
+        public bool Equals(Matrix3x3 other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
             return M00.IsApproximatelyEqual(other.M00) &&
                    M01.IsApproximatelyEqual(other.M01) &&
                    M02.IsApproximatelyEqual(other.M02) &&
@@ -129,7 +119,7 @@ namespace RayTracerChallenge.Library
 
         public override bool Equals(object? obj)
         {
-            return ReferenceEquals(this, obj) || (obj is Matrix3x3 other && Equals(other));
+            return obj is Matrix3x3 other && Equals(other);
         }
 
         public override int GetHashCode()

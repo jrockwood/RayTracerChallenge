@@ -12,7 +12,7 @@ namespace RayTracerChallenge.Library
     /// <summary>
     /// Represents an immutable 2x2 matrix.
     /// </summary>
-    public sealed class Matrix2x2 : IEquatable<Matrix2x2>
+    public readonly struct Matrix2x2 : IEquatable<Matrix2x2>
     {
         //// ===========================================================================================================
         //// Member Variables
@@ -62,18 +62,8 @@ namespace RayTracerChallenge.Library
         //// Equality Members
         //// ===========================================================================================================
 
-        public bool Equals(Matrix2x2? other)
+        public bool Equals(Matrix2x2 other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
             return M00.IsApproximatelyEqual(other.M00) &&
                    M01.IsApproximatelyEqual(other.M01) &&
                    M10.IsApproximatelyEqual(other.M10) &&
@@ -82,7 +72,7 @@ namespace RayTracerChallenge.Library
 
         public override bool Equals(object? obj)
         {
-            return ReferenceEquals(this, obj) || (obj is Matrix2x2 other && Equals(other));
+            return obj is Matrix2x2 other && Equals(other);
         }
 
         public override int GetHashCode()
