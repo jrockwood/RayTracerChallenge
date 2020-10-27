@@ -129,42 +129,49 @@ namespace RayTracerChallenge.Library
             var canvas = new MutableCanvas(width, height);
 
             // Run the loop in parallel for each row.
-            var parallelOptions = new ParallelOptions { CancellationToken = cancellationToken };
-            var parallelLoopResult = Parallel.For(
-                0,
-                height,
-                parallelOptions,
-                (int y, ParallelLoopState state) =>
-                {
-                    for (int x = 0; x < width; x++)
+            try
+            {
+                var parallelOptions = new ParallelOptions { CancellationToken = cancellationToken };
+                Parallel.For(
+                    0,
+                    height,
+                    parallelOptions,
+                    (int y, ParallelLoopState state) =>
                     {
-                        // Check for cancellation.
-                        if (state.ShouldExitCurrentIteration)
+                        for (int x = 0; x < width; x++)
+                        {
+                            // Check for cancellation.
+                            if (state.ShouldExitCurrentIteration)
+                            {
+                                return;
+                            }
+
+                            // Run the ray tracing algorithm to get the color of the pixel.
+                            Ray ray = RayForPixel(x, y);
+                            Color color = world.ColorAt(ray);
+
+                            canvas.SetPixel(x, y, color);
+                        }
+
+                        if (progress == null)
                         {
                             return;
                         }
 
-                        // Run the ray tracing algorithm to get the color of the pixel.
-                        Ray ray = RayForPixel(x, y);
-                        Color color = world.ColorAt(ray);
+                        // Update the number of pixels processed so we can calculate the progress.
+                        int renderedPixelCount = Interlocked.Add(ref totalRenderedPixels, width);
 
-                        canvas.SetPixel(x, y, color);
-                    }
+                        // Report the progress.
+                        int percentComplete = (int)Math.Round((renderedPixelCount / (double)totalPixels) * 100.0);
+                        var progressStep = new RenderProgressStep(percentComplete, y, canvas.GetRow(y));
 
-                    if (progress == null)
-                    {
-                        return;
-                    }
-
-                    // Update the number of pixels processed so we can calculate the progress.
-                    int renderedPixelCount = Interlocked.Add(ref totalRenderedPixels, width);
-
-                    // Report the progress.
-                    int percentComplete = (int)Math.Round((renderedPixelCount / (double)totalPixels) * 100.0);
-                    var progressStep = new RenderProgressStep(percentComplete, y, canvas.GetRow(y));
-
-                    progress.Report(progressStep);
-                });
+                        progress.Report(progressStep);
+                    });
+            }
+            catch (OperationCanceledException)
+            {
+                // Do nothing.
+            }
 
             // Create a canvas from the pixel data.
             return canvas.ToImmutable();
