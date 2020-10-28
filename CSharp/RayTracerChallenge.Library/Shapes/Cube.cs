@@ -50,7 +50,7 @@ namespace RayTracerChallenge.Library.Shapes
                 return IntersectionList.Empty;
             }
 
-            return IntersectionList.Create(new Intersection(tmin, this), new Intersection(tmax, this));
+            return IntersectionList.Create((tmin, this), (tmax, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

@@ -58,7 +58,7 @@ namespace RayTracerChallenge.Library.Shapes
             double t1 = (-b - sqrtOfDiscriminant) / (2 * a);
             double t2 = (-b + sqrtOfDiscriminant) / (2 * a);
 
-            return IntersectionList.Create(new Intersection(t1, this), new Intersection(t2, this));
+            return IntersectionList.Create((t1, this), (t2, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

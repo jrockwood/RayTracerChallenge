@@ -72,6 +72,11 @@ namespace RayTracerChallenge.Library
             return new IntersectionList(intersections);
         }
 
+        public static IntersectionList Create(params (double t, Shape shape)[] intersections)
+        {
+            return new IntersectionList(intersections.Select(tuple => new Intersection(tuple)));
+        }
+
         public IEnumerator<Intersection> GetEnumerator()
         {
             return ((IEnumerable<Intersection>)_intersections).GetEnumerator();

@@ -111,13 +111,7 @@ namespace RayTracerChallenge.Library.Tests
                     .WithMaterial(m => m.WithRefractiveIndex(2.5));
 
                 var ray = new Ray(new Point(0, 0, -4), Vector.UnitZ);
-                var intersections = IntersectionList.Create(
-                    new Intersection(2, a),
-                    new Intersection(2.75, b),
-                    new Intersection(3.25, c),
-                    new Intersection(4.75, b),
-                    new Intersection(5.25, c),
-                    new Intersection(6, a));
+                var intersections = IntersectionList.Create((2, a), (2.75, b), (3.25, c), (4.75, b), (5.25, c), (6, a));
 
                 (int index, double n1, double n2) = testCase;
                 var state = IntersectionState.Create(intersections[index], ray, intersections);
@@ -147,9 +141,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var shape = Sphere.CreateGlassSphere();
             var ray = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), Vector.UnitY);
-            var intersections = IntersectionList.Create(
-                new Intersection(-Math.Sqrt(2) / 2, shape),
-                new Intersection(Math.Sqrt(2) / 2, shape));
+            var intersections = IntersectionList.Create((-Math.Sqrt(2) / 2, shape), (Math.Sqrt(2) / 2, shape));
             var state = IntersectionState.Create(intersections[1], ray, intersections);
             double reflectance = state.Schlick();
             reflectance.Should().Be(1.0);
@@ -160,9 +152,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var shape = Sphere.CreateGlassSphere();
             var ray = new Ray(new Point(0, 0, 0), Vector.UnitY);
-            var intersections = IntersectionList.Create(
-                new Intersection(-1, shape),
-                new Intersection(1, shape));
+            var intersections = IntersectionList.Create((-1, shape), (1, shape));
             var state = IntersectionState.Create(intersections[1], ray, intersections);
             double reflectance = state.Schlick();
             reflectance.Should().BeApproximately(0.04, NumberExtensions.Epsilon);

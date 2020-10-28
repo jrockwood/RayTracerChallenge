@@ -17,7 +17,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Ctor_should_store_the_intersections_in_sorted_order()
         {
             var s = new Sphere();
-            var list = IntersectionList.Create(new Intersection(30, s), new Intersection(-1, s));
+            var list = IntersectionList.Create((30, s), (-1, s));
             list.Ts.Should().HaveCount(2).And.ContainInOrder(-1, 30);
         }
 
@@ -25,8 +25,8 @@ namespace RayTracerChallenge.Library.Tests
         public void Add_should_return_a_new_list_in_sorted_order()
         {
             var s = new Sphere();
-            var list = IntersectionList.Create(new Intersection(30, s), new Intersection(-1, s));
-            list = list.Add(new Intersection(10, s), new Intersection(-300, s));
+            var list = IntersectionList.Create((30, s), (-1, s));
+            list = list.Add((10, s), (-300, s));
             list.Ts.Should().HaveCount(4).And.ContainInOrder(-300, -1, 10, 30);
         }
 

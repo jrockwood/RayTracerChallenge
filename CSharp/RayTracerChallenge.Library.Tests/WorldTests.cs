@@ -123,7 +123,7 @@ namespace RayTracerChallenge.Library.Tests
             var world = World.CreateDefaultWorld().WithAddedShapes(floor, ball);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
-            var intersections = IntersectionList.Create(new Intersection(Math.Sqrt(2), floor));
+            var intersections = IntersectionList.Create((Math.Sqrt(2), floor));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             Color color = world.ShadeHit(state, 5);
             color.Should().Be(new Color(0.93642, 0.68642, 0.68642));
@@ -140,7 +140,7 @@ namespace RayTracerChallenge.Library.Tests
             var world = World.CreateDefaultWorld().WithAddedShapes(floor, ball);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
-            var intersections = IntersectionList.Create(new Intersection(Math.Sqrt(2), floor));
+            var intersections = IntersectionList.Create((Math.Sqrt(2), floor));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             Color color = world.ShadeHit(state, 5);
             color.Should().Be(new Color(0.93391, 0.69643, 0.69243));
@@ -292,7 +292,7 @@ namespace RayTracerChallenge.Library.Tests
             var world = World.CreateDefaultWorld();
             var shape = world.Shapes[0];
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
-            var intersections = IntersectionList.Create(new Intersection(4, shape), new Intersection(6, shape));
+            var intersections = IntersectionList.Create((4, shape), (6, shape));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             Color color = world.RefractedColor(state, 5);
             color.Should().Be(Colors.Black);
@@ -305,7 +305,7 @@ namespace RayTracerChallenge.Library.Tests
             var shape = world.Shapes[0].WithMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
             world = world.WithShapes(world.Shapes.SetItem(0, shape));
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
-            var intersections = IntersectionList.Create(new Intersection(4, shape), new Intersection(6, shape));
+            var intersections = IntersectionList.Create((4, shape), (6, shape));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             Color color = world.RefractedColor(state, 0);
             color.Should().Be(Colors.Black);
@@ -318,9 +318,7 @@ namespace RayTracerChallenge.Library.Tests
             var shape = world.Shapes[0].WithMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
             world = world.WithShapes(world.Shapes.SetItem(0, shape));
             var ray = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), Vector.UnitY);
-            var intersections = IntersectionList.Create(
-                new Intersection(-Math.Sqrt(2) / 2, shape),
-                new Intersection(Math.Sqrt(2) / 2, shape));
+            var intersections = IntersectionList.Create((-Math.Sqrt(2) / 2, shape), (Math.Sqrt(2) / 2, shape));
 
             // Note this time we're inside the sphere, so we need to look at intersections[1], not 0.
             var state = IntersectionState.Create(intersections[1], ray, intersections);
@@ -337,11 +335,7 @@ namespace RayTracerChallenge.Library.Tests
             world = world.WithShapes(a, b);
 
             var ray = new Ray(new Point(0, 0, 0.1), Vector.UnitY);
-            var intersections = IntersectionList.Create(
-                new Intersection(-0.9899, a),
-                new Intersection(-0.4899, b),
-                new Intersection(0.4899, b),
-                new Intersection(0.9899, a));
+            var intersections = IntersectionList.Create((-0.9899, a), (-0.4899, b), (0.4899, b), (0.9899, a));
             var state = IntersectionState.Create(intersections[2], ray, intersections);
             Color color = world.RefractedColor(state, 5);
             color.Should().Be(new Color(0, 0.99887, 0.04722));
