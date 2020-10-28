@@ -83,7 +83,7 @@ namespace RayTracerChallenge.Library
                 hits.AddRange(shapeHits);
             }
 
-            return new IntersectionList(hits);
+            return IntersectionList.Create(hits);
         }
 
         internal Color ShadeHit(IntersectionState state, int maxRecursion = MaxRecursion)

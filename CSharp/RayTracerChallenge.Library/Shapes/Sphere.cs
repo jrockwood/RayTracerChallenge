@@ -51,14 +51,14 @@ namespace RayTracerChallenge.Library.Shapes
 
             if (discriminant < 0)
             {
-                return new IntersectionList();
+                return IntersectionList.Empty;
             }
 
             double sqrtOfDiscriminant = Math.Sqrt(discriminant);
             double t1 = (-b - sqrtOfDiscriminant) / (2 * a);
             double t2 = (-b + sqrtOfDiscriminant) / (2 * a);
 
-            return new IntersectionList(new Intersection(t1, this), new Intersection(t2, this));
+            return IntersectionList.Create(new Intersection(t1, this), new Intersection(t2, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

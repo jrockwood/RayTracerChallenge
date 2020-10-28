@@ -36,7 +36,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             protected internal override IntersectionList LocalIntersect(Ray localRay)
             {
                 SavedLocalRay = localRay;
-                return new IntersectionList();
+                return IntersectionList.Empty;
             }
 
             protected internal override Vector LocalNormalAt(Point localPoint)

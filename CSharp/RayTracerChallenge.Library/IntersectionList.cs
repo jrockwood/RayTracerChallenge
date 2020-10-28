@@ -7,6 +7,7 @@
 
 namespace RayTracerChallenge.Library
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -16,24 +17,26 @@ namespace RayTracerChallenge.Library
     /// <summary>
     /// Represents an immutable list of <see cref="Intersection"/> objects.
     /// </summary>
-    public sealed class IntersectionList : IReadOnlyList<Intersection>
+    public readonly struct IntersectionList : IReadOnlyList<Intersection>, IEquatable<IntersectionList>
     {
         //// ===========================================================================================================
         //// Member Variables
         //// ===========================================================================================================
 
-        private ImmutableArray<Intersection> _intersections;
+        public static readonly IntersectionList Empty = new IntersectionList(Enumerable.Empty<Intersection>());
+
+        private readonly ImmutableArray<Intersection> _intersections;
 
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public IntersectionList(IEnumerable<Intersection> intersections)
+        private IntersectionList(IEnumerable<Intersection> intersections)
         {
             _intersections = intersections.OrderBy(x => x.T).ToImmutableArray();
         }
 
-        public IntersectionList(params Intersection[] intersections)
+        private IntersectionList(params Intersection[] intersections)
             : this((IEnumerable<Intersection>)intersections)
         {
         }
@@ -59,6 +62,16 @@ namespace RayTracerChallenge.Library
         //// Methods
         //// ===========================================================================================================
 
+        public static IntersectionList Create(IEnumerable<Intersection> intersections)
+        {
+            return new IntersectionList(intersections);
+        }
+
+        public static IntersectionList Create(params Intersection[] intersections)
+        {
+            return new IntersectionList(intersections);
+        }
+
         public IEnumerator<Intersection> GetEnumerator()
         {
             return ((IEnumerable<Intersection>)_intersections).GetEnumerator();
@@ -71,7 +84,36 @@ namespace RayTracerChallenge.Library
 
         public IntersectionList Add(params Intersection[] intersections)
         {
-            return new IntersectionList(_intersections.AddRange(intersections).ToArray());
+            return new IntersectionList(_intersections.AddRange(intersections).ToImmutableArray());
+        }
+
+        //// ===========================================================================================================
+        //// Equality Methods
+        //// ===========================================================================================================
+
+        public bool Equals(IntersectionList other)
+        {
+            return _intersections.Equals(other._intersections);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is IntersectionList other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return _intersections.GetHashCode();
+        }
+
+        public static bool operator ==(IntersectionList left, IntersectionList right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(IntersectionList left, IntersectionList right)
+        {
+            return !left.Equals(right);
         }
     }
 }

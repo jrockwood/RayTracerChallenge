@@ -47,10 +47,10 @@ namespace RayTracerChallenge.Library.Shapes
 
             if (tmin > tmax)
             {
-                return new IntersectionList();
+                return IntersectionList.Empty;
             }
 
-            return new IntersectionList(new Intersection(tmin, this), new Intersection(tmax, this));
+            return IntersectionList.Create(new Intersection(tmin, this), new Intersection(tmax, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

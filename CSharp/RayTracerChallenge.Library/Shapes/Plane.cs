@@ -39,11 +39,11 @@ namespace RayTracerChallenge.Library.Shapes
             // If the ray is parallel to the plane, there are no intersections.
             if (Math.Abs(localRay.Direction.Y) < NumberExtensions.Epsilon)
             {
-                return new IntersectionList();
+                return IntersectionList.Empty;
             }
 
             double t = -localRay.Origin.Y / localRay.Direction.Y;
-            return new IntersectionList(new Intersection(t, this));
+            return IntersectionList.Create(new Intersection(t, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)
