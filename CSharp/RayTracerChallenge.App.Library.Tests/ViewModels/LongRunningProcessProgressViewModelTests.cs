@@ -26,10 +26,10 @@ namespace RayTracerChallenge.App.Library.Tests.ViewModels
             vm.PercentComplete.Should().Be(0);
 
             vm.ElapsedTime.Should().Be(TimeSpan.MinValue);
-            vm.FormattedElapsedTime.Should().Be("0:00:00");
+            vm.FormattedElapsedTime.Should().Be("0m:00s:000ms");
 
             vm.EstimatedTimeRemaining.Should().Be(TimeSpan.MaxValue);
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:00:00");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("0m:00s");
 
             vm.IsStarted.Should().BeFalse();
 
@@ -227,31 +227,31 @@ namespace RayTracerChallenge.App.Library.Tests.ViewModels
             vm.StartTimer();
 
             vm.ElapsedTime.TotalMilliseconds.Should().Be(0);
-            vm.FormattedElapsedTime.Should().Be("0:00:00");
+            vm.FormattedElapsedTime.Should().Be("0m:00s:000ms");
 
             callCount++;
             vm.ElapsedTime.TotalMilliseconds.Should().Be(500);
-            vm.FormattedElapsedTime.Should().Be("0:00:00");
+            vm.FormattedElapsedTime.Should().Be("0m:00s:500ms");
 
             callCount++;
             vm.ElapsedTime.TotalSeconds.Should().Be(5);
-            vm.FormattedElapsedTime.Should().Be("0:00:05");
+            vm.FormattedElapsedTime.Should().Be("0m:05s:000ms");
 
             callCount++;
             vm.ElapsedTime.TotalMinutes.Should().Be(10);
-            vm.FormattedElapsedTime.Should().Be("0:10:00");
+            vm.FormattedElapsedTime.Should().Be("10m:00s:000ms");
 
             callCount++;
             vm.ElapsedTime.TotalHours.Should().Be(20);
-            vm.FormattedElapsedTime.Should().Be("20:00:00");
+            vm.FormattedElapsedTime.Should().Be("20h:00m:00s");
 
             callCount++;
             vm.ElapsedTime.TotalDays.Should().Be(2);
-            vm.FormattedElapsedTime.Should().Be("48:00:00");
+            vm.FormattedElapsedTime.Should().Be("48h:00m:00s");
 
             callCount++;
             vm.ElapsedTime.TotalHours.Should().Be(14.22);
-            vm.FormattedElapsedTime.Should().Be("14:13:12");
+            vm.FormattedElapsedTime.Should().Be("14h:13m:12s");
         }
 
         //// ===========================================================================================================
@@ -307,42 +307,42 @@ namespace RayTracerChallenge.App.Library.Tests.ViewModels
             callCount++;
             vm.PercentComplete = 10;
             vm.EstimatedTimeRemaining.Should().Be(TimeSpan.FromMinutes(9));
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:09:00");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("9m:00s");
 
             callCount++;
             vm.PercentComplete = 25;
             vm.EstimatedTimeRemaining.Should().Be(TimeSpan.FromMinutes(7.5));
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:07:30");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("7m:30s");
 
             callCount++;
             vm.PercentComplete = 50;
             vm.EstimatedTimeRemaining.Should().Be(TimeSpan.FromMinutes(5));
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:05:00");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("5m:00s");
 
             callCount++;
             vm.PercentComplete = 75;
             vm.EstimatedTimeRemaining.Should().Be(TimeSpan.FromMinutes(2.5));
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:02:30");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("2m:30s");
 
             callCount++;
             vm.PercentComplete = 80;
             vm.EstimatedTimeRemaining.Should().BeCloseTo(TimeSpan.FromMinutes(2));
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:01:59");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("1m:59s");
 
             callCount++;
             vm.PercentComplete = 90;
             vm.EstimatedTimeRemaining.Should().BeCloseTo(TimeSpan.FromMinutes(1));
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:00:59");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("0m:59s");
 
             callCount++;
             vm.PercentComplete = 99;
             vm.EstimatedTimeRemaining.Should().BeCloseTo(TimeSpan.FromSeconds(5.9));
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:00:05");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("0m:05s");
 
             callCount++;
             vm.PercentComplete = 100;
             vm.EstimatedTimeRemaining.Should().BeCloseTo(TimeSpan.FromSeconds(0));
-            vm.FormattedEstimatedTimeRemaining.Should().Be("0:00:00");
+            vm.FormattedEstimatedTimeRemaining.Should().Be("0m:00s");
         }
 
         //// ===========================================================================================================
