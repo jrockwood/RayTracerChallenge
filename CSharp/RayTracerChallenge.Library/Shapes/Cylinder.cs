@@ -127,7 +127,7 @@ namespace RayTracerChallenge.Library.Shapes
         /// <summary>
         /// Checks to see if the intersection at `t` is within a radius of 1 (the radius of the cylinder) from the y axis.
         /// </summary>
-        private bool CheckCapHit(Ray ray, double t)
+        private static bool CheckCapHit(Ray ray, double t)
         {
             double x = ray.Origin.X + (t * ray.Direction.X);
             double z = ray.Origin.Z + (t * ray.Direction.Z);
