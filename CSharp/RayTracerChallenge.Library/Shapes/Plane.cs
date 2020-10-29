@@ -15,8 +15,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Plane(Matrix4x4? transform = null, Material? material = null, bool hideShadow = false)
-            : base(transform, material, hideShadow)
+        public Plane(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
+            : base(transform, material, isShadowHidden)
         {
         }
 
@@ -39,11 +39,11 @@ namespace RayTracerChallenge.Library.Shapes
             // If the ray is parallel to the plane, there are no intersections.
             if (Math.Abs(localRay.Direction.Y) < NumberExtensions.Epsilon)
             {
-                return new IntersectionList();
+                return IntersectionList.Empty;
             }
 
             double t = -localRay.Origin.Y / localRay.Direction.Y;
-            return new IntersectionList(new Intersection(t, this));
+            return IntersectionList.Create((t, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

@@ -83,7 +83,7 @@ namespace RayTracerChallenge.Library
                 hits.AddRange(shapeHits);
             }
 
-            return new IntersectionList(hits);
+            return IntersectionList.Create(hits);
         }
 
         internal Color ShadeHit(IntersectionState state, int maxRecursion = MaxRecursion)
@@ -144,7 +144,7 @@ namespace RayTracerChallenge.Library
             IntersectionList intersections = Intersect(ray);
             Intersection? hit = intersections.Hit;
 
-            return hit != null && hit.T < distance && !hit.Shape.HideShadow;
+            return hit != null && hit.T < distance && !hit.Shape.IsShadowHidden;
         }
 
         public Color ReflectedColor(IntersectionState state, int maxRecursion = MaxRecursion)

@@ -78,6 +78,8 @@ namespace RayTracerChallenge.App.Library.Scenes
                 new Chapter10PerlinPattern(),
                 new Chapter11Reflections(),
                 new Chapter12TableInARoom(),
+                new Chapter13Cylinders(),
+                new Chapter13Cones(),
             };
         }
     }

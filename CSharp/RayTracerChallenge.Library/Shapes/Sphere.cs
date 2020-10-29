@@ -15,8 +15,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Sphere(Matrix4x4? transform = null, Material? material = null, bool hideShadow = false)
-            : base(transform, material, hideShadow)
+        public Sphere(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
+            : base(transform, material, isShadowHidden)
         {
         }
 
@@ -51,14 +51,14 @@ namespace RayTracerChallenge.Library.Shapes
 
             if (discriminant < 0)
             {
-                return new IntersectionList();
+                return IntersectionList.Empty;
             }
 
             double sqrtOfDiscriminant = Math.Sqrt(discriminant);
             double t1 = (-b - sqrtOfDiscriminant) / (2 * a);
             double t2 = (-b + sqrtOfDiscriminant) / (2 * a);
 
-            return new IntersectionList(new Intersection(t1, this), new Intersection(t2, this));
+            return IntersectionList.Create((t1, this), (t2, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

@@ -16,8 +16,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Cube(Matrix4x4? transform = null, Material? material = null, bool hideShadow = false)
-            : base(transform, material, hideShadow)
+        public Cube(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
+            : base(transform, material, isShadowHidden)
         {
         }
 
@@ -47,10 +47,10 @@ namespace RayTracerChallenge.Library.Shapes
 
             if (tmin > tmax)
             {
-                return new IntersectionList();
+                return IntersectionList.Empty;
             }
 
-            return new IntersectionList(new Intersection(tmin, this), new Intersection(tmax, this));
+            return IntersectionList.Create((tmin, this), (tmax, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)
