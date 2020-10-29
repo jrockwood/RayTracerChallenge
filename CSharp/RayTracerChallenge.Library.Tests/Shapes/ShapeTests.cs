@@ -14,27 +14,6 @@ namespace RayTracerChallenge.Library.Tests.Shapes
 
     public class ShapeTests
     {
-        private sealed class TestShape : Shape
-        {
-            public TestShape(Matrix4x4? transform = null, Material? material = null)
-                : base(transform, material)
-            {
-            }
-
-            public Ray? SavedLocalRay { get; private set; }
-
-            protected internal override IntersectionList LocalIntersect(Ray localRay)
-            {
-                SavedLocalRay = localRay;
-                return IntersectionList.Empty;
-            }
-
-            protected internal override Vector LocalNormalAt(Point localPoint)
-            {
-                return new Vector(localPoint.X, localPoint.Y, localPoint.Z);
-            }
-        }
-
         [Test]
         public void A_Shape_should_default_to_the_identity_matrix_for_the_transform()
         {
@@ -55,6 +34,13 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         {
             var shape = new TestShape();
             shape.Material.Should().BeEquivalentTo(new Material());
+        }
+
+        [Test]
+        public void Shape_should_default_to_having_a_null_parent()
+        {
+            var shape = new TestShape();
+            shape.Parent.Should().BeNull();
         }
 
         [Test]
@@ -86,6 +72,66 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var shape = new TestShape(Matrix4x4.CreateRotationZ(Math.PI / 5).Scale(1, 0.5, 1));
             var normal = shape.NormalAt(new Point(0, Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2));
             normal.Should().Be(new Vector(0, 0.97014, -0.24254));
+        }
+
+        [Test]
+        public void Converting_a_point_from_world_to_object_space()
+        {
+            var g1 = new Group(Matrix4x4.CreateRotationY(Math.PI / 2));
+            var g2 = new Group(Matrix4x4.CreateScaling(2, 2, 2));
+            g1.AddChild(g2);
+            var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
+            g2.AddChild(s);
+
+            Point p = s.WorldToObject(new Point(-2, 0, -10));
+            p.Should().Be(new Point(0, 0, -1));
+        }
+
+        [Test]
+        public void Converting_a_normal_from_object_to_world_space()
+        {
+            var g1 = new Group(Matrix4x4.CreateRotationY(Math.PI / 2));
+            var g2 = new Group(Matrix4x4.CreateScaling(1, 2, 3));
+            g1.AddChild(g2);
+            var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
+            g2.AddChild(s);
+
+            Vector normal = s.NormalToWorld(new Vector(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3));
+            normal.Should().Be(new Vector(0.28571, 0.42857, -0.85714));
+        }
+
+        [Test]
+        public void Finding_the_normal_on_a_child_object()
+        {
+            var g1 = new Group(Matrix4x4.CreateRotationY(Math.PI / 2));
+            var g2 = new Group(Matrix4x4.CreateScaling(1, 2, 3));
+            g1.AddChild(g2);
+            var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
+            g2.AddChild(s);
+
+            Vector normal = s.NormalAt(new Point(1.7321, 1.1547, -5.5774));
+            normal.Should().Be(new Vector(0.2857, 0.42854, -0.85716));
+        }
+    }
+
+    public sealed class TestShape : Shape
+    {
+        public TestShape(Matrix4x4? transform = null, Material? material = null)
+            : base(transform, material)
+        {
+        }
+
+        public Ray? SavedLocalRay { get; private set; }
+
+        protected internal override IntersectionList LocalIntersect(Ray localRay)
+        {
+            SavedLocalRay = localRay;
+            return IntersectionList.Empty;
+        }
+
+        protected internal override Vector LocalNormalAt(Point localPoint)
+        {
+            return new Vector(localPoint.X, localPoint.Y, localPoint.Z);
         }
     }
 }

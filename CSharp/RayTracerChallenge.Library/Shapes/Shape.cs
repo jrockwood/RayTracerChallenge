@@ -9,6 +9,9 @@ namespace RayTracerChallenge.Library.Shapes
 {
     using System;
 
+    /// <summary>
+    /// Abstract base class for all geometric shapes.
+    /// </summary>
     public abstract class Shape
     {
         //// ===========================================================================================================
@@ -28,6 +31,8 @@ namespace RayTracerChallenge.Library.Shapes
         public Matrix4x4 Transform { get; set; }
         public Material Material { get; set; }
         public bool IsShadowHidden { get; set; }
+
+        public Group? Parent { get; set; }
 
         //// ===========================================================================================================
         //// Methods
@@ -50,6 +55,29 @@ namespace RayTracerChallenge.Library.Shapes
             return WithMaterial(setter(Material));
         }
 
+        public Point WorldToObject(Point point)
+        {
+            if (Parent != null)
+            {
+                point = Parent.WorldToObject(point);
+            }
+
+            return Transform.Invert() * point;
+        }
+
+        public Vector NormalToWorld(Vector normal)
+        {
+            normal = Transform.Invert().Transpose() * normal;
+            normal = normal.Normalize();
+
+            if (Parent != null)
+            {
+                normal = Parent.NormalToWorld(normal);
+            }
+
+            return normal;
+        }
+
         public IntersectionList Intersect(Ray ray)
         {
             var localRay = ray.Transform(Transform.Invert());
@@ -60,10 +88,10 @@ namespace RayTracerChallenge.Library.Shapes
 
         public Vector NormalAt(Point worldPoint)
         {
-            Point localPoint = Transform.Invert() * worldPoint;
+            Point localPoint = WorldToObject(worldPoint);
             Vector localNormal = LocalNormalAt(localPoint);
-            Vector worldNormal = Transform.Invert().Transpose() * localNormal;
-            return worldNormal.Normalize();
+            Vector worldNormal = NormalToWorld(localNormal);
+            return worldNormal;
         }
 
         protected internal abstract Vector LocalNormalAt(Point localPoint);
