@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.Library
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
@@ -75,7 +74,7 @@ namespace RayTracerChallenge.Library
         /// <returns>The list of all intersections for the specified ray.</returns>
         public IntersectionList Intersect(Ray ray)
         {
-            var hits = new List<Intersection>();
+            var hits = new IntersectionList();
 
             foreach (Shape shape in Shapes)
             {
@@ -83,7 +82,7 @@ namespace RayTracerChallenge.Library
                 hits.AddRange(shapeHits);
             }
 
-            return IntersectionList.Create(hits);
+            return hits;
         }
 
         internal Color ShadeHit(IntersectionState state, int maxRecursion = MaxRecursion)

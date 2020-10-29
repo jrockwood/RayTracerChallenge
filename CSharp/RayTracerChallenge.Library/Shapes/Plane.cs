@@ -33,7 +33,7 @@ namespace RayTracerChallenge.Library.Shapes
             }
 
             double t = -localRay.Origin.Y / localRay.Direction.Y;
-            return IntersectionList.Create((t, this));
+            return new IntersectionList((t, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

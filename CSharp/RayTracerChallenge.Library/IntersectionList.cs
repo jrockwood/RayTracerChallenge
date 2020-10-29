@@ -10,34 +10,44 @@ namespace RayTracerChallenge.Library
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Linq;
     using RayTracerChallenge.Library.Shapes;
 
     /// <summary>
-    /// Represents an immutable list of <see cref="Intersection"/> objects.
+    /// Represents a list of <see cref="Intersection"/> objects.
     /// </summary>
-    public readonly struct IntersectionList : IReadOnlyList<Intersection>, IEquatable<IntersectionList>
+    public class IntersectionList : IList<Intersection>, IReadOnlyList<Intersection>
     {
         //// ===========================================================================================================
         //// Member Variables
         //// ===========================================================================================================
 
-        public static readonly IntersectionList Empty = new IntersectionList(Enumerable.Empty<Intersection>());
+        public static readonly IntersectionList Empty = new IntersectionList();
 
-        private readonly ImmutableArray<Intersection> _intersections;
+        private readonly List<Intersection> _list;
 
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        private IntersectionList(IEnumerable<Intersection> intersections)
+        public IntersectionList()
         {
-            _intersections = intersections.OrderBy(x => x.T).ToImmutableArray();
+            _list = new List<Intersection>();
         }
 
-        private IntersectionList(params Intersection[] intersections)
+        public IntersectionList(IEnumerable<Intersection> intersections)
+        {
+            _list = new List<Intersection>(intersections);
+            _list.Sort();
+        }
+
+        public IntersectionList(params Intersection[] intersections)
             : this((IEnumerable<Intersection>)intersections)
+        {
+        }
+
+        public IntersectionList(params (double t, Shape shape)[] intersections)
+            : this(intersections.Select(tuple => new Intersection(tuple)))
         {
         }
 
@@ -45,80 +55,89 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public int Count => _intersections.Length;
+        public int Count => _list.Count;
+        public bool IsReadOnly => false;
 
-        public IEnumerable<double> Ts => _intersections.Select(x => x.T);
-        public IEnumerable<Shape> Shapes => _intersections.Select(x => x.Shape);
+        public IEnumerable<double> Ts => this.Select(x => x.T);
+        public IEnumerable<Shape> Shapes => this.Select(x => x.Shape);
 
-        public Intersection? Hit => _intersections.FirstOrDefault(x => x.T >= 0);
+        public Intersection? Hit => this.FirstOrDefault(x => x.T >= 0);
 
         //// ===========================================================================================================
         //// Indexers
         //// ===========================================================================================================
 
-        public Intersection this[int index] => _intersections[index];
+        public Intersection this[int index]
+        {
+            get => _list[index];
+            set => throw new NotSupportedException();
+        }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
-        public static IntersectionList Create(IEnumerable<Intersection> intersections)
-        {
-            return new IntersectionList(intersections);
-        }
-
-        public static IntersectionList Create(params Intersection[] intersections)
-        {
-            return new IntersectionList(intersections);
-        }
-
-        public static IntersectionList Create(params (double t, Shape shape)[] intersections)
-        {
-            return new IntersectionList(intersections.Select(tuple => new Intersection(tuple)));
-        }
-
         public IEnumerator<Intersection> GetEnumerator()
         {
-            return ((IEnumerable<Intersection>)_intersections).GetEnumerator();
+            return _list.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable)_list).GetEnumerator();
         }
 
-        public IntersectionList Add(params Intersection[] intersections)
+        public void Add(Intersection intersection)
         {
-            return new IntersectionList(_intersections.AddRange(intersections).ToImmutableArray());
+            _list.Add(intersection);
+            _list.Sort();
         }
 
-        //// ===========================================================================================================
-        //// Equality Methods
-        //// ===========================================================================================================
-
-        public bool Equals(IntersectionList other)
+        public void AddRange(IEnumerable<Intersection> intersections)
         {
-            return _intersections.Equals(other._intersections);
+            _list.AddRange(intersections);
+            _list.Sort();
         }
 
-        public override bool Equals(object? obj)
+        public void AddRange(params (double t, Shape shape)[] intersections)
         {
-            return obj is IntersectionList other && Equals(other);
+            _list.AddRange(intersections.Select(x => new Intersection(x.t, x.shape)));
+            _list.Sort();
         }
 
-        public override int GetHashCode()
+        public void Clear()
         {
-            return _intersections.GetHashCode();
+            _list.Clear();
         }
 
-        public static bool operator ==(IntersectionList left, IntersectionList right)
+        public bool Contains(Intersection intersection)
         {
-            return left.Equals(right);
+            return _list.Contains(intersection);
         }
 
-        public static bool operator !=(IntersectionList left, IntersectionList right)
+        public void CopyTo(Intersection[] array, int arrayIndex)
         {
-            return !left.Equals(right);
+            _list.CopyTo(array, arrayIndex);
+        }
+
+        public int IndexOf(Intersection intersection)
+        {
+            return _list.IndexOf(intersection);
+        }
+
+        public void Insert(int index, Intersection item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public bool Remove(Intersection item)
+        {
+            return _list.Remove(item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            _list.RemoveAt(index);
         }
     }
 }

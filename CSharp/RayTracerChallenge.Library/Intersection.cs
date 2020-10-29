@@ -13,7 +13,7 @@ namespace RayTracerChallenge.Library
     /// <summary>
     /// Represents an immutable intersection between a ray and a <see cref="Shape"/>.
     /// </summary>
-    public sealed class Intersection : IEquatable<Intersection>
+    public sealed class Intersection : IEquatable<Intersection>, IComparable<Intersection>
     {
         //// ===========================================================================================================
         //// Constructors
@@ -83,6 +83,25 @@ namespace RayTracerChallenge.Library
         public static bool operator !=(Intersection? left, Intersection? right)
         {
             return !Equals(left, right);
+        }
+
+        //// ===========================================================================================================
+        //// IComparable Members
+        //// ===========================================================================================================
+
+        public int CompareTo(Intersection? other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (other is null)
+            {
+                return 1;
+            }
+
+            return T.CompareTo(other.T);
         }
     }
 }

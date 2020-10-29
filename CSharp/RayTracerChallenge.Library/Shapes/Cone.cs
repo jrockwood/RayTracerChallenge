@@ -127,7 +127,7 @@ namespace RayTracerChallenge.Library.Shapes
             }
 
             IntersectCaps(localRay, intersections);
-            return IntersectionList.Create(intersections);
+            return new IntersectionList(intersections);
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

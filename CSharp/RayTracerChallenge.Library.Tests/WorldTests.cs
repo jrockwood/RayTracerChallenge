@@ -53,7 +53,7 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
             Shape shape = world.Shapes[0];
             var intersection = new Intersection(4, shape);
-            var state = IntersectionState.Create(intersection, ray, IntersectionList.Create(intersection));
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
             Color color = world.ShadeHit(state);
             color.Should().Be(new Color(0.38066, 0.47583, 0.2855));
         }
@@ -65,7 +65,7 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, 0), Vector.UnitZ);
             Shape shape = world.Shapes[1];
             var intersection = new Intersection(0.5, shape);
-            var state = IntersectionState.Create(intersection, ray, IntersectionList.Create(intersection));
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
             Color color = world.ShadeHit(state);
             color.Should().Be(new Color(0.90498, 0.90498, 0.90498));
         }
@@ -81,7 +81,7 @@ namespace RayTracerChallenge.Library.Tests
 
             var ray = new Ray(new Point(0, 0, 5), Vector.UnitZ);
             var intersection = new Intersection(4, sphere2);
-            var state = IntersectionState.Create(intersection, ray, IntersectionList.Create(intersection));
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
 
             Color color = world.ShadeHit(state);
             color.Should().Be(new Color(0.1, 0.1, 0.1));
@@ -100,7 +100,7 @@ namespace RayTracerChallenge.Library.Tests
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var intersection = new Intersection(Math.Sqrt(2), floor);
-            var state = IntersectionState.Create(intersection, ray, IntersectionList.Create(intersection));
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
 
             var color = world.ShadeHit(state);
             color.Should().Be(new Color(0.87675, 0.92434, 0.82917));
@@ -123,7 +123,7 @@ namespace RayTracerChallenge.Library.Tests
             var world = World.CreateDefaultWorld().WithAddedShapes(floor, ball);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
-            var intersections = IntersectionList.Create((Math.Sqrt(2), floor));
+            var intersections = new IntersectionList((Math.Sqrt(2), floor));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             Color color = world.ShadeHit(state, 5);
             color.Should().Be(new Color(0.93642, 0.68642, 0.68642));
@@ -140,7 +140,7 @@ namespace RayTracerChallenge.Library.Tests
             var world = World.CreateDefaultWorld().WithAddedShapes(floor, ball);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
-            var intersections = IntersectionList.Create((Math.Sqrt(2), floor));
+            var intersections = new IntersectionList((Math.Sqrt(2), floor));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             Color color = world.ShadeHit(state, 5);
             color.Should().Be(new Color(0.93391, 0.69643, 0.69243));
@@ -243,7 +243,7 @@ namespace RayTracerChallenge.Library.Tests
             world = world.WithShapes(world.Shapes.Replace(world.Shapes[1], shape));
 
             var intersection = new Intersection(1, shape);
-            var state = IntersectionState.Create(intersection, ray, IntersectionList.Create(intersection));
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
             Color color = world.ReflectedColor(state);
             color.Should().Be(Colors.Black);
         }
@@ -261,7 +261,7 @@ namespace RayTracerChallenge.Library.Tests
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var intersection = new Intersection(Math.Sqrt(2), floor);
-            var state = IntersectionState.Create(intersection, ray, IntersectionList.Create(intersection));
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
 
             Color color = world.ReflectedColor(state);
             color.Should().Be(new Color(0.190332, 0.23791, 0.14274));
@@ -276,7 +276,7 @@ namespace RayTracerChallenge.Library.Tests
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var intersection = new Intersection(Math.Sqrt(2), floor);
-            var state = IntersectionState.Create(intersection, ray, IntersectionList.Create(intersection));
+            var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
 
             Color color = world.ReflectedColor(state, 0);
             color.Should().Be(Colors.Black);
@@ -292,7 +292,7 @@ namespace RayTracerChallenge.Library.Tests
             var world = World.CreateDefaultWorld();
             var shape = world.Shapes[0];
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
-            var intersections = IntersectionList.Create((4, shape), (6, shape));
+            var intersections = new IntersectionList((4, shape), (6, shape));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             Color color = world.RefractedColor(state, 5);
             color.Should().Be(Colors.Black);
@@ -305,7 +305,7 @@ namespace RayTracerChallenge.Library.Tests
             var shape = world.Shapes[0].WithMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
             world = world.WithShapes(world.Shapes.SetItem(0, shape));
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
-            var intersections = IntersectionList.Create((4, shape), (6, shape));
+            var intersections = new IntersectionList((4, shape), (6, shape));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             Color color = world.RefractedColor(state, 0);
             color.Should().Be(Colors.Black);
@@ -318,7 +318,7 @@ namespace RayTracerChallenge.Library.Tests
             var shape = world.Shapes[0].WithMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
             world = world.WithShapes(world.Shapes.SetItem(0, shape));
             var ray = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), Vector.UnitY);
-            var intersections = IntersectionList.Create((-Math.Sqrt(2) / 2, shape), (Math.Sqrt(2) / 2, shape));
+            var intersections = new IntersectionList((-Math.Sqrt(2) / 2, shape), (Math.Sqrt(2) / 2, shape));
 
             // Note this time we're inside the sphere, so we need to look at intersections[1], not 0.
             var state = IntersectionState.Create(intersections[1], ray, intersections);
@@ -335,7 +335,7 @@ namespace RayTracerChallenge.Library.Tests
             world = world.WithShapes(a, b);
 
             var ray = new Ray(new Point(0, 0, 0.1), Vector.UnitY);
-            var intersections = IntersectionList.Create((-0.9899, a), (-0.4899, b), (0.4899, b), (0.9899, a));
+            var intersections = new IntersectionList((-0.9899, a), (-0.4899, b), (0.4899, b), (0.9899, a));
             var state = IntersectionState.Create(intersections[2], ray, intersections);
             Color color = world.RefractedColor(state, 5);
             color.Should().Be(new Color(0, 0.99887, 0.04722));

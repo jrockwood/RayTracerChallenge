@@ -47,7 +47,9 @@ namespace RayTracerChallenge.Library.Shapes
             // Ray is parallel to the y axis.
             if (a.IsApproximatelyEqual(0))
             {
-                return IntersectCaps(localRay, IntersectionList.Empty);
+                var xs = new IntersectionList();
+                IntersectCaps(localRay, xs);
+                return xs;
             }
 
             double b = (2 * localRay.Origin.X * localRay.Direction.X) + (2 * localRay.Origin.Z * localRay.Direction.Z);
@@ -71,23 +73,22 @@ namespace RayTracerChallenge.Library.Shapes
                 t1 = temp;
             }
 
-            var intersections = IntersectionList.Empty;
+            var intersections = new IntersectionList();
 
             double y0 = localRay.Origin.Y + (t0 * localRay.Direction.Y);
             double y1 = localRay.Origin.Y + (t1 * localRay.Direction.Y);
 
             if (y0 > MinimumY && y0 < MaximumY)
             {
-                intersections = intersections.Add((t0, this));
+                intersections.Add((t0, this));
             }
 
             if (y1 > MinimumY && y1 < MaximumY)
             {
-                intersections = intersections.Add((t1, this));
+                intersections.Add((t1, this));
             }
 
-            intersections = IntersectCaps(localRay, intersections);
-
+            IntersectCaps(localRay, intersections);
             return intersections;
         }
 
@@ -117,29 +118,27 @@ namespace RayTracerChallenge.Library.Shapes
             return (x * x) + (z * z) <= 1;
         }
 
-        private IntersectionList IntersectCaps(Ray ray, IntersectionList intersections)
+        private void IntersectCaps(Ray ray, IntersectionList intersections)
         {
             // Caps only matter if the cylinder is closed, and might possibly be intersected by the ray.
             if (!IsClosed || ray.Direction.Y.IsApproximatelyEqual(0))
             {
-                return intersections;
+                return;
             }
 
             // Check for an intersection with the lower end cap by intersecting the ray with the plane at MinimumY.
             double t = (MinimumY - ray.Origin.Y) / ray.Direction.Y;
             if (CheckCapHit(ray, t))
             {
-                intersections = intersections.Add((t, this));
+                intersections.Add((t, this));
             }
 
             // Check for an intersection with the upper end cap by intersecting the ray with the plane at MaximumY.
             t = (MaximumY - ray.Origin.Y) / ray.Direction.Y;
             if (CheckCapHit(ray, t))
             {
-                intersections = intersections.Add((t, this));
+                intersections.Add((t, this));
             }
-
-            return intersections;
         }
     }
 }
