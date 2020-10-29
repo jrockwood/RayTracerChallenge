@@ -21,8 +21,8 @@ namespace RayTracerChallenge.Library.Shapes
             bool isClosed = false,
             Matrix4x4? transform = null,
             Material? material = null,
-            bool hideShadow = false)
-            : base(transform, material, hideShadow)
+            bool isShadowHidden = false)
+            : base(transform, material, isShadowHidden)
         {
             MinimumY = minimumY;
             MaximumY = maximumY;
@@ -49,12 +49,12 @@ namespace RayTracerChallenge.Library.Shapes
 
         public override Shape WithTransform(Matrix4x4 value)
         {
-            return new Cylinder(value, Material, HideShadow);
+            return new Cylinder(value, Material, IsShadowHidden);
         }
 
         public override Shape WithMaterial(Material value)
         {
-            return new Cylinder(Transform, value, HideShadow);
+            return new Cylinder(Transform, value, IsShadowHidden);
         }
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)

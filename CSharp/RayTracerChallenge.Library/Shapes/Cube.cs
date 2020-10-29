@@ -16,8 +16,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Cube(Matrix4x4? transform = null, Material? material = null, bool hideShadow = false)
-            : base(transform, material, hideShadow)
+        public Cube(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
+            : base(transform, material, isShadowHidden)
         {
         }
 

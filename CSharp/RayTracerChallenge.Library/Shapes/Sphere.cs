@@ -15,8 +15,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Sphere(Matrix4x4? transform = null, Material? material = null, bool hideShadow = false)
-            : base(transform, material, hideShadow)
+        public Sphere(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
+            : base(transform, material, isShadowHidden)
         {
         }
 
