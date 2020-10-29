@@ -15,8 +15,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Sphere(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
-            : base(transform, material, isShadowHidden)
+        public Sphere(Matrix4x4? transform = null, Material? material = null)
+            : base(transform, material)
         {
         }
 
@@ -27,16 +27,6 @@ namespace RayTracerChallenge.Library.Shapes
         public static Sphere CreateGlassSphere()
         {
             return new Sphere(material: new Material(transparency: 1, refractiveIndex: 1.5));
-        }
-
-        public override Shape WithTransform(Matrix4x4 value)
-        {
-            return new Sphere(value, Material);
-        }
-
-        public override Shape WithMaterial(Material value)
-        {
-            return new Sphere(Transform, value);
         }
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)

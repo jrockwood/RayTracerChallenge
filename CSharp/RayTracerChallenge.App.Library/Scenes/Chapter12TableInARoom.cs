@@ -96,8 +96,8 @@ namespace RayTracerChallenge.App.Library.Scenes
                     shininess: 300,
                     reflective: 0.7,
                     transparency: 0.7,
-                    refractiveIndex: 1.5),
-                isShadowHidden: true);
+                    refractiveIndex: 1.5))
+            { IsShadowHidden = true };
 
             var littleCube1 = new Cube(
                 Matrix4x4.CreateScaling(0.15, 0.15, 0.15).RotateY(-0.4).Translate(1, 3.35, -0.9),

@@ -30,46 +30,29 @@ namespace RayTracerChallenge.Library.Shapes
         //// ===========================================================================================================
 
         public Cone(
-            double minimumY,
-            double maximumY,
+            double minimumY = double.NegativeInfinity,
+            double maximumY = double.PositiveInfinity,
             bool isClosed = false,
             Matrix4x4? transform = null,
-            Material? material = null,
-            bool isShadowHidden = false)
-            : base(transform, material, isShadowHidden)
+            Material? material = null)
+            : base(transform, material)
         {
             MinimumY = minimumY;
             MaximumY = maximumY;
             IsClosed = isClosed;
         }
 
-        public Cone(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
-            : this(double.NegativeInfinity, double.PositiveInfinity, false, transform, material, isShadowHidden)
-        {
-        }
-
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public double MinimumY { get; }
-        public double MaximumY { get; }
-
-        public bool IsClosed { get; }
+        public double MinimumY { get; set; }
+        public double MaximumY { get; set; }
+        public bool IsClosed { get; set; }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
-
-        public override Shape WithTransform(Matrix4x4 value)
-        {
-            return new Cone(value, Material, IsShadowHidden);
-        }
-
-        public override Shape WithMaterial(Material value)
-        {
-            return new Cone(Transform, value, IsShadowHidden);
-        }
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)
         {

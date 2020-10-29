@@ -23,16 +23,6 @@ namespace RayTracerChallenge.Library.Tests.Shapes
 
             public Ray? SavedLocalRay { get; private set; }
 
-            public override Shape WithTransform(Matrix4x4 value)
-            {
-                return new TestShape(value, Material);
-            }
-
-            public override Shape WithMaterial(Material value)
-            {
-                return new TestShape(Transform, value);
-            }
-
             protected internal override IntersectionList LocalIntersect(Ray localRay)
             {
                 SavedLocalRay = localRay;

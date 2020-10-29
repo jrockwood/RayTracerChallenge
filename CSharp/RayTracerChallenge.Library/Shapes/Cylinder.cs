@@ -16,22 +16,16 @@ namespace RayTracerChallenge.Library.Shapes
         //// ===========================================================================================================
 
         public Cylinder(
-            double minimumY,
-            double maximumY,
+            double minimumY = double.NegativeInfinity,
+            double maximumY = double.PositiveInfinity,
             bool isClosed = false,
             Matrix4x4? transform = null,
-            Material? material = null,
-            bool isShadowHidden = false)
-            : base(transform, material, isShadowHidden)
+            Material? material = null)
+            : base(transform, material)
         {
             MinimumY = minimumY;
             MaximumY = maximumY;
             IsClosed = isClosed;
-        }
-
-        public Cylinder(Matrix4x4? transform = null, Material? material = null, bool hideShadow = false)
-            : this(double.NegativeInfinity, double.PositiveInfinity, false, transform, material, hideShadow)
-        {
         }
 
         //// ===========================================================================================================
@@ -40,22 +34,11 @@ namespace RayTracerChallenge.Library.Shapes
 
         public double MinimumY { get; }
         public double MaximumY { get; }
-
         public bool IsClosed { get; }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
-
-        public override Shape WithTransform(Matrix4x4 value)
-        {
-            return new Cylinder(value, Material, IsShadowHidden);
-        }
-
-        public override Shape WithMaterial(Material value)
-        {
-            return new Cylinder(Transform, value, IsShadowHidden);
-        }
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)
         {

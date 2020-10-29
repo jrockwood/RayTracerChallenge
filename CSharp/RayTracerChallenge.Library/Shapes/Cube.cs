@@ -16,24 +16,14 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Cube(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
-            : base(transform, material, isShadowHidden)
+        public Cube(Matrix4x4? transform = null, Material? material = null)
+            : base(transform, material)
         {
         }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
-
-        public override Shape WithTransform(Matrix4x4 value)
-        {
-            return new Cube(value, Material);
-        }
-
-        public override Shape WithMaterial(Material value)
-        {
-            return new Cube(Transform, value);
-        }
 
         [SuppressMessage("ReSharper", "IdentifierTypo")]
         protected internal override IntersectionList LocalIntersect(Ray localRay)

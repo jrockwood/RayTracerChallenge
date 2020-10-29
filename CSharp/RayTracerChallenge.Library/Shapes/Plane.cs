@@ -15,24 +15,14 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Plane(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
-            : base(transform, material, isShadowHidden)
+        public Plane(Matrix4x4? transform = null, Material? material = null)
+            : base(transform, material)
         {
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
-
-        public override Shape WithTransform(Matrix4x4 value)
-        {
-            return new Plane(value, Material);
-        }
-
-        public override Shape WithMaterial(Material value)
-        {
-            return new Plane(Transform, value);
-        }
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)
         {

@@ -15,28 +15,35 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        protected Shape(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
+        protected Shape(Matrix4x4? transform = null, Material? material = null)
         {
             Transform = transform ?? Matrix4x4.Identity;
             Material = material ?? new Material();
-            IsShadowHidden = isShadowHidden;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public Matrix4x4 Transform { get; }
-        public Material Material { get; }
-        public bool IsShadowHidden { get; }
+        public Matrix4x4 Transform { get; set; }
+        public Material Material { get; set; }
+        public bool IsShadowHidden { get; set; }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
-        public abstract Shape WithTransform(Matrix4x4 value);
+        public Shape WithTransform(Matrix4x4 value)
+        {
+            Transform = value;
+            return this;
+        }
 
-        public abstract Shape WithMaterial(Material value);
+        public Shape WithMaterial(Material value)
+        {
+            Material = value;
+            return this;
+        }
 
         public Shape WithMaterial(Func<Material, Material> setter)
         {
