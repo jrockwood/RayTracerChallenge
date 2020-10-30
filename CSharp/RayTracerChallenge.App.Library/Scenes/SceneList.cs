@@ -82,6 +82,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 new Chapter13Cylinders(),
                 new Chapter13Cones(),
                 new Chapter14Hexagons(),
+                new Chapter14Groups(),
             };
         }
     }

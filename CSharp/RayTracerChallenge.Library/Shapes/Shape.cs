@@ -15,13 +15,19 @@ namespace RayTracerChallenge.Library.Shapes
     public abstract class Shape
     {
         //// ===========================================================================================================
+        //// Member Variables
+        //// ===========================================================================================================
+
+        private Material _material;
+
+        //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
         protected Shape(Matrix4x4? transform = null, Material? material = null)
         {
             Transform = transform ?? Matrix4x4.Identity;
-            Material = material ?? new Material();
+            _material = material ?? new Material();
         }
 
         //// ===========================================================================================================
@@ -31,7 +37,13 @@ namespace RayTracerChallenge.Library.Shapes
         public abstract BoundingBox BoundingBox { get; }
 
         public Matrix4x4 Transform { get; set; }
-        public Material Material { get; set; }
+
+        public virtual Material Material
+        {
+            get => _material;
+            set => _material = value;
+        }
+
         public bool IsShadowHidden { get; set; }
 
         public Group? Parent { get; set; }

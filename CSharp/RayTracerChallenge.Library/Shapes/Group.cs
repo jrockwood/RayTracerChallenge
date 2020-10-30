@@ -42,11 +42,6 @@ namespace RayTracerChallenge.Library.Shapes
             {
                 AddChild(child);
             }
-
-            if (material != null)
-            {
-                ApplyMaterialToChildren();
-            }
         }
 
         //// ===========================================================================================================
@@ -57,6 +52,16 @@ namespace RayTracerChallenge.Library.Shapes
 
         public IReadOnlyList<Shape> Children => _children;
 
+        public override Material Material
+        {
+            get => base.Material;
+            set
+            {
+                base.Material = value;
+                ApplyMaterialToChildren();
+            }
+        }
+
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
@@ -66,6 +71,7 @@ namespace RayTracerChallenge.Library.Shapes
             _boundingBox = null;
             _children.Add(shape);
             shape.Parent = this;
+            shape.Material = Material;
         }
 
         public void AddChildren(params Shape[] shapes)
@@ -73,18 +79,6 @@ namespace RayTracerChallenge.Library.Shapes
             foreach (Shape shape in shapes)
             {
                 AddChild(shape);
-            }
-        }
-
-        public void ApplyMaterialToChildren()
-        {
-            foreach (Shape child in _children)
-            {
-                child.Material = Material;
-                if (child is Group g)
-                {
-                    g.ApplyMaterialToChildren();
-                }
             }
         }
 
@@ -109,6 +103,18 @@ namespace RayTracerChallenge.Library.Shapes
         protected internal override Vector LocalNormalAt(Point localPoint)
         {
             throw new InvalidOperationException("Groups do not have a local normal.");
+        }
+
+        private void ApplyMaterialToChildren()
+        {
+            foreach (Shape child in _children)
+            {
+                child.Material = Material;
+                if (child is Group g)
+                {
+                    g.ApplyMaterialToChildren();
+                }
+            }
         }
 
         private BoundingBox CalculateBoundingBox()
