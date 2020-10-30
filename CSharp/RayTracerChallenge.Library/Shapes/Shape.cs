@@ -9,42 +9,101 @@ namespace RayTracerChallenge.Library.Shapes
 {
     using System;
 
+    /// <summary>
+    /// Abstract base class for all geometric shapes.
+    /// </summary>
     public abstract class Shape
     {
+        //// ===========================================================================================================
+        //// Member Variables
+        //// ===========================================================================================================
+
+        private Material _material;
+
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        protected Shape(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
+        protected Shape(Matrix4x4? transform = null, Material? material = null)
         {
             Transform = transform ?? Matrix4x4.Identity;
-            Material = material ?? new Material();
-            IsShadowHidden = isShadowHidden;
+            _material = material ?? new Material();
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public Matrix4x4 Transform { get; }
-        public Material Material { get; }
-        public bool IsShadowHidden { get; }
+        public abstract BoundingBox BoundingBox { get; }
+
+        public Matrix4x4 Transform { get; set; }
+
+        public virtual Material Material
+        {
+            get => _material;
+            set => _material = value;
+        }
+
+        public bool IsShadowHidden { get; set; }
+
+        public Group? Parent { get; set; }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
-        public abstract Shape WithTransform(Matrix4x4 value);
-
-        public abstract Shape WithMaterial(Material value);
-
-        public Shape WithMaterial(Func<Material, Material> setter)
+        public Shape ChangeTransform(Matrix4x4 value)
         {
-            return WithMaterial(setter(Material));
+            Transform = value;
+            return this;
+        }
+
+        public Shape ChangeMaterial(Material value)
+        {
+            Material = value;
+            return this;
+        }
+
+        public Shape ChangeMaterial(Func<Material, Material> setter)
+        {
+            return ChangeMaterial(setter(Material));
+        }
+
+        public Point WorldToObject(Point point)
+        {
+            if (Parent != null)
+            {
+                point = Parent.WorldToObject(point);
+            }
+
+            if (Transform.IsIdentity)
+            {
+                return point;
+            }
+
+            return Transform.Invert() * point;
+        }
+
+        public Vector NormalToWorld(Vector normal)
+        {
+            normal = Transform.Invert().Transpose() * normal;
+            normal = normal.Normalize();
+
+            if (Parent != null)
+            {
+                normal = Parent.NormalToWorld(normal);
+            }
+
+            return normal;
         }
 
         public IntersectionList Intersect(Ray ray)
         {
+            if (Transform.IsIdentity)
+            {
+                return LocalIntersect(ray);
+            }
+
             var localRay = ray.Transform(Transform.Invert());
             return LocalIntersect(localRay);
         }
@@ -53,10 +112,10 @@ namespace RayTracerChallenge.Library.Shapes
 
         public Vector NormalAt(Point worldPoint)
         {
-            Point localPoint = Transform.Invert() * worldPoint;
+            Point localPoint = WorldToObject(worldPoint);
             Vector localNormal = LocalNormalAt(localPoint);
-            Vector worldNormal = Transform.Invert().Transpose() * localNormal;
-            return worldNormal.Normalize();
+            Vector worldNormal = NormalToWorld(localNormal);
+            return worldNormal;
         }
 
         protected internal abstract Vector LocalNormalAt(Point localPoint);

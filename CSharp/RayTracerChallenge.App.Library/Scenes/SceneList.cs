@@ -71,6 +71,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 new Chapter05RedSphere(),
                 new Chapter06ShadedSphere(),
                 new Chapter07SixSpheres(),
+                new Chapter07SixSpheresThreeLights(),
                 new Chapter08ShadowPuppets(),
                 new Chapter09Planes(),
                 new Chapter10Patterns(),
@@ -80,6 +81,8 @@ namespace RayTracerChallenge.App.Library.Scenes
                 new Chapter12TableInARoom(),
                 new Chapter13Cylinders(),
                 new Chapter13Cones(),
+                new Chapter14Hexagons(),
+                new Chapter14Groups(),
             };
         }
     }

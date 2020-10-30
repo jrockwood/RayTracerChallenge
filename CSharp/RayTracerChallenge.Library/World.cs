@@ -9,10 +9,12 @@ namespace RayTracerChallenge.Library
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
+    /// <summary>
+    /// Represents a world with lights and shapes.
+    /// </summary>
     public class World
     {
         //// ===========================================================================================================
@@ -26,47 +28,51 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public World(Light light, params Shape[] shapes)
-            : this(light, shapes.ToImmutableArray())
+            : this(light, (IEnumerable<Shape>)shapes)
         {
         }
 
-        public World(Light light, ImmutableArray<Shape> shapes)
+        public World(Light light, IEnumerable<Shape> shapes)
         {
-            Light = light;
-            Shapes = shapes;
+            Lights = new List<Light> { light };
+            Shapes = new List<Shape>(shapes);
+        }
+
+        public World(IEnumerable<Light> lights, IEnumerable<Shape> shapes)
+        {
+            Lights = new List<Light>(lights);
+            Shapes = new List<Shape>(shapes);
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public Light Light { get; }
+        public List<Light> Lights { get; set; }
 
-        public World WithLight(Light value)
-        {
-            return new World(value, Shapes);
-        }
-
-        public ImmutableArray<Shape> Shapes { get; }
-
-        public World WithAddedShapes(params Shape[] shapes)
-        {
-            return new World(Light, Shapes.AddRange(shapes));
-        }
-
-        public World WithShapes(ImmutableArray<Shape> value)
-        {
-            return new World(Light, value);
-        }
-
-        public World WithShapes(params Shape[] value)
-        {
-            return new World(Light, value);
-        }
+        public List<Shape> Shapes { get; set; }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
+
+        public World ChangeLights(params Light[] value)
+        {
+            Lights = new List<Light>(value);
+            return this;
+        }
+
+        public World AddShapes(params Shape[] shapes)
+        {
+            Shapes.AddRange(shapes);
+            return this;
+        }
+
+        public World ChangeShapes(params Shape[] shapes)
+        {
+            Shapes = new List<Shape>(shapes);
+            return this;
+        }
 
         /// <summary>
         /// Iterates over all of the shapes in the world and returns all of the hits for the specified ray.
@@ -75,7 +81,7 @@ namespace RayTracerChallenge.Library
         /// <returns>The list of all intersections for the specified ray.</returns>
         public IntersectionList Intersect(Ray ray)
         {
-            var hits = new List<Intersection>();
+            var hits = new IntersectionList();
 
             foreach (Shape shape in Shapes)
             {
@@ -83,20 +89,27 @@ namespace RayTracerChallenge.Library
                 hits.AddRange(shapeHits);
             }
 
-            return IntersectionList.Create(hits);
+            return hits;
         }
 
         internal Color ShadeHit(IntersectionState state, int maxRecursion = MaxRecursion)
         {
-            bool isShadowed = IsShadowed(state.OverPoint);
+            Color surfaceColor = Colors.Black;
 
-            Color surfaceColor = state.Shape.Material.CalculateLighting(
-                state.Shape,
-                Light,
-                state.OverPoint,
-                state.Eye,
-                state.Normal,
-                isShadowed);
+            foreach (Light light in Lights)
+            {
+                bool isShadowed = IsShadowed(state.OverPoint, light);
+
+                Color surfaceColorFromLight = state.Shape.Material.CalculateLighting(
+                    state.Shape,
+                    light,
+                    state.OverPoint,
+                    state.Eye,
+                    state.Normal,
+                    isShadowed);
+
+                surfaceColor += surfaceColorFromLight;
+            }
 
             Color reflectedColor = ReflectedColor(state, maxRecursion);
             Color refractedColor = RefractedColor(state, maxRecursion);
@@ -134,9 +147,9 @@ namespace RayTracerChallenge.Library
             return color;
         }
 
-        public bool IsShadowed(Point point)
+        public bool IsShadowed(Point point, Light light)
         {
-            Vector pointToLightVector = Light.Position - point;
+            Vector pointToLightVector = light.Position - point;
             double distance = pointToLightVector.Magnitude;
             Vector direction = pointToLightVector.Normalize();
 

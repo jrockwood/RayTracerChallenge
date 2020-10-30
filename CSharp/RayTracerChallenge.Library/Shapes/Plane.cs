@@ -12,11 +12,19 @@ namespace RayTracerChallenge.Library.Shapes
     public class Plane : Shape
     {
         //// ===========================================================================================================
+        //// Member Variables
+        //// ===========================================================================================================
+
+        private static readonly BoundingBox s_planeBox = new BoundingBox(
+            new Point(double.NegativeInfinity, 0, double.NegativeInfinity),
+            new Point(double.PositiveInfinity, 0, double.PositiveInfinity));
+
+        //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public Plane(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
-            : base(transform, material, isShadowHidden)
+        public Plane(Matrix4x4? transform = null, Material? material = null)
+            : base(transform, material)
         {
         }
 
@@ -24,15 +32,11 @@ namespace RayTracerChallenge.Library.Shapes
         //// Properties
         //// ===========================================================================================================
 
-        public override Shape WithTransform(Matrix4x4 value)
-        {
-            return new Plane(value, Material);
-        }
+        public override BoundingBox BoundingBox => s_planeBox;
 
-        public override Shape WithMaterial(Material value)
-        {
-            return new Plane(Transform, value);
-        }
+        //// ===========================================================================================================
+        //// Methods
+        //// ===========================================================================================================
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)
         {
@@ -43,7 +47,7 @@ namespace RayTracerChallenge.Library.Shapes
             }
 
             double t = -localRay.Origin.Y / localRay.Direction.Y;
-            return IntersectionList.Create((t, this));
+            return new IntersectionList((t, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)

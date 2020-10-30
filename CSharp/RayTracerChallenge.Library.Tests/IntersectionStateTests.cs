@@ -20,7 +20,7 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
             var shape = new Sphere();
             var hit = new Intersection(4, shape);
-            var state = IntersectionState.Create(hit, ray, IntersectionList.Create(hit));
+            var state = IntersectionState.Create(hit, ray, new IntersectionList(hit));
             state.T.Should().Be(hit.T);
             state.Shape.Should().Be(hit.Shape);
             state.Point.Should().Be(new Point(0, 0, -1));
@@ -34,7 +34,7 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
             var shape = new Sphere();
             var hit = new Intersection(4, shape);
-            var state = IntersectionState.Create(hit, ray, IntersectionList.Create(hit));
+            var state = IntersectionState.Create(hit, ray, new IntersectionList(hit));
             state.IsInside.Should().BeFalse();
         }
 
@@ -44,7 +44,7 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
             var shape = new Sphere();
             var hit = new Intersection(1, shape);
-            var state = IntersectionState.Create(hit, ray, IntersectionList.Create(hit));
+            var state = IntersectionState.Create(hit, ray, new IntersectionList(hit));
             state.Point.Should().Be(new Point(0, 0, 1));
             state.Eye.Should().Be(new Vector(0, 0, -1));
             state.IsInside.Should().BeTrue();
@@ -59,7 +59,7 @@ namespace RayTracerChallenge.Library.Tests
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
             var shape = new Sphere(Matrix4x4.CreateTranslation(0, 0, 1));
             var hit = new Intersection(5, shape);
-            var state = IntersectionState.Create(hit, ray, IntersectionList.Create(hit));
+            var state = IntersectionState.Create(hit, ray, new IntersectionList(hit));
 
             state.OverPoint.Z.Should().BeLessThan(-NumberExtensions.Epsilon / 2);
             state.Point.Z.Should().BeGreaterThan(state.OverPoint.Z);
@@ -75,7 +75,7 @@ namespace RayTracerChallenge.Library.Tests
             var shape = new Plane();
             var ray = new Ray(new Point(0, 1, -1), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var hit = new Intersection(Math.Sqrt(2), shape);
-            var state = IntersectionState.Create(hit, ray, IntersectionList.Create(hit));
+            var state = IntersectionState.Create(hit, ray, new IntersectionList(hit));
             state.Reflection.Should().Be(new Vector(0, Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
         }
 
@@ -99,19 +99,19 @@ namespace RayTracerChallenge.Library.Tests
             static void Test((int index, double n1, double n2) testCase)
             {
                 var a = Sphere.CreateGlassSphere()
-                    .WithTransform(Matrix4x4.CreateScaling(2, 2, 2))
-                    .WithMaterial(m => m.WithRefractiveIndex(1.5));
+                    .ChangeTransform(Matrix4x4.CreateScaling(2, 2, 2))
+                    .ChangeMaterial(m => m.WithRefractiveIndex(1.5));
 
                 var b = Sphere.CreateGlassSphere()
-                    .WithTransform(Matrix4x4.CreateTranslation(0, 0, -0.25))
-                    .WithMaterial(m => m.WithRefractiveIndex(2.0));
+                    .ChangeTransform(Matrix4x4.CreateTranslation(0, 0, -0.25))
+                    .ChangeMaterial(m => m.WithRefractiveIndex(2.0));
 
                 var c = Sphere.CreateGlassSphere()
-                    .WithTransform(Matrix4x4.CreateTranslation(0, 0, 0.25))
-                    .WithMaterial(m => m.WithRefractiveIndex(2.5));
+                    .ChangeTransform(Matrix4x4.CreateTranslation(0, 0, 0.25))
+                    .ChangeMaterial(m => m.WithRefractiveIndex(2.5));
 
                 var ray = new Ray(new Point(0, 0, -4), Vector.UnitZ);
-                var intersections = IntersectionList.Create((2, a), (2.75, b), (3.25, c), (4.75, b), (5.25, c), (6, a));
+                var intersections = new IntersectionList((2, a), (2.75, b), (3.25, c), (4.75, b), (5.25, c), (6, a));
 
                 (int index, double n1, double n2) = testCase;
                 var state = IntersectionState.Create(intersections[index], ray, intersections);
@@ -129,9 +129,9 @@ namespace RayTracerChallenge.Library.Tests
         public void Create_should_set_UnderPoint_to_just_below_the_surface()
         {
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
-            var shape = Sphere.CreateGlassSphere().WithTransform(Matrix4x4.CreateTranslation(0, 0, 1));
+            var shape = Sphere.CreateGlassSphere().ChangeTransform(Matrix4x4.CreateTranslation(0, 0, 1));
             var hit = new Intersection(5, shape);
-            var state = IntersectionState.Create(hit, ray, IntersectionList.Create(hit));
+            var state = IntersectionState.Create(hit, ray, new IntersectionList(hit));
             state.UnderPoint.Z.Should().BeGreaterThan(NumberExtensions.Epsilon / 2);
             state.Point.Z.Should().BeLessThan(state.UnderPoint.Z);
         }
@@ -141,7 +141,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var shape = Sphere.CreateGlassSphere();
             var ray = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), Vector.UnitY);
-            var intersections = IntersectionList.Create((-Math.Sqrt(2) / 2, shape), (Math.Sqrt(2) / 2, shape));
+            var intersections = new IntersectionList((-Math.Sqrt(2) / 2, shape), (Math.Sqrt(2) / 2, shape));
             var state = IntersectionState.Create(intersections[1], ray, intersections);
             double reflectance = state.Schlick();
             reflectance.Should().Be(1.0);
@@ -152,7 +152,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var shape = Sphere.CreateGlassSphere();
             var ray = new Ray(new Point(0, 0, 0), Vector.UnitY);
-            var intersections = IntersectionList.Create((-1, shape), (1, shape));
+            var intersections = new IntersectionList((-1, shape), (1, shape));
             var state = IntersectionState.Create(intersections[1], ray, intersections);
             double reflectance = state.Schlick();
             reflectance.Should().BeApproximately(0.04, NumberExtensions.Epsilon);
@@ -163,7 +163,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var shape = Sphere.CreateGlassSphere();
             var ray = new Ray(new Point(0, 0.99, -2), Vector.UnitZ);
-            var intersections = IntersectionList.Create(new Intersection(1.8589, shape));
+            var intersections = new IntersectionList(new Intersection(1.8589, shape));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
             double reflectance = state.Schlick();
             reflectance.Should().BeApproximately(0.48873, NumberExtensions.Epsilon);

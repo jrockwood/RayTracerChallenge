@@ -17,7 +17,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Ctor_should_store_the_intersections_in_sorted_order()
         {
             var s = new Sphere();
-            var list = IntersectionList.Create((30, s), (-1, s));
+            var list = new IntersectionList((30, s), (-1, s));
             list.Ts.Should().HaveCount(2).And.ContainInOrder(-1, 30);
         }
 
@@ -25,8 +25,8 @@ namespace RayTracerChallenge.Library.Tests
         public void Add_should_return_a_new_list_in_sorted_order()
         {
             var s = new Sphere();
-            var list = IntersectionList.Create((30, s), (-1, s));
-            list = list.Add((10, s), (-300, s));
+            var list = new IntersectionList((30, s), (-1, s));
+            list.AddRange((10, s), (-300, s));
             list.Ts.Should().HaveCount(4).And.ContainInOrder(-300, -1, 10, 30);
         }
 
@@ -40,7 +40,7 @@ namespace RayTracerChallenge.Library.Tests
             var s = new Sphere();
             var i1 = new Intersection(1, s);
             var i2 = new Intersection(2, s);
-            var list = IntersectionList.Create(i1, i2);
+            var list = new IntersectionList(i1, i2);
             list.Hit.Should().Be(i1);
         }
 
@@ -50,7 +50,7 @@ namespace RayTracerChallenge.Library.Tests
             var s = new Sphere();
             var i1 = new Intersection(-1, s);
             var i2 = new Intersection(2, s);
-            var list = IntersectionList.Create(i1, i2);
+            var list = new IntersectionList(i1, i2);
             list.Hit.Should().Be(i2);
         }
 
@@ -60,7 +60,7 @@ namespace RayTracerChallenge.Library.Tests
             var s = new Sphere();
             var i1 = new Intersection(-2, s);
             var i2 = new Intersection(-1, s);
-            var list = IntersectionList.Create(i1, i2);
+            var list = new IntersectionList(i1, i2);
             list.Hit.Should().BeNull();
         }
 
@@ -72,7 +72,7 @@ namespace RayTracerChallenge.Library.Tests
             var i2 = new Intersection(7, s);
             var i3 = new Intersection(-3, s);
             var i4 = new Intersection(2, s);
-            var list = IntersectionList.Create(i1, i2, i3, i4);
+            var list = new IntersectionList(i1, i2, i3, i4);
             list.Hit.Should().Be(i4);
         }
     }

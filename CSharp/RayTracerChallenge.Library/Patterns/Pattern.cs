@@ -34,7 +34,7 @@ namespace RayTracerChallenge.Library.Patterns
 
         public Color ColorOnShapeAt(Shape shape, Point worldPoint)
         {
-            Point shapePoint = shape.Transform.Invert() * worldPoint;
+            Point shapePoint = shape.WorldToObject(worldPoint);
             Point patternPoint = Transform.Invert() * shapePoint;
             Color color = ColorAt(patternPoint);
             return color;

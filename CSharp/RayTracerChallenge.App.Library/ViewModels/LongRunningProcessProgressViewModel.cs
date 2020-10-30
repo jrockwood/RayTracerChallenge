@@ -106,7 +106,9 @@ namespace RayTracerChallenge.App.Library.ViewModels
         public TimeSpan ElapsedTime => _startingTime.HasValue ? _getNowFunc() - _startingTime.Value : TimeSpan.MinValue;
 
         public string FormattedElapsedTime =>
-            _startingTime.HasValue ? FormatTimeSpan(ElapsedTime) : FormatTimeSpan(TimeSpan.Zero);
+            _startingTime.HasValue
+                ? FormatTimeSpan(ElapsedTime, includeMs: true)
+                : FormatTimeSpan(TimeSpan.Zero, includeMs: true);
 
         public TimeSpan EstimatedTimeRemaining
         {
@@ -126,8 +128,8 @@ namespace RayTracerChallenge.App.Library.ViewModels
         }
 
         public string FormattedEstimatedTimeRemaining => _startingTime.HasValue
-            ? FormatTimeSpan(EstimatedTimeRemaining)
-            : FormatTimeSpan(TimeSpan.Zero);
+            ? FormatTimeSpan(EstimatedTimeRemaining, includeMs: false)
+            : FormatTimeSpan(TimeSpan.Zero, includeMs: false);
 
         public bool IsStarted => _timer.IsEnabled;
 
@@ -191,11 +193,25 @@ namespace RayTracerChallenge.App.Library.ViewModels
             OnPropertyChanged(nameof(FormattedEstimatedTimeRemaining));
         }
 
-        private static string FormatTimeSpan(TimeSpan timeSpan)
+        private static string FormatTimeSpan(TimeSpan timeSpan, bool includeMs)
         {
-            return timeSpan == TimeSpan.MaxValue
-                ? ""
-                : $"{Math.Floor(timeSpan.TotalHours)}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
+            if (timeSpan == TimeSpan.MaxValue)
+            {
+                return "";
+            }
+
+            // If there are hours, we don't need to show ms accuracy.
+            if (timeSpan.TotalHours >= 1)
+            {
+                return $"{Math.Floor(timeSpan.TotalHours)}h:{timeSpan.Minutes:00}m:{timeSpan.Seconds:00}s";
+            }
+
+            if (includeMs)
+            {
+                return $"{timeSpan.Minutes}m:{timeSpan.Seconds:00}s:{timeSpan.Milliseconds:000}ms";
+            }
+
+            return $"{timeSpan.Minutes}m:{timeSpan.Seconds:00}s";
         }
 
         private void OnTimerTick(object? sender, EventArgs e)

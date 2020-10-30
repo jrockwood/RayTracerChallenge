@@ -12,13 +12,25 @@ namespace RayTracerChallenge.Library.Shapes
     public class Sphere : Shape
     {
         //// ===========================================================================================================
+        //// Member Variables
+        //// ===========================================================================================================
+
+        private static readonly BoundingBox s_sphereBox = new BoundingBox(new Point(-1, -1, -1), new Point(1, 1, 1));
+
+        //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public Sphere(Matrix4x4? transform = null, Material? material = null, bool isShadowHidden = false)
-            : base(transform, material, isShadowHidden)
+        public Sphere(Matrix4x4? transform = null, Material? material = null)
+            : base(transform, material)
         {
         }
+
+        //// ===========================================================================================================
+        //// Properties
+        //// ===========================================================================================================
+
+        public override BoundingBox BoundingBox => s_sphereBox;
 
         //// ===========================================================================================================
         //// Methods
@@ -27,16 +39,6 @@ namespace RayTracerChallenge.Library.Shapes
         public static Sphere CreateGlassSphere()
         {
             return new Sphere(material: new Material(transparency: 1, refractiveIndex: 1.5));
-        }
-
-        public override Shape WithTransform(Matrix4x4 value)
-        {
-            return new Sphere(value, Material);
-        }
-
-        public override Shape WithMaterial(Material value)
-        {
-            return new Sphere(Transform, value);
         }
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)
@@ -58,7 +60,7 @@ namespace RayTracerChallenge.Library.Shapes
             double t1 = (-b - sqrtOfDiscriminant) / (2 * a);
             double t2 = (-b + sqrtOfDiscriminant) / (2 * a);
 
-            return IntersectionList.Create((t1, this), (t2, this));
+            return new IntersectionList((t1, this), (t2, this));
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)
