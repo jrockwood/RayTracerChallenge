@@ -62,6 +62,7 @@ namespace RayTracerChallenge.App.Library.Tests.Fakes
                     () =>
                     {
                         progress?.Report(FirstProgressPercent);
+                        SpinWait.SpinUntil(() => false, TimeSpan.FromMilliseconds(10));
                         progress?.Report(100);
                     },
                     cancellationToken),
