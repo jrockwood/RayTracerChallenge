@@ -8,10 +8,13 @@
 namespace RayTracerChallenge.Library
 {
     using System;
-    using System.Collections.Immutable;
+    using System.Collections.Generic;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
 
+    /// <summary>
+    /// Represents a world with lights and shapes.
+    /// </summary>
     public class World
     {
         //// ===========================================================================================================
@@ -25,47 +28,45 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public World(Light light, params Shape[] shapes)
-            : this(light, shapes.ToImmutableArray())
+            : this(light, (IEnumerable<Shape>)shapes)
         {
         }
 
-        public World(Light light, ImmutableArray<Shape> shapes)
+        public World(Light light, IEnumerable<Shape> shapes)
         {
             Light = light;
-            Shapes = shapes;
+            Shapes = new List<Shape>(shapes);
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public Light Light { get; }
+        public Light Light { get; set; }
 
-        public World WithLight(Light value)
-        {
-            return new World(value, Shapes);
-        }
-
-        public ImmutableArray<Shape> Shapes { get; }
-
-        public World WithAddedShapes(params Shape[] shapes)
-        {
-            return new World(Light, Shapes.AddRange(shapes));
-        }
-
-        public World WithShapes(ImmutableArray<Shape> value)
-        {
-            return new World(Light, value);
-        }
-
-        public World WithShapes(params Shape[] value)
-        {
-            return new World(Light, value);
-        }
+        public List<Shape> Shapes { get; set; }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
+
+        public World ChangeLight(Light value)
+        {
+            Light = value;
+            return this;
+        }
+
+        public World AddShapes(params Shape[] shapes)
+        {
+            Shapes.AddRange(shapes);
+            return this;
+        }
+
+        public World ChangeShapes(params Shape[] shapes)
+        {
+            Shapes = new List<Shape>(shapes);
+            return this;
+        }
 
         /// <summary>
         /// Iterates over all of the shapes in the world and returns all of the hits for the specified ray.

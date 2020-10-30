@@ -61,7 +61,7 @@ namespace RayTracerChallenge.Library.Tests
         [Test]
         public void ShadeHit_should_shade_an_intersection_from_the_inside()
         {
-            var world = World.CreateDefaultWorld().WithLight(new PointLight(new Point(0, 0.25, 0), Colors.White));
+            var world = World.CreateDefaultWorld().ChangeLight(new PointLight(new Point(0, 0.25, 0), Colors.White));
             var ray = new Ray(new Point(0, 0, 0), Vector.UnitZ);
             Shape shape = world.Shapes[1];
             var intersection = new Intersection(0.5, shape);
@@ -76,8 +76,8 @@ namespace RayTracerChallenge.Library.Tests
             var sphere1 = new Sphere();
             var sphere2 = new Sphere(Matrix4x4.CreateTranslation(0, 0, 10));
             var world = World.CreateDefaultWorld()
-                .WithLight(new PointLight(new Point(0, 0, -10), Colors.White))
-                .WithAddedShapes(sphere1, sphere2);
+                .ChangeLight(new PointLight(new Point(0, 0, -10), Colors.White))
+                .AddShapes(sphere1, sphere2);
 
             var ray = new Ray(new Point(0, 0, 5), Vector.UnitZ);
             var intersection = new Intersection(4, sphere2);
@@ -96,7 +96,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var world = World.CreateDefaultWorld();
             var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
-            world = world.WithAddedShapes(floor);
+            world = world.AddShapes(floor);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var intersection = new Intersection(Math.Sqrt(2), floor);
@@ -120,7 +120,7 @@ namespace RayTracerChallenge.Library.Tests
                 new Material(transparency: 0.5, refractiveIndex: 1.5));
 
             var ball = new Sphere(Matrix4x4.CreateTranslation(0, -3.5, -0.5), new Material(Colors.Red, ambient: 0.5));
-            var world = World.CreateDefaultWorld().WithAddedShapes(floor, ball);
+            var world = World.CreateDefaultWorld().AddShapes(floor, ball);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var intersections = new IntersectionList((Math.Sqrt(2), floor));
@@ -137,7 +137,7 @@ namespace RayTracerChallenge.Library.Tests
                 new Material(reflective: 0.5, transparency: 0.5, refractiveIndex: 1.5));
 
             var ball = new Sphere(Matrix4x4.CreateTranslation(0, -3.5, -0.5), new Material(Colors.Red, ambient: 0.5));
-            var world = World.CreateDefaultWorld().WithAddedShapes(floor, ball);
+            var world = World.CreateDefaultWorld().AddShapes(floor, ball);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var intersections = new IntersectionList((Math.Sqrt(2), floor));
@@ -172,9 +172,8 @@ namespace RayTracerChallenge.Library.Tests
         public void ColorAt_should_return_the_color_with_an_intersection_behind_the_ray()
         {
             var world = World.CreateDefaultWorld();
-            Shape outer = world.Shapes[0].WithMaterial(m => m.WithAmbient(1));
-            Shape inner = world.Shapes[1].WithMaterial(m => m.WithAmbient(1));
-            world = world.WithShapes(outer, inner);
+            Shape outer = world.Shapes[0].ChangeMaterial(m => m.WithAmbient(1));
+            Shape inner = world.Shapes[1].ChangeMaterial(m => m.WithAmbient(1));
 
             var ray = new Ray(new Point(0, 0, 0.75), -Vector.UnitZ);
             Color color = world.ColorAt(ray);
@@ -187,8 +186,8 @@ namespace RayTracerChallenge.Library.Tests
             var lower = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 1));
             var upper = new Plane(Matrix4x4.CreateTranslation(0, 1, 0), new Material(reflective: 1));
             var world = World.CreateDefaultWorld()
-                .WithLight(new PointLight(Point.Zero, Colors.White))
-                .WithShapes(lower, upper);
+                .ChangeLight(new PointLight(Point.Zero, Colors.White))
+                .ChangeShapes(lower, upper);
             var ray = new Ray(Point.Zero, Vector.UnitY);
             Color color = world.ColorAt(ray);
             color.Should().Be(new Color(11.4, 11.4, 11.4));
@@ -239,8 +238,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var world = World.CreateDefaultWorld();
             var ray = new Ray(Point.Zero, Vector.UnitZ);
-            var shape = world.Shapes[1].WithMaterial(m => m.WithAmbient(1));
-            world = world.WithShapes(world.Shapes.Replace(world.Shapes[1], shape));
+            var shape = world.Shapes[1].ChangeMaterial(m => m.WithAmbient(1));
 
             var intersection = new Intersection(1, shape);
             var state = IntersectionState.Create(intersection, ray, new IntersectionList(intersection));
@@ -257,7 +255,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var world = World.CreateDefaultWorld();
             var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
-            world = world.WithAddedShapes(floor);
+            world = world.AddShapes(floor);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var intersection = new Intersection(Math.Sqrt(2), floor);
@@ -272,7 +270,7 @@ namespace RayTracerChallenge.Library.Tests
         {
             var world = World.CreateDefaultWorld();
             var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
-            world = world.WithAddedShapes(floor);
+            world = world.AddShapes(floor);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
             var intersection = new Intersection(Math.Sqrt(2), floor);
@@ -302,8 +300,7 @@ namespace RayTracerChallenge.Library.Tests
         public void RefractedColor_should_return_the_refracted_color_at_the_maximum_recursive_depth()
         {
             var world = World.CreateDefaultWorld();
-            var shape = world.Shapes[0].WithMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
-            world = world.WithShapes(world.Shapes.SetItem(0, shape));
+            var shape = world.Shapes[0].ChangeMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
             var intersections = new IntersectionList((4, shape), (6, shape));
             var state = IntersectionState.Create(intersections[0], ray, intersections);
@@ -315,8 +312,7 @@ namespace RayTracerChallenge.Library.Tests
         public void RefractedColor_should_return_black_for_the_refracted_color_under_total_internal_reflection()
         {
             var world = World.CreateDefaultWorld();
-            var shape = world.Shapes[0].WithMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
-            world = world.WithShapes(world.Shapes.SetItem(0, shape));
+            var shape = world.Shapes[0].ChangeMaterial(m => m.WithTransparency(1.0).WithRefractiveIndex(1.5));
             var ray = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), Vector.UnitY);
             var intersections = new IntersectionList((-Math.Sqrt(2) / 2, shape), (Math.Sqrt(2) / 2, shape));
 
@@ -330,9 +326,8 @@ namespace RayTracerChallenge.Library.Tests
         public void RefractedColor_should_return_the_refracted_color_with_a_refracted_ray()
         {
             var world = World.CreateDefaultWorld();
-            var a = world.Shapes[0].WithMaterial(m => m.WithAmbient(1).WithPattern(new PatternTests.TestPattern()));
-            var b = world.Shapes[1].WithMaterial(m => m.WithTransparency(1).WithRefractiveIndex(1.5));
-            world = world.WithShapes(a, b);
+            var a = world.Shapes[0].ChangeMaterial(m => m.WithAmbient(1).WithPattern(new PatternTests.TestPattern()));
+            var b = world.Shapes[1].ChangeMaterial(m => m.WithTransparency(1).WithRefractiveIndex(1.5));
 
             var ray = new Ray(new Point(0, 0, 0.1), Vector.UnitY);
             var intersections = new IntersectionList((-0.9899, a), (-0.4899, b), (0.4899, b), (0.9899, a));
