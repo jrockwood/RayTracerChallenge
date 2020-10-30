@@ -35,12 +35,17 @@ namespace RayTracerChallenge.Library.Shapes
             }
         }
 
-        public Group(Matrix4x4 transform, params Shape[] children)
-            : base(transform)
+        public Group(Matrix4x4? transform, Material? material = null, params Shape[] children)
+            : base(transform, material)
         {
             foreach (Shape child in children)
             {
                 AddChild(child);
+            }
+
+            if (material != null)
+            {
+                ApplyMaterialToChildren();
             }
         }
 
@@ -68,6 +73,18 @@ namespace RayTracerChallenge.Library.Shapes
             foreach (Shape shape in shapes)
             {
                 AddChild(shape);
+            }
+        }
+
+        public void ApplyMaterialToChildren()
+        {
+            foreach (Shape child in _children)
+            {
+                child.Material = Material;
+                if (child is Group g)
+                {
+                    g.ApplyMaterialToChildren();
+                }
             }
         }
 
