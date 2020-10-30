@@ -14,88 +14,65 @@ namespace RayTracerChallenge.Library.Tests.Shapes
     public class CubeTests
     {
         [Test]
-        public void LocalIntersect_should_intersect()
+        [TestCase("+x", 5, 0.5, 0, -1, 0, 0, 4, 6)]
+        [TestCase("-x", -5, 0.5, 0, 1, 0, 0, 4, 6)]
+        [TestCase("+y", 0.5, 5, 0, 0, -1, 0, 4, 6)]
+        [TestCase("-y", 0.5, -5, 0, 0, 1, 0, 4, 6)]
+        [TestCase("+z", 0.5, 0, 5, 0, 0, -1, 4, 6)]
+        [TestCase("-z", 0.5, 0, -5, 0, 0, 1, 4, 6)]
+        [TestCase("inside", 0, 0.5, 0, 0, 0, 1, -1, 1)]
+        public void LocalIntersect_should_intersect(
+            string description,
+            double originX,
+            double originY,
+            double originZ,
+            double directionX,
+            double directionY,
+            double directionZ,
+            double t1,
+            double t2)
         {
-            var testCases = new[]
-            {
-                (desc: "+x", origin: new Point(5, 0.5, 0), direction: new Vector(-1, 0, 0), t1: 4, t2: 6),
-                (desc: "-x", origin: new Point(-5, 0.5, 0), direction: new Vector(1, 0, 0), t1: 4, t2: 6),
-                (desc: "+y", origin: new Point(0.5, 5, 0), direction: new Vector(0, -1, 0), t1: 4, t2: 6),
-                (desc: "-y", origin: new Point(0.5, -5, 0), direction: new Vector(0, 1, 0), t1: 4, t2: 6),
-                (desc: "+z", origin: new Point(0.5, 0, 5), direction: new Vector(0, 0, -1), t1: 4, t2: 6),
-                (desc: "-z", origin: new Point(0.5, 0, -5), direction: new Vector(0, 0, 1), t1: 4, t2: 6),
-                (desc: "inside", origin: new Point(0, 0.5, 0), direction: new Vector(0, 0, 1), t1: -1, t2: 1),
-            };
-
-            static void Test((string desc, Point origin, Vector direction, double t1, double t2) testCase)
-            {
-                (string desc, Point origin, Vector direction, double t1, double t2) = testCase;
-
-                var cube = new Cube();
-                var ray = new Ray(origin, direction);
-                IntersectionList intersections = cube.LocalIntersect(ray);
-                intersections.Ts.Should().HaveCount(2).And.ContainInOrder(new[] { t1, t2 }, $"for test case '{desc}'");
-            }
-
-            foreach (var testCase in testCases)
-            {
-                Test(testCase);
-            }
+            var cube = new Cube();
+            var ray = new Ray(new Point(originX, originY, originZ), new Vector(directionX, directionY, directionZ));
+            IntersectionList intersections = cube.LocalIntersect(ray);
+            intersections.Ts.Should().HaveCount(2).And.ContainInOrder(new[] { t1, t2 }, $"for test case '{description}'");
         }
 
         [Test]
-        public void LocalIntersect_should_miss_properly()
+        [TestCase(-2, 0, 0, 0.2673, 0.5345, 0.8018)]
+        [TestCase(0, -2, 0, 0.8018, 0.2673, 0.5345)]
+        [TestCase(0, 0, -2, 0.5345, 0.8018, 0.2673)]
+        [TestCase(2, 0, 2, 0, 0, -1)]
+        [TestCase(0, 2, 2, 0, -1, 0)]
+        [TestCase(2, 2, 0, -1, 0, 0)]
+        public void LocalIntersect_should_miss_properly(double px, double py, double pz, double vx, double vy, double vz)
         {
-            var testCases = new[]
-            {
-                new Ray(new Point(-2, 0, 0), new Vector(0.2673, 0.5345, 0.8018)),
-                new Ray(new Point(0, -2, 0), new Vector(0.8018, 0.2673, 0.5345)),
-                new Ray(new Point(0, 0, -2), new Vector(0.5345, 0.8018, 0.2673)),
-                new Ray(new Point(2, 0, 2),  new Vector(0, 0, -1)),
-                new Ray(new Point(0, 2, 2),  new Vector(0, -1, 0)),
-                new Ray(new Point(2, 2, 0),  new Vector(-1, 0, 0)),
-            };
-
-            static void Test(Ray ray)
-            {
-                var cube = new Cube();
-                IntersectionList intersections = cube.LocalIntersect(ray);
-                intersections.Should().BeEmpty();
-            }
-
-            foreach (Ray testCase in testCases)
-            {
-                Test(testCase);
-            }
+            var cube = new Cube();
+            var ray = new Ray(new Point(px, py, pz), new Vector(vx, vy, vz));
+            IntersectionList intersections = cube.LocalIntersect(ray);
+            intersections.Should().BeEmpty();
         }
 
         [Test]
-        public void LocalNormalAt_should_calculate_the_normal_on_the_surface_of_the_cube()
+        [TestCase(1, 0.5, -0.8, 1, 0, 0)]
+        [TestCase(-1, -0.2, 0.9, -1, 0, 0)]
+        [TestCase(-0.4, 1, -0.1, 0, 1, 0)]
+        [TestCase(0.3, -1, -0.7, 0, -1, 0)]
+        [TestCase(-0.6, 0.3, 1, 0, 0, 1)]
+        [TestCase(0.4, 0.4, -1, 0, 0, -1)]
+        [TestCase(1, 1, 1, 1, 0, 0)]
+        [TestCase(-1, -1, -1, -1, 0, 0)]
+        public void LocalNormalAt_should_calculate_the_normal_on_the_surface_of_the_cube(
+            double px,
+            double py,
+            double pz,
+            double nx,
+            double ny,
+            double nz)
         {
-            var testCases = new[]
-            {
-                (point: new Point(1, 0.5, -0.8), normal: new Vector(1, 0, 0)),
-                (point: new Point(-1, -0.2, 0.9), normal: new Vector(-1, 0, 0)),
-                (point: new Point(-0.4, 1, -0.1), normal: new Vector(0, 1, 0)),
-                (point: new Point(0.3, -1, -0.7), normal: new Vector(0, -1, 0)),
-                (point: new Point(-0.6, 0.3, 1), normal: new Vector(0, 0, 1)),
-                (point: new Point(0.4, 0.4, -1), normal: new Vector(0, 0, -1)),
-                (point: new Point(1, 1, 1), normal: new Vector(1, 0, 0)),
-                (point: new Point(-1, -1, -1), normal: new Vector(-1, 0, 0)),
-            };
-
-            static void Test((Point point, Vector normal) testCase)
-            {
-                (Point point, Vector expectedNormal) = testCase;
-                var cube = new Cube();
-                Vector normal = cube.LocalNormalAt(point);
-                normal.Should().Be(expectedNormal);
-            }
-
-            foreach (var testCase in testCases)
-            {
-                Test(testCase);
-            }
+            var cube = new Cube();
+            Vector normal = cube.LocalNormalAt(new Point(px, py, pz));
+            normal.Should().Be(new Vector(nx, ny, nz));
         }
     }
 }

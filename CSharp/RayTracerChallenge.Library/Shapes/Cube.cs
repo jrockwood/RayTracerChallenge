@@ -8,10 +8,16 @@
 namespace RayTracerChallenge.Library.Shapes
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     public class Cube : Shape
     {
+        //// ===========================================================================================================
+        //// Member Variables
+        //// ===========================================================================================================
+
+        private static readonly Point s_minPoint = new Point(-1, -1, -1);
+        private static readonly Point s_maxPoint = new Point(1, 1, 1);
+
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
@@ -25,22 +31,14 @@ namespace RayTracerChallenge.Library.Shapes
         //// Methods
         //// ===========================================================================================================
 
-        [SuppressMessage("ReSharper", "IdentifierTypo")]
         protected internal override IntersectionList LocalIntersect(Ray localRay)
         {
-            (double xtmin, double xtmax) = CheckAxis(localRay.Origin.X, localRay.Direction.X);
-            (double ytmin, double ytmax) = CheckAxis(localRay.Origin.Y, localRay.Direction.Y);
-            (double ztmin, double ztmax) = CheckAxis(localRay.Origin.Z, localRay.Direction.Z);
-
-            double tmin = Math.Max(xtmin, Math.Max(ytmin, ztmin));
-            double tmax = Math.Min(xtmax, Math.Min(ytmax, ztmax));
-
-            if (tmin > tmax)
+            if (BoundingBox.TryLocalIntersect(localRay, s_minPoint, s_maxPoint, out double tMin, out double tMax))
             {
-                return IntersectionList.Empty;
+                return new IntersectionList((tMin, this), (tMax, this));
             }
 
-            return new IntersectionList((tmin, this), (tmax, this));
+            return IntersectionList.Empty;
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint)
@@ -58,25 +56,6 @@ namespace RayTracerChallenge.Library.Shapes
             }
 
             return new Vector(0, 0, localPoint.Z);
-        }
-
-        [SuppressMessage("ReSharper", "IdentifierTypo")]
-        private static (double tmin, double tmax) CheckAxis(double origin, double direction)
-        {
-            double tminNumerator = -1 - origin;
-            double tmaxNumerator = 1 - origin;
-
-            double tmin = tminNumerator / direction;
-            double tmax = tmaxNumerator / direction;
-
-            if (tmin > tmax)
-            {
-                double temp = tmin;
-                tmin = tmax;
-                tmax = temp;
-            }
-
-            return (tmin, tmax);
         }
     }
 }
