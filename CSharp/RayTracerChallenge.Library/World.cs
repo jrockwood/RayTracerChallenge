@@ -34,7 +34,13 @@ namespace RayTracerChallenge.Library
 
         public World(Light light, IEnumerable<Shape> shapes)
         {
-            Light = light;
+            Lights = new List<Light> { light };
+            Shapes = new List<Shape>(shapes);
+        }
+
+        public World(IEnumerable<Light> lights, IEnumerable<Shape> shapes)
+        {
+            Lights = new List<Light>(lights);
             Shapes = new List<Shape>(shapes);
         }
 
@@ -42,7 +48,7 @@ namespace RayTracerChallenge.Library
         //// Properties
         //// ===========================================================================================================
 
-        public Light Light { get; set; }
+        public List<Light> Lights { get; set; }
 
         public List<Shape> Shapes { get; set; }
 
@@ -50,9 +56,9 @@ namespace RayTracerChallenge.Library
         //// Methods
         //// ===========================================================================================================
 
-        public World ChangeLight(Light value)
+        public World ChangeLights(params Light[] value)
         {
-            Light = value;
+            Lights = new List<Light>(value);
             return this;
         }
 
@@ -88,15 +94,22 @@ namespace RayTracerChallenge.Library
 
         internal Color ShadeHit(IntersectionState state, int maxRecursion = MaxRecursion)
         {
-            bool isShadowed = IsShadowed(state.OverPoint);
+            Color surfaceColor = Colors.Black;
 
-            Color surfaceColor = state.Shape.Material.CalculateLighting(
-                state.Shape,
-                Light,
-                state.OverPoint,
-                state.Eye,
-                state.Normal,
-                isShadowed);
+            foreach (Light light in Lights)
+            {
+                bool isShadowed = IsShadowed(state.OverPoint, light);
+
+                Color surfaceColorFromLight = state.Shape.Material.CalculateLighting(
+                    state.Shape,
+                    light,
+                    state.OverPoint,
+                    state.Eye,
+                    state.Normal,
+                    isShadowed);
+
+                surfaceColor += surfaceColorFromLight;
+            }
 
             Color reflectedColor = ReflectedColor(state, maxRecursion);
             Color refractedColor = RefractedColor(state, maxRecursion);
@@ -134,9 +147,9 @@ namespace RayTracerChallenge.Library
             return color;
         }
 
-        public bool IsShadowed(Point point)
+        public bool IsShadowed(Point point, Light light)
         {
-            Vector pointToLightVector = Light.Position - point;
+            Vector pointToLightVector = light.Position - point;
             double distance = pointToLightVector.Magnitude;
             Vector direction = pointToLightVector.Normalize();
 
