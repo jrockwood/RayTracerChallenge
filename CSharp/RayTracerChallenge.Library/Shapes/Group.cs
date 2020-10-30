@@ -52,19 +52,6 @@ namespace RayTracerChallenge.Library.Shapes
 
         public IReadOnlyList<Shape> Children => _children;
 
-        public override Material Material
-        {
-            get => base.Material;
-            set
-            {
-                base.Material = value;
-                foreach (Shape child in _children)
-                {
-                    child.Material = value;
-                }
-            }
-        }
-
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
