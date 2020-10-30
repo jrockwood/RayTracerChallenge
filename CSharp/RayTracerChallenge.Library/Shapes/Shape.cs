@@ -40,21 +40,21 @@ namespace RayTracerChallenge.Library.Shapes
         //// Methods
         //// ===========================================================================================================
 
-        public Shape WithTransform(Matrix4x4 value)
+        public Shape ChangeTransform(Matrix4x4 value)
         {
             Transform = value;
             return this;
         }
 
-        public Shape WithMaterial(Material value)
+        public Shape ChangeMaterial(Material value)
         {
             Material = value;
             return this;
         }
 
-        public Shape WithMaterial(Func<Material, Material> setter)
+        public Shape ChangeMaterial(Func<Material, Material> setter)
         {
-            return WithMaterial(setter(Material));
+            return ChangeMaterial(setter(Material));
         }
 
         public Point WorldToObject(Point point)

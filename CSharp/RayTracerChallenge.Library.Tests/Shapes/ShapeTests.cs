@@ -52,7 +52,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             shape.SavedLocalRay!.Origin.Should().Be(new Point(0, 0, -2.5));
             shape.SavedLocalRay!.Direction.Should().Be(new Vector(0, 0, 0.5));
 
-            shape = (TestShape)shape.WithTransform(Matrix4x4.CreateTranslation(5, 0, 0));
+            shape = (TestShape)shape.ChangeTransform(Matrix4x4.CreateTranslation(5, 0, 0));
             shape.Intersect(ray);
             shape.SavedLocalRay!.Origin.Should().Be(new Point(-5, 0, -5));
             shape.SavedLocalRay!.Direction.Should().Be(new Vector(0, 0, 1));

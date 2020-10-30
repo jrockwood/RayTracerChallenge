@@ -99,16 +99,16 @@ namespace RayTracerChallenge.Library.Tests
             static void Test((int index, double n1, double n2) testCase)
             {
                 var a = Sphere.CreateGlassSphere()
-                    .WithTransform(Matrix4x4.CreateScaling(2, 2, 2))
-                    .WithMaterial(m => m.WithRefractiveIndex(1.5));
+                    .ChangeTransform(Matrix4x4.CreateScaling(2, 2, 2))
+                    .ChangeMaterial(m => m.WithRefractiveIndex(1.5));
 
                 var b = Sphere.CreateGlassSphere()
-                    .WithTransform(Matrix4x4.CreateTranslation(0, 0, -0.25))
-                    .WithMaterial(m => m.WithRefractiveIndex(2.0));
+                    .ChangeTransform(Matrix4x4.CreateTranslation(0, 0, -0.25))
+                    .ChangeMaterial(m => m.WithRefractiveIndex(2.0));
 
                 var c = Sphere.CreateGlassSphere()
-                    .WithTransform(Matrix4x4.CreateTranslation(0, 0, 0.25))
-                    .WithMaterial(m => m.WithRefractiveIndex(2.5));
+                    .ChangeTransform(Matrix4x4.CreateTranslation(0, 0, 0.25))
+                    .ChangeMaterial(m => m.WithRefractiveIndex(2.5));
 
                 var ray = new Ray(new Point(0, 0, -4), Vector.UnitZ);
                 var intersections = new IntersectionList((2, a), (2.75, b), (3.25, c), (4.75, b), (5.25, c), (6, a));
@@ -129,7 +129,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Create_should_set_UnderPoint_to_just_below_the_surface()
         {
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
-            var shape = Sphere.CreateGlassSphere().WithTransform(Matrix4x4.CreateTranslation(0, 0, 1));
+            var shape = Sphere.CreateGlassSphere().ChangeTransform(Matrix4x4.CreateTranslation(0, 0, 1));
             var hit = new Intersection(5, shape);
             var state = IntersectionState.Create(hit, ray, new IntersectionList(hit));
             state.UnderPoint.Z.Should().BeGreaterThan(NumberExtensions.Epsilon / 2);
