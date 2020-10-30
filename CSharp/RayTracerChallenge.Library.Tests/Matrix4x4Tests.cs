@@ -86,6 +86,40 @@ namespace RayTracerChallenge.Library.Tests
         }
 
         //// ===========================================================================================================
+        //// IsIdentity Tests
+        //// ===========================================================================================================
+
+        [Test]
+        public void IsIdentity_should_return_true_for_exact_equality()
+        {
+            Matrix4x4.Identity.IsIdentity.Should().BeTrue();
+        }
+
+        [Test]
+        public void IsIdentity_should_return_true_for_approximate_equality()
+        {
+            var almostIdentity = new Matrix4x4(
+                1.000001, 0, 0, 0,
+                0, 0.99999, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0.000001, 1);
+
+            almostIdentity.IsIdentity.Should().BeTrue();
+        }
+
+        [Test]
+        public void IsIdentity_should_return_false_if_it_is_not_the_identity_matrix()
+        {
+            var notIdentity = new Matrix4x4(
+                2, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1);
+
+            notIdentity.IsIdentity.Should().BeFalse();
+        }
+
+        //// ===========================================================================================================
         //// ToString Tests
         //// ===========================================================================================================
 

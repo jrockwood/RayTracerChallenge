@@ -62,6 +62,11 @@ namespace RayTracerChallenge.Library.Shapes
                 point = Parent.WorldToObject(point);
             }
 
+            if (Transform.IsIdentity)
+            {
+                return point;
+            }
+
             return Transform.Invert() * point;
         }
 
@@ -80,6 +85,11 @@ namespace RayTracerChallenge.Library.Shapes
 
         public IntersectionList Intersect(Ray ray)
         {
+            if (Transform.IsIdentity)
+            {
+                return LocalIntersect(ray);
+            }
+
             var localRay = ray.Transform(Transform.Invert());
             return LocalIntersect(localRay);
         }

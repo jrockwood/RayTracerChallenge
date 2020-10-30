@@ -127,6 +127,8 @@ namespace RayTracerChallenge.Library
 
         public bool IsInvertible => Determinant != 0;
 
+        public bool IsIdentity => Equals(Identity);
+
         //// ===========================================================================================================
         //// Operators
         //// ===========================================================================================================
@@ -200,25 +202,27 @@ namespace RayTracerChallenge.Library
 
         public bool Equals(Matrix4x4 other)
         {
+            // Check the diagonals first to see if we can exit early for identity matrix equality.
             return M00.IsApproximatelyEqual(other.M00) &&
+                   M11.IsApproximatelyEqual(other.M11) &&
+                   M22.IsApproximatelyEqual(other.M22) &&
+                   M33.IsApproximatelyEqual(other.M33) &&
+
                    M01.IsApproximatelyEqual(other.M01) &&
                    M02.IsApproximatelyEqual(other.M02) &&
                    M03.IsApproximatelyEqual(other.M03) &&
 
                    M10.IsApproximatelyEqual(other.M10) &&
-                   M11.IsApproximatelyEqual(other.M11) &&
                    M12.IsApproximatelyEqual(other.M12) &&
                    M13.IsApproximatelyEqual(other.M13) &&
 
                    M20.IsApproximatelyEqual(other.M20) &&
                    M21.IsApproximatelyEqual(other.M21) &&
-                   M22.IsApproximatelyEqual(other.M22) &&
                    M23.IsApproximatelyEqual(other.M23) &&
 
                    M30.IsApproximatelyEqual(other.M30) &&
                    M31.IsApproximatelyEqual(other.M31) &&
-                   M32.IsApproximatelyEqual(other.M32) &&
-                   M33.IsApproximatelyEqual(other.M33);
+                   M32.IsApproximatelyEqual(other.M32);
         }
 
         public override bool Equals(object? obj)
