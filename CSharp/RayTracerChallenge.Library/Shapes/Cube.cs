@@ -17,6 +17,7 @@ namespace RayTracerChallenge.Library.Shapes
 
         private static readonly Point s_minPoint = new Point(-1, -1, -1);
         private static readonly Point s_maxPoint = new Point(1, 1, 1);
+        public static readonly BoundingBox CubeBox = new BoundingBox(s_minPoint, s_maxPoint);
 
         //// ===========================================================================================================
         //// Constructors
@@ -26,6 +27,12 @@ namespace RayTracerChallenge.Library.Shapes
             : base(transform, material)
         {
         }
+
+        //// ===========================================================================================================
+        //// Properties
+        //// ===========================================================================================================
+
+        public override BoundingBox BoundingBox => CubeBox;
 
         //// ===========================================================================================================
         //// Methods
@@ -43,14 +50,18 @@ namespace RayTracerChallenge.Library.Shapes
 
         protected internal override Vector LocalNormalAt(Point localPoint)
         {
-            // ReSharper disable once IdentifierTypo
-            double maxc = Math.Max(Math.Abs(localPoint.X), Math.Max(Math.Abs(localPoint.Y), Math.Abs(localPoint.Z)));
+            double absX = Math.Abs(localPoint.X);
+            double absY = Math.Abs(localPoint.Y);
+            double absZ = Math.Abs(localPoint.Z);
 
-            if (Math.Abs(maxc - Math.Abs(localPoint.X)) < double.Epsilon)
+            double maxC = Math.Max(absX, Math.Max(absY, absZ));
+
+            if (Math.Abs(maxC - absX) < double.Epsilon)
             {
                 return new Vector(localPoint.X, 0, 0);
             }
-            else if (Math.Abs(maxc - Math.Abs(localPoint.Y)) < double.Epsilon)
+
+            if (Math.Abs(maxC - absY) < double.Epsilon)
             {
                 return new Vector(0, localPoint.Y, 0);
             }

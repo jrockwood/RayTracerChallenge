@@ -40,12 +40,15 @@ namespace RayTracerChallenge.Library.Shapes
             MinimumY = minimumY;
             MaximumY = maximumY;
             IsClosed = isClosed;
+
+            BoundingBox = new BoundingBox(new Point(-1, minimumY, -1), new Point(1, maximumY, 1));
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
+        public override BoundingBox BoundingBox { get; }
         public double MinimumY { get; set; }
         public double MaximumY { get; set; }
         public bool IsClosed { get; set; }

@@ -121,6 +121,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         {
         }
 
+        public override BoundingBox BoundingBox { get; } = Cube.CubeBox;
         public Ray? SavedLocalRay { get; private set; }
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)

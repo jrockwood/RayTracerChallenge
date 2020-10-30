@@ -65,5 +65,15 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var intersections = group.Intersect(ray);
             intersections.Should().HaveCount(2);
         }
+
+        [Test]
+        public void BoundingBox_should_be_calculated_using_all_of_the_shapes_in_the_group()
+        {
+            var sphere = new Sphere(Matrix4x4.CreateTranslation(-5, 1, 2));
+            var cylinder = new Cylinder(minimumY: -1, maximumY: 1, transform: Matrix4x4.CreateScaling(2, 2, 2));
+            var group = new Group(sphere, cylinder);
+
+            group.BoundingBox.Should().BeEquivalentTo(new BoundingBox(new Point(-6, -2, -2), new Point(2, 2, 3)));
+        }
     }
 }

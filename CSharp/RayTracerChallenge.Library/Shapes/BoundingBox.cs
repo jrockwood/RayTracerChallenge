@@ -79,6 +79,11 @@ namespace RayTracerChallenge.Library.Shapes
             return tMin <= tMax;
         }
 
+        public bool TryLocalIntersect(Ray localRay)
+        {
+            return TryLocalIntersect(localRay, MinPoint, MaxPoint, out _, out _);
+        }
+
         /// <summary>
         /// Checks to see if a component of a ray intersects the axis plane and returns the tMin and tMax values.
         /// </summary>

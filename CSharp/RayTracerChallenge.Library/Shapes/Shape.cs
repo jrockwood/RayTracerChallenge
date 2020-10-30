@@ -28,8 +28,10 @@ namespace RayTracerChallenge.Library.Shapes
         //// Properties
         //// ===========================================================================================================
 
+        public abstract BoundingBox BoundingBox { get; }
+
         public Matrix4x4 Transform { get; set; }
-        public Material Material { get; set; }
+        public virtual Material Material { get; set; }
         public bool IsShadowHidden { get; set; }
 
         public Group? Parent { get; set; }

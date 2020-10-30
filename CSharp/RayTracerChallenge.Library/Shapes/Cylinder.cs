@@ -26,12 +26,14 @@ namespace RayTracerChallenge.Library.Shapes
             MinimumY = minimumY;
             MaximumY = maximumY;
             IsClosed = isClosed;
+            BoundingBox = new BoundingBox(new Point(-1, minimumY, -1), new Point(1, maximumY, 1));
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
+        public override BoundingBox BoundingBox { get; }
         public double MinimumY { get; }
         public double MaximumY { get; }
         public bool IsClosed { get; }
@@ -42,7 +44,10 @@ namespace RayTracerChallenge.Library.Shapes
 
         protected internal override IntersectionList LocalIntersect(Ray localRay)
         {
-            double a = (localRay.Direction.X * localRay.Direction.X) + (localRay.Direction.Z * localRay.Direction.Z);
+            double dx = localRay.Direction.X;
+            double dz = localRay.Direction.Z;
+
+            double a = (dx * dx) + (dz * dz);
 
             // Ray is parallel to the y axis.
             if (a.IsApproximatelyEqual(0))
@@ -52,8 +57,11 @@ namespace RayTracerChallenge.Library.Shapes
                 return xs;
             }
 
-            double b = (2 * localRay.Origin.X * localRay.Direction.X) + (2 * localRay.Origin.Z * localRay.Direction.Z);
-            double c = ((localRay.Origin.X * localRay.Origin.X) + (localRay.Origin.Z * localRay.Origin.Z)) - 1;
+            double ox = localRay.Origin.X;
+            double oz = localRay.Origin.Z;
+
+            double b = (2 * ox * dx) + (2 * oz * dz);
+            double c = ((ox * ox) + (oz * oz)) - 1;
             double discriminant = (b * b) - (4 * a * c);
 
             // Ray does not intersect the cylinder.
