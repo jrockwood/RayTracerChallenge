@@ -77,8 +77,8 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         [Test]
         public void Converting_a_point_from_world_to_object_space()
         {
-            var g1 = new Group(Matrix4x4.CreateRotationY(Math.PI / 2));
-            var g2 = new Group(Matrix4x4.CreateScaling(2, 2, 2));
+            var g1 = new Group(transform: Matrix4x4.CreateRotationY(Math.PI / 2));
+            var g2 = new Group(transform: Matrix4x4.CreateScaling(2, 2, 2));
             g1.AddChild(g2);
             var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
             g2.AddChild(s);
@@ -90,8 +90,8 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         [Test]
         public void Converting_a_normal_from_object_to_world_space()
         {
-            var g1 = new Group(Matrix4x4.CreateRotationY(Math.PI / 2));
-            var g2 = new Group(Matrix4x4.CreateScaling(1, 2, 3));
+            var g1 = new Group(transform: Matrix4x4.CreateRotationY(Math.PI / 2));
+            var g2 = new Group(transform: Matrix4x4.CreateScaling(1, 2, 3));
             g1.AddChild(g2);
             var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
             g2.AddChild(s);
@@ -103,8 +103,8 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         [Test]
         public void Finding_the_normal_on_a_child_object()
         {
-            var g1 = new Group(Matrix4x4.CreateRotationY(Math.PI / 2));
-            var g2 = new Group(Matrix4x4.CreateScaling(1, 2, 3));
+            var g1 = new Group(transform: Matrix4x4.CreateRotationY(Math.PI / 2));
+            var g2 = new Group(transform: Matrix4x4.CreateScaling(1, 2, 3));
             g1.AddChild(g2);
             var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
             g2.AddChild(s);

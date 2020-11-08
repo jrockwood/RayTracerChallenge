@@ -17,7 +17,7 @@ namespace RayTracerChallenge.Library.Shapes
         //// ===========================================================================================================
 
         public Hexagon(Matrix4x4? transform = null, Material? material = null)
-            : base(transform, material, CreateShapes())
+            : base("Hexagon", transform, material, CreateShapes())
         {
         }
 
@@ -58,7 +58,7 @@ namespace RayTracerChallenge.Library.Shapes
 
         private static Group CreateSide()
         {
-            var side = new Group(CreateCorner(), CreateEdge());
+            var side = new Group("Side", CreateCorner(), CreateEdge());
             return side;
         }
     }

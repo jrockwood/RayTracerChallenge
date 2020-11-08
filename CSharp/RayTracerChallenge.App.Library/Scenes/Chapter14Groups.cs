@@ -74,7 +74,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                     .RotateY(-Math.PI / 6)
                     .Translate(0, 0, -1));
 
-            return new Group(transform, null, end, edge);
+            return new Group("Leg", transform, null, end, edge);
         }
 
         private static Group CreateCap()

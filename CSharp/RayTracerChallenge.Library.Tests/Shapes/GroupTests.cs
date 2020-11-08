@@ -58,7 +58,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         [Test]
         public void Intersecting_a_transformed_group()
         {
-            var group = new Group(Matrix4x4.CreateScaling(2, 2, 2));
+            var group = new Group(transform: Matrix4x4.CreateScaling(2, 2, 2));
             var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
             group.AddChild(s);
             var ray = new Ray(new Point(10, 0, -10), Vector.UnitZ);
