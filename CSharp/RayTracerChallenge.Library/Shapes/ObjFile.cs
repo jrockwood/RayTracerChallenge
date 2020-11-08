@@ -10,6 +10,7 @@ namespace RayTracerChallenge.Library.Shapes
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
 
     public class ObjFile
@@ -18,11 +19,11 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        private ObjFile(int ignoredLineCount, IReadOnlyList<Point> vertices, Group defaultGroup)
+        private ObjFile(int ignoredLineCount, IReadOnlyList<Point> vertices, IReadOnlyList<Group> groups)
         {
             IgnoredLineCount = ignoredLineCount;
             Vertices = vertices;
-            DefaultGroup = defaultGroup;
+            Groups = groups;
         }
 
         //// ===========================================================================================================
@@ -33,30 +34,50 @@ namespace RayTracerChallenge.Library.Shapes
 
         public IReadOnlyList<Point> Vertices { get; }
 
-        public Group DefaultGroup { get; }
+        public Group DefaultGroup => Groups[0];
+
+        public IReadOnlyList<Group> Groups { get; }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
+        public static ObjFile Parse(Stream stream)
+        {
+            using var reader = new StreamReader(stream, leaveOpen: true);
+            string contents = reader.ReadToEnd();
+            ObjFile result = Parse(contents);
+            return result;
+        }
+
         public static ObjFile Parse(string contents)
         {
             int ignoredLines = 0;
             var vertices = new List<Point>();
-            var group = new Group();
+            var groups = new List<Group>();
+            var currentGroup = new Group("Default");
+            groups.Add(currentGroup);
 
             string[] lines = contents.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (string line in lines.Where(s => !string.IsNullOrWhiteSpace(s)))
             {
-                switch (line.Substring(0, 2))
+                string command = line.Substring(0, 2);
+                string arguments = line.Length > 2 ? line.Substring(2) : string.Empty;
+
+                switch (command)
                 {
                     case "v ":
-                        vertices.Add(ParsePoint(line.Substring(2)));
+                        vertices.Add(ParsePoint(arguments));
                         break;
 
                     case "f ":
-                        ParseTriangulatedFace(line.Substring(2), vertices, group);
+                        ParseTriangulatedFace(arguments, vertices, currentGroup);
+                        break;
+
+                    case "g ":
+                        currentGroup = ParseGroup(arguments);
+                        groups.Add(currentGroup);
                         break;
 
                     default:
@@ -65,7 +86,12 @@ namespace RayTracerChallenge.Library.Shapes
                 }
             }
 
-            return new ObjFile(ignoredLines, vertices, group);
+            return new ObjFile(ignoredLines, vertices, groups);
+        }
+
+        public Group? FindGroupByName(string name)
+        {
+            return Groups.FirstOrDefault(g => g.Name == name);
         }
 
         private static Point ParsePoint(string contents)
@@ -103,6 +129,13 @@ namespace RayTracerChallenge.Library.Shapes
 
                 group.AddChild(triangle);
             }
+        }
+
+        private static Group ParseGroup(string contents)
+        {
+            string groupName = contents;
+            var group = new Group(groupName);
+            return group;
         }
     }
 }
