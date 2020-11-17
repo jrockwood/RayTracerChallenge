@@ -100,7 +100,7 @@ namespace RayTracerChallenge.Library.Shapes
             return intersections;
         }
 
-        protected internal override Vector LocalNormalAt(Point localPoint)
+        protected internal override Vector LocalNormalAt(Point localPoint, Intersection? hit = null)
         {
             // Compute the square of the distance from the y axis.
             double distance = (localPoint.X * localPoint.X) + (localPoint.Z * localPoint.Z);

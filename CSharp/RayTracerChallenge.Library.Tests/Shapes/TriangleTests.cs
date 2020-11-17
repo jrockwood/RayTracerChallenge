@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // <copyright file="TriangleTests.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
@@ -84,6 +84,16 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var ray = new Ray(new Point(0, 0.5, -2), new Vector(0, 0, 1));
             var intersections = triangle.LocalIntersect(ray);
             intersections.Ts.Should().HaveCount(1).And.ContainInOrder(2);
+        }
+
+        [Test]
+        public void When_intersecting_triangles_preserve_the_u_and_v_values_in_the_resulting_intersection()
+        {
+            var triangle = new Triangle(new Point(0, 1, 0), new Point(-1, 0, 0), new Point(1, 0, 0));
+            var ray = new Ray(new Point(-0.2, 0.3, -2), Vector.UnitZ);
+            var intersections = triangle.LocalIntersect(ray);
+            intersections[0].U.Should().BeApproximately(0.45, NumberExtensions.Epsilon);
+            intersections[0].V.Should().BeApproximately(0.25, NumberExtensions.Epsilon);
         }
     }
 }

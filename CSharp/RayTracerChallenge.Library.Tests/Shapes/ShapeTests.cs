@@ -130,7 +130,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             return IntersectionList.Empty;
         }
 
-        protected internal override Vector LocalNormalAt(Point localPoint)
+        protected internal override Vector LocalNormalAt(Point localPoint, Intersection? hit)
         {
             return new Vector(localPoint.X, localPoint.Y, localPoint.Z);
         }

@@ -79,10 +79,10 @@ namespace RayTracerChallenge.Library.Shapes
             }
 
             double t = f * E2.Dot(originCrossE1);
-            return new IntersectionList(new Intersection(t, this));
+            return new IntersectionList(new Intersection(t, this, u, v));
         }
 
-        protected internal override Vector LocalNormalAt(Point localPoint)
+        protected internal override Vector LocalNormalAt(Point localPoint, Intersection? hit = null)
         {
             return Normal;
         }

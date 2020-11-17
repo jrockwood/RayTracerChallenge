@@ -106,7 +106,7 @@ namespace RayTracerChallenge.Library.Shapes
             return intersections;
         }
 
-        protected internal override Vector LocalNormalAt(Point localPoint)
+        protected internal override Vector LocalNormalAt(Point localPoint, Intersection? hit = null)
         {
             throw new InvalidOperationException("Groups do not have a local normal.");
         }
