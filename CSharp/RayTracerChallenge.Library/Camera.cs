@@ -127,7 +127,11 @@ namespace RayTracerChallenge.Library
             // Run the loop in parallel for each row.
             try
             {
-                var parallelOptions = new ParallelOptions { CancellationToken = options.CancellationToken };
+                var parallelOptions = new ParallelOptions
+                {
+                    CancellationToken = options.CancellationToken,
+                    MaxDegreeOfParallelism = options.MaxDegreeOfParallelism,
+                };
 
                 Parallel.For(
                     0,

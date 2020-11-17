@@ -29,6 +29,8 @@ namespace RayTracerChallenge.App.Library.Commands
         private BitmapSource? _renderedBitmap;
         private double _dpiX;
         private double _dpiY;
+        private bool _useSingleThreadForRender;
+        private bool _isRendering;
 
         //// ===========================================================================================================
         //// Constructors
@@ -52,7 +54,11 @@ namespace RayTracerChallenge.App.Library.Commands
         //// Properties
         //// ===========================================================================================================
 
-        public bool IsRendering { get; private set; }
+        public bool IsRendering
+        {
+            get => _isRendering;
+            private set => SetProperty(ref _isRendering, value);
+        }
 
         public double DpiX
         {
@@ -71,6 +77,16 @@ namespace RayTracerChallenge.App.Library.Commands
             {
                 ValidateNotRendering();
                 SetProperty(ref _dpiY, value);
+            }
+        }
+
+        public bool UseSingleThreadForRender
+        {
+            get => _useSingleThreadForRender;
+            set
+            {
+                ValidateNotRendering();
+                SetProperty(ref _useSingleThreadForRender, value);
             }
         }
 
@@ -119,7 +135,8 @@ namespace RayTracerChallenge.App.Library.Commands
                     RenderProgressChanged?.Invoke(this, p);
                 });
 
-                await Scene.RenderAsync(_dpiX, _dpiY, renderProgress, cancellationToken);
+                int maxDegreeOfParallelism = UseSingleThreadForRender ? 1 : -1;
+                await Scene.RenderAsync(_dpiX, _dpiY, maxDegreeOfParallelism, renderProgress, cancellationToken);
                 RenderProgressChanged?.Invoke(
                     this,
                     new SceneRenderProgress(100, RenderedBitmap ?? throw new InvalidOperationException()));

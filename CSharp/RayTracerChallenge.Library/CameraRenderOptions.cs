@@ -20,9 +20,11 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         public CameraRenderOptions(
+            int maxDegreeOfParallelism = -1,
             IProgress<RenderProgressStep>? progress = null,
             CancellationToken cancellationToken = default)
         {
+            MaxDegreeOfParallelism = maxDegreeOfParallelism;
             Progress = progress;
             CancellationToken = cancellationToken;
         }
@@ -32,7 +34,7 @@ namespace RayTracerChallenge.Library
         //// ===========================================================================================================
 
         /// <summary>
-        /// Provides a way to communicate progress during rendering. 
+        /// Provides a way to communicate progress during rendering.
         /// </summary>
         public IProgress<RenderProgressStep>? Progress { get; }
 
@@ -40,5 +42,11 @@ namespace RayTracerChallenge.Library
         /// The <see cref="CancellationToken"/> to use within the rendering loop to see if the rendering should be canceled.
         /// </summary>
         public CancellationToken CancellationToken { get; }
+
+        /// <summary>
+        /// Gets the maximum number of threads to use for the rendering loop. Set to -1 for no limit on the number of
+        /// concurrently running operations.
+        /// </summary>
+        public int MaxDegreeOfParallelism { get; }
     }
 }

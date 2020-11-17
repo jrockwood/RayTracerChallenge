@@ -59,6 +59,14 @@ namespace RayTracerChallenge.App.Library.ViewModels
             set => _startCommand.DpiY = value;
         }
 
+        public bool UseSingleThreadForRender
+        {
+            get => _startCommand.UseSingleThreadForRender;
+            set => _startCommand.UseSingleThreadForRender = value;
+        }
+
+        public bool IsRendering => _startCommand.IsRendering;
+
         public SceneList Scenes { get; }
 
         public LongRunningProcessProgressViewModel RenderProcessViewModel { get; }
@@ -95,6 +103,14 @@ namespace RayTracerChallenge.App.Library.ViewModels
 
                 case nameof(RenderSceneCommand.RenderedBitmap):
                     OnPropertyChanged(nameof(RenderedBitmap));
+                    break;
+
+                case nameof(RenderSceneCommand.UseSingleThreadForRender):
+                    OnPropertyChanged(nameof(UseSingleThreadForRender));
+                    break;
+
+                case nameof(RenderSceneCommand.IsRendering):
+                    OnPropertyChanged(nameof(IsRendering));
                     break;
             }
         }

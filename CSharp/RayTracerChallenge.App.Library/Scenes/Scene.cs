@@ -58,6 +58,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         public async Task<BitmapSource> RenderAsync(
             double dpiX,
             double dpiY,
+            int maxDegreeOfParallelism = -1,
             IProgress<SceneRenderProgress>? progress = null,
             CancellationToken cancellationToken = default)
         {
@@ -68,7 +69,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             {
                 // Render the scene.
                 var renderProgress = new Progress<RenderProgressStep>(OnRenderProgress);
-                var options = new CameraRenderOptions(renderProgress, cancellationToken);
+                var options = new CameraRenderOptions(maxDegreeOfParallelism, renderProgress, cancellationToken);
                 Canvas canvas = await Task.Run(() => Render(options), cancellationToken);
                 canvas.RenderToWriteableBitmap(_bitmap);
                 ReportProgress(100);
