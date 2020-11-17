@@ -8,6 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scenes\Objects\teapot-low-only-triangles.obj" />
+    <None Remove="Scenes\Objects\teapot-low.obj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scenes\Objects\teapot-low.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scenes\Objects\teapot-low-only-triangles.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RayTracerChallenge.Library\RayTracerChallenge.Library.csproj" />
   </ItemGroup>
 </Project>

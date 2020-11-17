@@ -62,7 +62,7 @@ namespace RayTracerChallenge.Library.Shapes
 
             foreach (string line in lines.Where(s => !string.IsNullOrWhiteSpace(s)))
             {
-                string command = line.Substring(0, 2);
+                string command = line.Length >= 2 ? line.Substring(0, 2) : string.Empty;
                 string arguments = line.Length > 2 ? line.Substring(2) : string.Empty;
 
                 switch (command)
@@ -94,6 +94,20 @@ namespace RayTracerChallenge.Library.Shapes
             return Groups.FirstOrDefault(g => g.Name == name);
         }
 
+        public Group ToGroup()
+        {
+            var nonEmptyGroups = Groups.Where(g => g.Children.Count != 0).ToList();
+
+            if (nonEmptyGroups.Count == 1)
+            {
+                return nonEmptyGroups[0];
+            }
+
+            var group = new Group();
+            nonEmptyGroups.ForEach(group.AddChild);
+            return group;
+        }
+
         private static Point ParsePoint(string contents)
         {
             string[] points = contents.Split(' ');
@@ -111,7 +125,7 @@ namespace RayTracerChallenge.Library.Shapes
 
         private static void ParseTriangulatedFace(string contents, IReadOnlyList<Point> vertices, Group group)
         {
-            string[] faceIndexStrings = contents.Split(' ');
+            string[] faceIndexStrings = contents.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (faceIndexStrings.Length < 3)
             {
                 throw new InvalidOperationException();
