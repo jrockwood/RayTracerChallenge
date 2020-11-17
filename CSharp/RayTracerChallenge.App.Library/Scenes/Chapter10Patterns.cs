@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
-    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Patterns;
@@ -25,7 +24,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
+        protected override Canvas Render(CameraRenderOptions options)
         {
             // Patterns
             var checkerPattern = new CheckerPattern(
@@ -86,7 +85,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             var cameraTransform = Matrix4x4.CreateLookAt(new Point(0, 1.5, -5), new Point(0, 1, 0), Vector.UnitY);
             var camera = new Camera(CanvasWidth, CanvasHeight, Math.PI / 3, cameraTransform);
 
-            Canvas canvas = camera.Render(world, progress, cancellationToken);
+            Canvas canvas = camera.Render(world, options);
             return canvas;
         }
     }

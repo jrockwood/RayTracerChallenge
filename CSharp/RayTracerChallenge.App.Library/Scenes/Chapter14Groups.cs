@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
-    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
@@ -24,7 +23,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
+        protected override Canvas Render(CameraRenderOptions options)
         {
             // Shapes
             var backdrop = new Plane(
@@ -59,7 +58,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             var cameraTransform = Matrix4x4.CreateLookAt(new Point(0, 0, -9), new Point(0, 0, 0), Vector.UnitY);
             var camera = new Camera(CanvasWidth, CanvasHeight, fieldOfView: 0.9, cameraTransform);
 
-            Canvas canvas = camera.Render(world, progress, cancellationToken);
+            Canvas canvas = camera.Render(world, options);
             return canvas;
         }
 
@@ -74,7 +73,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                     .RotateY(-Math.PI / 6)
                     .Translate(0, 0, -1));
 
-            return new Group(transform, null, end, edge);
+            return new Group("Leg", transform, null, end, edge);
         }
 
         private static Group CreateCap()

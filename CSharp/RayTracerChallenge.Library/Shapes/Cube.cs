@@ -48,7 +48,7 @@ namespace RayTracerChallenge.Library.Shapes
             return IntersectionList.Empty;
         }
 
-        protected internal override Vector LocalNormalAt(Point localPoint)
+        protected internal override Vector LocalNormalAt(Point localPoint, Intersection? hit = null)
         {
             double absX = Math.Abs(localPoint.X);
             double absY = Math.Abs(localPoint.Y);

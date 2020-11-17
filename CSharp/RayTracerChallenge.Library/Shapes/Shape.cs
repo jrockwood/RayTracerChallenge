@@ -110,14 +110,14 @@ namespace RayTracerChallenge.Library.Shapes
 
         protected internal abstract IntersectionList LocalIntersect(Ray localRay);
 
-        public Vector NormalAt(Point worldPoint)
+        public Vector NormalAt(Point worldPoint, Intersection? hit = null)
         {
             Point localPoint = WorldToObject(worldPoint);
-            Vector localNormal = LocalNormalAt(localPoint);
+            Vector localNormal = LocalNormalAt(localPoint, hit);
             Vector worldNormal = NormalToWorld(localNormal);
             return worldNormal;
         }
 
-        protected internal abstract Vector LocalNormalAt(Point localPoint);
+        protected internal abstract Vector LocalNormalAt(Point localPoint, Intersection? hit = null);
     }
 }

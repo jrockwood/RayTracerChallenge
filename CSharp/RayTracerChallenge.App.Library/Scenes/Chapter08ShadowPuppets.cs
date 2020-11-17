@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
-    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
@@ -24,7 +23,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
+        protected override Canvas Render(CameraRenderOptions options)
         {
             var sphereMaterial = new Material(ambient: 0.2, diffuse: 0.8, specular: 0.3, shininess: 200);
             var wristMaterial = sphereMaterial.WithColor(new Color(0.1, 1, 1));
@@ -60,7 +59,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             var cameraTransform = Matrix4x4.CreateLookAt(new Point(40, 0, -70), new Point(0, 0, -5), Vector.UnitY);
             var camera = new Camera(CanvasWidth, CanvasHeight, 0.524, cameraTransform);
 
-            Canvas canvas = camera.Render(world, progress, cancellationToken);
+            Canvas canvas = camera.Render(world, options);
             return canvas;
         }
     }

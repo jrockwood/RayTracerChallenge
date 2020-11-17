@@ -19,10 +19,12 @@ namespace RayTracerChallenge.Library
         //// Constructors
         //// ===========================================================================================================
 
-        public Intersection(double t, Shape shape)
+        public Intersection(double t, Shape shape, double? u = null, double? v = null)
         {
             T = t;
             Shape = shape;
+            U = u;
+            V = v;
         }
 
         public Intersection((double t, Shape shape) tuple)
@@ -36,6 +38,9 @@ namespace RayTracerChallenge.Library
 
         public double T { get; }
         public Shape Shape { get; }
+
+        public double? U { get; }
+        public double? V { get; }
 
         //// ===========================================================================================================
         //// Operators

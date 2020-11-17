@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
-// <copyright file="Plane.cs" company="Justin Rockwood">
+// <copyright file="SmoothTriangle.cs" company="Justin Rockwood">
 //   Copyright (c) Justin Rockwood. All Rights Reserved. Licensed under the Apache License, Version 2.0. See
 //   LICENSE.txt in the project root for license information.
 // </copyright>
@@ -9,50 +9,62 @@ namespace RayTracerChallenge.Library.Shapes
 {
     using System;
 
-    public class Plane : Shape
+    public class SmoothTriangle : Triangle
     {
-        //// ===========================================================================================================
-        //// Member Variables
-        //// ===========================================================================================================
-
-        private static readonly BoundingBox s_planeBox = new BoundingBox(
-            new Point(double.NegativeInfinity, 0, double.NegativeInfinity),
-            new Point(double.PositiveInfinity, 0, double.PositiveInfinity));
-
         //// ===========================================================================================================
         //// Constructors
         //// ===========================================================================================================
 
-        public Plane(Matrix4x4? transform = null, Material? material = null)
-            : base(transform, material)
+        public SmoothTriangle(
+            Point p1,
+            Point p2,
+            Point p3,
+            Vector n1,
+            Vector n2,
+            Vector n3,
+            Matrix4x4? transform = null,
+            Material? material = null)
+            : base(p1, p2, p3, transform, material)
         {
+            N1 = n1;
+            N2 = n2;
+            N3 = n3;
         }
 
         //// ===========================================================================================================
         //// Properties
         //// ===========================================================================================================
 
-        public override BoundingBox BoundingBox => s_planeBox;
+        public Vector N1 { get; }
+        public Vector N2 { get; }
+        public Vector N3 { get; }
 
         //// ===========================================================================================================
         //// Methods
         //// ===========================================================================================================
 
-        protected internal override IntersectionList LocalIntersect(Ray localRay)
+        public override string ToString()
         {
-            // If the ray is parallel to the plane, there are no intersections.
-            if (Math.Abs(localRay.Direction.Y) < NumberExtensions.Epsilon)
-            {
-                return IntersectionList.Empty;
-            }
-
-            double t = -localRay.Origin.Y / localRay.Direction.Y;
-            return new IntersectionList((t, this));
+            return $"P1 = {P1}, P2 = {P2}, P3 = {P3}, N1 = {N1}, N2 = {N2}, N3 = {N3}";
         }
 
         protected internal override Vector LocalNormalAt(Point localPoint, Intersection? hit = null)
         {
-            return Vector.UnitY;
+            if (hit == null)
+            {
+                throw new ArgumentNullException(nameof(hit));
+            }
+
+            if (hit.U == null || hit.V == null)
+            {
+                throw new InvalidOperationException($"{nameof(hit)} should have u and v values");
+            }
+
+            double u = hit.U.Value;
+            double v = hit.V.Value;
+
+            Vector normal = (N2 * u) + (N3 * v) + (N1 * (1 - u - v));
+            return normal;
         }
     }
 }

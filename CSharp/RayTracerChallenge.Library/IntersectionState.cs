@@ -79,7 +79,7 @@ namespace RayTracerChallenge.Library
             // Precompute some useful values.
             Point point = ray.PositionAt(hit.T);
             Vector eye = -ray.Direction;
-            Vector normal = shape.NormalAt(point);
+            Vector normal = shape.NormalAt(point, hit);
             bool isInside = false;
 
             if (normal.Dot(eye) < 0)

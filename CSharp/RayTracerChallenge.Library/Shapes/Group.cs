@@ -28,16 +28,20 @@ namespace RayTracerChallenge.Library.Shapes
         //// ===========================================================================================================
 
         public Group(params Shape[] children)
+            : this(null, null, null, children)
         {
-            foreach (Shape child in children)
-            {
-                AddChild(child);
-            }
         }
 
-        public Group(Matrix4x4? transform, Material? material = null, params Shape[] children)
+        public Group(string name, params Shape[] children)
+            : this(name, null, null, children)
+        {
+        }
+
+        public Group(string? name = null, Matrix4x4? transform = null, Material? material = null, params Shape[] children)
             : base(transform, material)
         {
+            Name = name;
+
             foreach (Shape child in children)
             {
                 AddChild(child);
@@ -51,6 +55,8 @@ namespace RayTracerChallenge.Library.Shapes
         public override BoundingBox BoundingBox => _boundingBox ??= CalculateBoundingBox();
 
         public IReadOnlyList<Shape> Children => _children;
+
+        public string? Name { get; set; }
 
         public override Material Material
         {
@@ -100,7 +106,7 @@ namespace RayTracerChallenge.Library.Shapes
             return intersections;
         }
 
-        protected internal override Vector LocalNormalAt(Point localPoint)
+        protected internal override Vector LocalNormalAt(Point localPoint, Intersection? hit = null)
         {
             throw new InvalidOperationException("Groups do not have a local normal.");
         }
