@@ -140,5 +140,50 @@ f 1 3 4";
             t2.P2.Should().Be(objFile.Vertices[2]);
             t2.P3.Should().Be(objFile.Vertices[3]);
         }
+
+        [Test]
+        public void Vertex_normal_data_should_be_correctly_imported_from_an_OBJ_file()
+        {
+            const string contents = @"
+vn 0 0 1
+vn 0.707 0 -0.707
+vn 1 2 3";
+
+            var objFile = ObjFile.Parse(contents);
+            objFile.Normals.Should()
+                .HaveCount(3)
+                .And.ContainInOrder(new Vector(0, 0, 1), new Vector(0.707, 0, -0.707), new Vector(1, 2, 3));
+        }
+
+        [Test]
+        public void Vertex_normal_data_should_be_correctly_associated_with_face_data_from_an_OBJ_file()
+        {
+            const string contents = @"
+v 0 1 0
+v -1 0 0
+v 1 0 0
+
+vn -1 0 0
+vn 1 0 0
+vn 0 1 0
+
+f 1//3 2//1 3//2
+f 1/0/3 2/102/1 3/14/2";
+
+            var objFile = ObjFile.Parse(contents);
+            var g = objFile.DefaultGroup;
+            var t1 = (SmoothTriangle)g.Children[0];
+            var t2 = (SmoothTriangle)g.Children[1];
+
+            t1.P1.Should().Be(objFile.Vertices[0]);
+            t1.P2.Should().Be(objFile.Vertices[1]);
+            t1.P3.Should().Be(objFile.Vertices[2]);
+
+            t1.N1.Should().Be(objFile.Normals[2]);
+            t1.N2.Should().Be(objFile.Normals[0]);
+            t1.N3.Should().Be(objFile.Normals[1]);
+
+            t1.Should().BeEquivalentTo(t2);
+        }
     }
 }

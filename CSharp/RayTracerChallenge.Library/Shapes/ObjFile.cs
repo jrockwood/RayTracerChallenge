@@ -19,10 +19,15 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        private ObjFile(int ignoredLineCount, IReadOnlyList<Point> vertices, IReadOnlyList<Group> groups)
+        private ObjFile(
+            int ignoredLineCount,
+            IReadOnlyList<Point> vertices,
+            IReadOnlyList<Vector> normals,
+            IReadOnlyList<Group> groups)
         {
             IgnoredLineCount = ignoredLineCount;
             Vertices = vertices;
+            Normals = normals;
             Groups = groups;
         }
 
@@ -33,6 +38,8 @@ namespace RayTracerChallenge.Library.Shapes
         public int IgnoredLineCount { get; }
 
         public IReadOnlyList<Point> Vertices { get; }
+
+        public IReadOnlyList<Vector> Normals { get; }
 
         public Group DefaultGroup => Groups[0];
 
@@ -54,6 +61,7 @@ namespace RayTracerChallenge.Library.Shapes
         {
             int ignoredLines = 0;
             var vertices = new List<Point>();
+            var normals = new List<Vector>();
             var groups = new List<Group>();
             var currentGroup = new Group("Default");
             groups.Add(currentGroup);
@@ -62,20 +70,25 @@ namespace RayTracerChallenge.Library.Shapes
 
             foreach (string line in lines.Where(s => !string.IsNullOrWhiteSpace(s)))
             {
-                string command = line.Length >= 2 ? line.Substring(0, 2) : string.Empty;
-                string arguments = line.Length > 2 ? line.Substring(2) : string.Empty;
+                string[] args = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string command = args.Length > 0 ? args[0] : string.Empty;
+                var arguments = args.Skip(1);
 
                 switch (command)
                 {
-                    case "v ":
-                        vertices.Add(ParsePoint(arguments));
+                    case "v":
+                        vertices.Add(ParseVertex(arguments));
                         break;
 
-                    case "f ":
-                        ParseTriangulatedFace(arguments, vertices, currentGroup);
+                    case "vn":
+                        normals.Add(ParseVertexNormal(arguments));
                         break;
 
-                    case "g ":
+                    case "f":
+                        ParseTriangulatedFace(arguments, vertices, normals, currentGroup);
+                        break;
+
+                    case "g":
                         currentGroup = ParseGroup(arguments);
                         groups.Add(currentGroup);
                         break;
@@ -86,7 +99,7 @@ namespace RayTracerChallenge.Library.Shapes
                 }
             }
 
-            return new ObjFile(ignoredLines, vertices, groups);
+            return new ObjFile(ignoredLines, vertices, normals, groups);
         }
 
         public Group? FindGroupByName(string name)
@@ -108,46 +121,121 @@ namespace RayTracerChallenge.Library.Shapes
             return group;
         }
 
-        private static Point ParsePoint(string contents)
+        /// <summary>
+        /// Parses vertex line of the form 'v 1 2 3'.
+        /// </summary>
+        private static Point ParseVertex(IEnumerable<string> args)
         {
-            string[] points = contents.Split(' ');
-            if (points.Length < 3)
+            (double x, double y, double z) = ParseTuple(args);
+            return new Point(x, y, z);
+        }
+
+        /// <summary>
+        /// Parses a vertex normal line of the form 'vn 1 2 3'.
+        /// </summary>
+        private static Vector ParseVertexNormal(IEnumerable<string> args)
+        {
+            (double x, double y, double z) = ParseTuple(args);
+            return new Vector(x, y, z);
+        }
+
+        private static (double x, double y, double z) ParseTuple(IEnumerable<string> args)
+        {
+            string[] coords = args.ToArray();
+            if (coords.Length < 3)
             {
                 throw new InvalidOperationException();
             }
 
-            double p1 = double.Parse(points[0], CultureInfo.InvariantCulture);
-            double p2 = double.Parse(points[1], CultureInfo.InvariantCulture);
-            double p3 = double.Parse(points[2], CultureInfo.InvariantCulture);
+            double x = double.Parse(coords[0], CultureInfo.InvariantCulture);
+            double y = double.Parse(coords[1], CultureInfo.InvariantCulture);
+            double z = double.Parse(coords[2], CultureInfo.InvariantCulture);
 
-            return new Point(p1, p2, p3);
+            return (x, y, z);
         }
 
-        private static void ParseTriangulatedFace(string contents, IReadOnlyList<Point> vertices, Group group)
+        /// <summary>
+        /// Parses a face line of the form 'f 1 2 3 4 5' or 'f 1/2/3 2/3/4 3/4/5'.
+        /// </summary>
+        private static void ParseTriangulatedFace(
+            IEnumerable<string> args,
+            IReadOnlyList<Point> vertices,
+            IReadOnlyList<Vector> normals,
+            Group group)
         {
-            string[] faceIndexStrings = contents.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (faceIndexStrings.Length < 3)
+            string[] faceVertices = args.ToArray();
+            if (faceVertices.Length < 3)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(
+                    $"Face needs at least three arguments: {string.Join(' ', faceVertices)}");
+            }
+
+            // If the extended syntax is used for at least one face vertex (with slashes), then all of them must use it.
+            bool useExtendedSyntax = faceVertices.Any(x => x.Contains('/'));
+            if (useExtendedSyntax && !faceVertices.All(x => x.Contains('/')))
+            {
+                throw new InvalidOperationException(
+                    $"Face arguments must all be extended if one of them is: {string.Join(' ', faceVertices)}");
             }
 
             // Face indexes are all 1-based; convert to 0-based.
-            int[] faceIndexes = faceIndexStrings.Select(x => int.Parse(x, CultureInfo.InvariantCulture) - 1).ToArray();
-
-            for (int i = 1; i < faceIndexes.Length - 1; i++)
+            int ConvertFaceIndex(string s)
             {
-                var triangle = new Triangle(
-                    vertices[faceIndexes[0]],
-                    vertices[faceIndexes[i]],
-                    vertices[faceIndexes[i + 1]]);
+                if (!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
+                {
+                    throw new InvalidOperationException($"Invalid face: {string.Join(' ', faceVertices)}");
+                }
+
+                return result - 1;
+            }
+
+            // Local function to parse an extended syntax face vertex of the form 1/2/3 or 1//3.
+            (Point p, Vector n) ParseFaceVertex(string faceVertex)
+            {
+                string[] vertexInfo = faceVertex.Split('/', StringSplitOptions.None);
+                if (vertexInfo.Length != 3)
+                {
+                    throw new InvalidOperationException($"Invalid face: {string.Join(' ', faceVertices)}");
+                }
+
+                // 1/2/3 -> 1 = vertex index, 2 = texture index, 3 = normal index
+                int vertexIndex = ConvertFaceIndex(vertexInfo[0]);
+                int normalIndex = ConvertFaceIndex(vertexInfo[2]);
+
+                return (vertices[vertexIndex], normals[normalIndex]);
+            }
+
+            // Loop through all of the vertexes and triangulate if there are more than 3 vertexes.
+            for (int i = 1; i < faceVertices.Length - 1; i++)
+            {
+                string faceVertex = faceVertices[i];
+
+                // If the face has extended information of the form '1/2/3', then we want to create a SmoothTriangle with
+                // the normals. Otherwise, it's just a plain triangle.
+                Triangle triangle;
+                if (useExtendedSyntax)
+                {
+                    (Point p1, Vector n1) = ParseFaceVertex(faceVertices[0]);
+                    (Point p2, Vector n2) = ParseFaceVertex(faceVertices[i]);
+                    (Point p3, Vector n3) = ParseFaceVertex(faceVertices[i + 1]);
+
+                    triangle = new SmoothTriangle(p1, p2, p3, n1, n2, n3);
+                }
+                else
+                {
+                    var p1 = vertices[ConvertFaceIndex(faceVertices[0])];
+                    var p2 = vertices[ConvertFaceIndex(faceVertices[i])];
+                    var p3 = vertices[ConvertFaceIndex(faceVertices[i + 1])];
+                    triangle = new Triangle(p1, p2, p3);
+                }
 
                 group.AddChild(triangle);
             }
         }
 
-        private static Group ParseGroup(string contents)
+        private static Group ParseGroup(IEnumerable<string> args)
         {
-            string groupName = contents;
+            string groupName = args.Single();
             var group = new Group(groupName);
             return group;
         }
