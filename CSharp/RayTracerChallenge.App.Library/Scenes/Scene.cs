@@ -68,7 +68,8 @@ namespace RayTracerChallenge.App.Library.Scenes
             {
                 // Render the scene.
                 var renderProgress = new Progress<RenderProgressStep>(OnRenderProgress);
-                Canvas canvas = await Task.Run(() => Render(renderProgress, cancellationToken), cancellationToken);
+                var options = new CameraRenderOptions(renderProgress, cancellationToken);
+                Canvas canvas = await Task.Run(() => Render(options), cancellationToken);
                 canvas.RenderToWriteableBitmap(_bitmap);
                 ReportProgress(100);
 
@@ -81,7 +82,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             }
         }
 
-        protected abstract Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken);
+        protected abstract Canvas Render(CameraRenderOptions options);
 
         private void ReportProgress(int percentComplete)
         {

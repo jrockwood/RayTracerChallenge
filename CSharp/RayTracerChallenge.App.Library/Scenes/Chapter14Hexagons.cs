@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
-    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Patterns;
@@ -25,7 +24,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
+        protected override Canvas Render(CameraRenderOptions options)
         {
             // Materials
             var wallMaterial = new Material(
@@ -124,7 +123,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 Vector.UnitY);
             var camera = new Camera(CanvasWidth, CanvasHeight, fieldOfView: 1.152, cameraTransform);
 
-            Canvas canvas = camera.Render(world, progress, cancellationToken);
+            Canvas canvas = camera.Render(world, options);
             return canvas;
         }
     }

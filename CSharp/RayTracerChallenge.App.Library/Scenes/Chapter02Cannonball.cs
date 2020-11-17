@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
-    using System.Threading;
     using RayTracerChallenge.Library;
 
     public sealed class Chapter02Cannonball : Scene
@@ -30,7 +29,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         //// Methods
         //// ===========================================================================================================
 
-        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
+        protected override Canvas Render(CameraRenderOptions options)
         {
             var start = new Point(0, 1, 0);
             var velocity = new Vector(1, 1.8, 0).Normalize() * 11.25;

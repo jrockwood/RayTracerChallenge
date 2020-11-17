@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
-    using System.Threading;
     using RayTracerChallenge.Library;
 
     public sealed class Chapter04ClockFace : Scene
@@ -22,7 +21,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
+        protected override Canvas Render(CameraRenderOptions options)
         {
             var canvas = new MutableCanvas(CanvasWidth, CanvasHeight);
 

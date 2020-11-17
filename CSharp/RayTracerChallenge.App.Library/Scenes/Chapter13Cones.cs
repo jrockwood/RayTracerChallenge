@@ -7,8 +7,6 @@
 
 namespace RayTracerChallenge.App.Library.Scenes
 {
-    using System;
-    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Patterns;
@@ -25,7 +23,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
+        protected override Canvas Render(CameraRenderOptions options)
         {
             // Shapes
             var floor = new Plane(material: new Material(
@@ -151,7 +149,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             var cameraTransform = Matrix4x4.CreateLookAt(new Point(8, 3.5, -9), new Point(0, 0.3, 0), Vector.UnitY);
             var camera = new Camera(CanvasWidth, CanvasHeight, fieldOfView: 0.314, cameraTransform);
 
-            Canvas canvas = camera.Render(world, progress, cancellationToken);
+            Canvas canvas = camera.Render(world, options);
             return canvas;
         }
     }

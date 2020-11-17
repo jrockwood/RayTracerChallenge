@@ -8,7 +8,6 @@
 namespace RayTracerChallenge.App.Library.Scenes
 {
     using System;
-    using System.Threading;
     using RayTracerChallenge.Library;
     using RayTracerChallenge.Library.Lights;
     using RayTracerChallenge.Library.Shapes;
@@ -20,7 +19,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
         }
 
-        protected override Canvas Render(IProgress<RenderProgressStep> progress, CancellationToken cancellationToken)
+        protected override Canvas Render(CameraRenderOptions options)
         {
             var canvas = new MutableCanvas(CanvasWidth, CanvasHeight);
 
@@ -47,7 +46,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 for (int x = 0; x < canvas.Width; x++)
                 {
                     // See if we should stop.
-                    if (cancellationToken.IsCancellationRequested)
+                    if (options.CancellationToken.IsCancellationRequested)
                     {
                         return canvas.ToImmutable();
                     }
@@ -76,7 +75,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 // Report the progress.
                 double pixelsRendered = (y * CanvasWidth) + CanvasWidth;
                 int percentComplete = (int)Math.Round((pixelsRendered / totalPixels) * 100.0);
-                progress.Report(new RenderProgressStep(percentComplete, y, canvas.GetRow(y)));
+                options.Progress?.Report(new RenderProgressStep(percentComplete, y, canvas.GetRow(y)));
             }
 
             return canvas.ToImmutable();

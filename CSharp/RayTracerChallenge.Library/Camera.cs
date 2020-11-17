@@ -112,15 +112,9 @@ namespace RayTracerChallenge.Library
         /// Uses the camera to render an image of the specified world.
         /// </summary>
         /// <param name="world">The world to render.</param>
-        /// <param name="progress">Provides a way to communicate progress.</param>
-        /// <param name="cancellationToken">
-        /// Optional <see cref="CancellationToken"/> within the rendering loop to see if the rendering should be cancelled.
-        /// </param>
+        /// <param name="options">Controls how the rendering should be performed and how progress should be communicated.</param>
         /// <returns>A <see cref="Canvas"/> containing the rendered image.</returns>
-        public Canvas Render(
-            World world,
-            IProgress<RenderProgressStep>? progress = null,
-            CancellationToken cancellationToken = default)
+        public Canvas Render(World world, CameraRenderOptions? options = null)
         {
             int width = CanvasWidth;
             int height = CanvasHeight;
@@ -128,10 +122,13 @@ namespace RayTracerChallenge.Library
             int totalRenderedPixels = 0;
             var canvas = new MutableCanvas(width, height);
 
+            options ??= new CameraRenderOptions();
+
             // Run the loop in parallel for each row.
             try
             {
-                var parallelOptions = new ParallelOptions { CancellationToken = cancellationToken };
+                var parallelOptions = new ParallelOptions { CancellationToken = options.CancellationToken };
+
                 Parallel.For(
                     0,
                     height,
@@ -153,7 +150,7 @@ namespace RayTracerChallenge.Library
                             canvas.SetPixel(x, y, color);
                         }
 
-                        if (progress == null)
+                        if (options.Progress == null)
                         {
                             return;
                         }
@@ -165,7 +162,7 @@ namespace RayTracerChallenge.Library
                         int percentComplete = (int)Math.Round((renderedPixelCount / (double)totalPixels) * 100.0);
                         var progressStep = new RenderProgressStep(percentComplete, y, canvas.GetRow(y));
 
-                        progress.Report(progressStep);
+                        options.Progress.Report(progressStep);
                     });
             }
             catch (OperationCanceledException)
