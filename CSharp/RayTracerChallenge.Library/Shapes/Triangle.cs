@@ -24,7 +24,7 @@ namespace RayTracerChallenge.Library.Shapes
             E2 = p3 - p1;
             Normal = E2.Cross(E1).Normalize();
 
-            BoundingBox = new BoundingBox(Point.Zero, Point.Zero);
+            BoundingBox = new BoundingBox(p1, p2, p3);
         }
 
         //// ===========================================================================================================
