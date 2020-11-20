@@ -20,8 +20,14 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public CsgShape(string name, CsgOperation operation, Shape left, Shape right)
-            : this(operation, left, right, name)
+        public CsgShape(
+            string name,
+            CsgOperation operation,
+            Shape left,
+            Shape right,
+            Matrix4x4? transform = null,
+            Material? material = null)
+            : this(operation, left, right, name, transform, material)
         {
         }
 
