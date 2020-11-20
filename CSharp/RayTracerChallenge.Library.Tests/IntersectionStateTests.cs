@@ -57,7 +57,7 @@ namespace RayTracerChallenge.Library.Tests
         public void Precomputing_the_hit_should_offset_the_point()
         {
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
-            var shape = new Sphere(Matrix4x4.CreateTranslation(0, 0, 1));
+            var shape = new Sphere(transform: Matrix4x4.CreateTranslation(0, 0, 1));
             var hit = new Intersection(5, shape);
             var state = IntersectionState.Create(hit, ray, new IntersectionList(hit));
 

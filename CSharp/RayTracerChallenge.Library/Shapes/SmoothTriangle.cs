@@ -22,9 +22,10 @@ namespace RayTracerChallenge.Library.Shapes
             Vector n1,
             Vector n2,
             Vector n3,
+            string? name = null,
             Matrix4x4? transform = null,
             Material? material = null)
-            : base(p1, p2, p3, transform, material)
+            : base(p1, p2, p3, name, transform, material)
         {
             N1 = n1;
             N2 = n2;

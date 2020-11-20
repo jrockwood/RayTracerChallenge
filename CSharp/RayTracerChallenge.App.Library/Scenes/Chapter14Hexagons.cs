@@ -39,6 +39,7 @@ namespace RayTracerChallenge.App.Library.Scenes
 
             // Shapes
             var floor = new Plane(
+                "Floor",
                 Matrix4x4.CreateRotationY(0.31415),
                 new Material(
                     pattern: new CheckerPattern(new Color(0.35, 0.35, 0.35), new Color(0.65, 0.65, 0.65)),
@@ -46,43 +47,52 @@ namespace RayTracerChallenge.App.Library.Scenes
                     reflective: 0.4));
 
             var ceiling = new Plane(
+                "Ceiling",
                 Matrix4x4.CreateTranslation(0, 5, 0),
                 new Material(new Color(0.8, 0.8, 0.8), ambient: 0.3, specular: 0));
 
             var westWall = new Plane(
+                "WestWall",
                 Matrix4x4.CreateRotationY(Math.PI / 2).RotateZ(Math.PI / 2).Translate(-5, 0, 0),
                 wallMaterial);
 
             var eastWall = new Plane(
+                "EastWall",
                 Matrix4x4.CreateRotationY(Math.PI / 2).RotateZ(Math.PI / 2).Translate(5, 0, 0),
                 wallMaterial);
 
-            var northWall = new Plane(Matrix4x4.CreateRotationX(Math.PI / 2).Translate(0, 0, 5), wallMaterial);
-            var southWall = new Plane(Matrix4x4.CreateRotationX(Math.PI / 2).Translate(0, 0, -5), wallMaterial);
+            var northWall = new Plane("NorthWall", Matrix4x4.CreateRotationX(Math.PI / 2).Translate(0, 0, 5), wallMaterial);
+            var southWall = new Plane("SouthWall", Matrix4x4.CreateRotationX(Math.PI / 2).Translate(0, 0, -5), wallMaterial);
 
             // Background hexagons
             var backHex1 = new Hexagon(
+                "BackHex1",
                 Matrix4x4.CreateRotationX(Math.PI / 2).Scale(0.4, 0.4, 0.4).Translate(4.6, 0.5, 1),
                 new Material(new Color(0.8, 0.5, 0.3), shininess: 50));
 
             var backHex2 = new Hexagon(
+                "BackHex2",
                 Matrix4x4.CreateRotationX(Math.PI / 2).Scale(0.3, 0.3, 0.3).Translate(4.7, 0.4, 0.4),
                 new Material(new Color(0.9, 0.4, 0.5), shininess: 50));
 
             var backHex3 = new Hexagon(
+                "BackHex3",
                 Matrix4x4.CreateRotationX(Math.PI / 2).Scale(0.5, 0.5, 0.5).Translate(-1, 0.6, 4.5),
                 new Material(new Color(0.4, 0.9, 0.6), shininess: 50));
 
             var backHex4 = new Hexagon(
+                "BackHex4",
                 Matrix4x4.CreateRotationX(Math.PI / 2).Scale(0.3, 0.3, 0.3).Translate(-1.7, 0.4, 4.7),
                 new Material(new Color(0.4, 0.6, 0.9), shininess: 50));
 
             // Foreground hexagons
             var redHex = new Hexagon(
+                "RedHex",
                 Matrix4x4.CreateRotationX(-Math.PI / 4).Translate(-0.6, 1.2, 0.6),
                 new Material(new Color(1, 0.3, 0.2), specular: 0.4, shininess: 5));
 
             var blueGlassHex = new Hexagon(
+                "BlueGlassHex",
                 Matrix4x4.CreateRotationX(-Math.PI / 3)
                     .Scale(0.7, 0.7, 0.7)
                     .Translate(0.6, 0.8, -0.6)
@@ -98,6 +108,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                     refractiveIndex: 1.5));
 
             var greenGlassHex = new Hexagon(
+                "GreenGlassHex",
                 Matrix4x4.CreateScaling(0.5, 0.5, 0.5).Translate(-0.7, 0.6, -0.8),
                 new Material(
                     new Color(0, 0.2, 0),

@@ -16,8 +16,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Hexagon(Matrix4x4? transform = null, Material? material = null)
-            : base("Hexagon", transform, material, CreateShapes())
+        public Hexagon(string? name = null, Matrix4x4? transform = null, Material? material = null)
+            : base(name, transform, material, CreateShapes())
         {
         }
 
@@ -41,7 +41,7 @@ namespace RayTracerChallenge.Library.Shapes
 
         private static Sphere CreateCorner()
         {
-            var corner = new Sphere(Matrix4x4.CreateScaling(0.25, 0.25, 0.25).Translate(0, 0, -1));
+            var corner = new Sphere("Corner", Matrix4x4.CreateScaling(0.25, 0.25, 0.25).Translate(0, 0, -1));
             return corner;
         }
 
@@ -50,6 +50,7 @@ namespace RayTracerChallenge.Library.Shapes
             var edge = new Cylinder(
                 minimumY: 0,
                 maximumY: 1,
+                name: "Edge",
                 transform:
                 Matrix4x4.CreateScaling(0.25, 1, 0.25).RotateZ(-Math.PI / 2).RotateY(-Math.PI / 6).Translate(0, 0, -1));
 

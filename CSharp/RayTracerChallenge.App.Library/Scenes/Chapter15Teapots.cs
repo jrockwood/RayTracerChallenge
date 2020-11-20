@@ -40,8 +40,9 @@ namespace RayTracerChallenge.App.Library.Scenes
                 specular: 0,
                 reflective: 0.1);
 
-            var floor = new Plane(material: floorMaterial);
+            var floor = new Plane("Floor", material: floorMaterial);
             var wall = new Plane(
+                "Wall",
                 Matrix4x4.CreateRotationX(Math.PI / 2).Translate(0, 0, -10),
                 floorMaterial.WithReflective(0));
 

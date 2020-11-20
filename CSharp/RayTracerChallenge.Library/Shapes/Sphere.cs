@@ -21,8 +21,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Sphere(Matrix4x4? transform = null, Material? material = null)
-            : base(transform, material)
+        public Sphere(string? name = null, Matrix4x4? transform = null, Material? material = null)
+            : base(name, transform, material)
         {
         }
 

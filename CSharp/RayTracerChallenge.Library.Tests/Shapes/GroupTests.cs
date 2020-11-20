@@ -46,8 +46,8 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         {
             var group = new Group();
             var s1 = new Sphere();
-            var s2 = new Sphere(Matrix4x4.CreateTranslation(0, 0, -3));
-            var s3 = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
+            var s2 = new Sphere(transform: Matrix4x4.CreateTranslation(0, 0, -3));
+            var s3 = new Sphere(transform: Matrix4x4.CreateTranslation(5, 0, 0));
             group.AddChildren(s1, s2, s3);
 
             var ray = new Ray(new Point(0, 0, -5), Vector.UnitZ);
@@ -59,7 +59,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         public void Intersecting_a_transformed_group()
         {
             var group = new Group(transform: Matrix4x4.CreateScaling(2, 2, 2));
-            var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
+            var s = new Sphere(transform: Matrix4x4.CreateTranslation(5, 0, 0));
             group.AddChild(s);
             var ray = new Ray(new Point(10, 0, -10), Vector.UnitZ);
             var intersections = group.Intersect(ray);
@@ -69,7 +69,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
         [Test]
         public void BoundingBox_should_be_calculated_using_all_of_the_shapes_in_the_group()
         {
-            var sphere = new Sphere(Matrix4x4.CreateTranslation(-5, 1, 2));
+            var sphere = new Sphere(transform: Matrix4x4.CreateTranslation(-5, 1, 2));
             var cylinder = new Cylinder(minimumY: -1, maximumY: 1, transform: Matrix4x4.CreateScaling(2, 2, 2));
             var group = new Group(sphere, cylinder);
 

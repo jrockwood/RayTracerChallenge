@@ -16,12 +16,13 @@ namespace RayTracerChallenge.Library.Shapes
         //// ===========================================================================================================
 
         public Cylinder(
+            string? name = null,
             double minimumY = double.NegativeInfinity,
             double maximumY = double.PositiveInfinity,
             bool isClosed = false,
             Matrix4x4? transform = null,
             Material? material = null)
-            : base(transform, material)
+            : base(name, transform, material)
         {
             MinimumY = minimumY;
             MaximumY = maximumY;
