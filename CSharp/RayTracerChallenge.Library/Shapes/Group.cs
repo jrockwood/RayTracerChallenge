@@ -38,7 +38,7 @@ namespace RayTracerChallenge.Library.Shapes
         }
 
         public Group(string? name = null, Matrix4x4? transform = null, Material? material = null, params Shape[] children)
-            : base(transform, material)
+            : base(name, transform, material)
         {
             Name = name;
 
@@ -55,8 +55,6 @@ namespace RayTracerChallenge.Library.Shapes
         public override BoundingBox BoundingBox => _boundingBox ??= CalculateBoundingBox();
 
         public IReadOnlyList<Shape> Children => _children;
-
-        public string? Name { get; set; }
 
         public override Material Material
         {

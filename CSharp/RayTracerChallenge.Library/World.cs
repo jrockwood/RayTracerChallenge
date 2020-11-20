@@ -219,7 +219,7 @@ namespace RayTracerChallenge.Library
             var light = new PointLight(new Point(-10, 10, -10), Colors.White);
             var sphere1 = new Sphere(
                 material: new Material(new Color(0.8, 1.0, 0.6), diffuse: 0.7, specular: 0.2));
-            var sphere2 = new Sphere(Matrix4x4.CreateScaling(0.5, 0.5, 0.5));
+            var sphere2 = new Sphere(transform: Matrix4x4.CreateScaling(0.5, 0.5, 0.5));
 
             return new World(light, sphere1, sphere2);
         }

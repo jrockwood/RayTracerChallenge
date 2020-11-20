@@ -35,18 +35,24 @@ namespace RayTracerChallenge.App.Library.Scenes
             var pinkyMaterial = sphereMaterial.WithColor(new Color(0.1, 0.5, 1));
 
             var backdrop = new Sphere(
+                "Backdrop",
                 Matrix4x4.CreateScaling(200, 200, 0.01).Translate(0, 0, 20),
                 new Material(Colors.White, ambient: 0, diffuse: 0.5, specular: 0));
 
             var wrist = new Sphere(
+                "Wrist",
                 Matrix4x4.CreateScaling(3, 3, 3).Translate(-4, 0, -21).RotateZ(Math.PI / 4),
                 wristMaterial);
-            var palm = new Sphere(Matrix4x4.CreateScaling(4, 3, 3).Translate(0, 0, -15), palmMaterial);
-            var thumb = new Sphere(Matrix4x4.CreateScaling(1, 3, 1).Translate(-2, 2, -16), thumbMaterial);
-            var index = new Sphere(Matrix4x4.CreateScaling(3, 0.75, 0.75).Translate(3, 2, -22), indexMaterial);
-            var middle = new Sphere(Matrix4x4.CreateScaling(3, 0.75, 0.75).Translate(4, 1, -19), middleMaterial);
-            var ring = new Sphere(Matrix4x4.CreateScaling(3, 0.75, 0.75).Translate(4, 0, -18), ringMaterial);
+            var palm = new Sphere("Palm", Matrix4x4.CreateScaling(4, 3, 3).Translate(0, 0, -15), palmMaterial);
+            var thumb = new Sphere("Thumb", Matrix4x4.CreateScaling(1, 3, 1).Translate(-2, 2, -16), thumbMaterial);
+            var index = new Sphere("Index", Matrix4x4.CreateScaling(3, 0.75, 0.75).Translate(3, 2, -22), indexMaterial);
+            var middle = new Sphere(
+                "Middle",
+                Matrix4x4.CreateScaling(3, 0.75, 0.75).Translate(4, 1, -19),
+                middleMaterial);
+            var ring = new Sphere("Ring", Matrix4x4.CreateScaling(3, 0.75, 0.75).Translate(4, 0, -18), ringMaterial);
             var pinky = new Sphere(
+                "Pinky",
                 Matrix4x4.CreateScaling(2.5, 0.6, 0.6)
                     .Translate(1, 0, 0)
                     .RotateZ(Math.PI / 10)

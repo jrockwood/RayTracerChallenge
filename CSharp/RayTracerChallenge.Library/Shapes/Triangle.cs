@@ -13,8 +13,14 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Triangle(Point p1, Point p2, Point p3, Matrix4x4? transform = null, Material? material = null)
-            : base(transform, material)
+        public Triangle(
+            Point p1,
+            Point p2,
+            Point p3,
+            string? name = null,
+            Matrix4x4? transform = null,
+            Material? material = null)
+            : base(name, transform, material)
         {
             P1 = p1;
             P2 = p2;

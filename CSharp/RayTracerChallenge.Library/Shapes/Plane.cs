@@ -23,8 +23,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        public Plane(Matrix4x4? transform = null, Material? material = null)
-            : base(transform, material)
+        public Plane(string? name = null, Matrix4x4? transform = null, Material? material = null)
+            : base(name, transform, material)
         {
         }
 

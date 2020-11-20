@@ -26,10 +26,12 @@ namespace RayTracerChallenge.App.Library.Scenes
         protected override Canvas Render(CameraRenderOptions options)
         {
             var floor = new Sphere(
+                "Floor",
                 Matrix4x4.CreateScaling(10, 0.01, 10),
                 new Material(new Color(1, 0.9, 0.9)).WithSpecular(0));
 
             var leftWall = new Sphere(
+                "LeftWall",
                 Matrix4x4.CreateScaling(10, 0.01, 10)
                     .RotateX(Math.PI / 2)
                     .RotateY(-Math.PI / 4)
@@ -39,6 +41,7 @@ namespace RayTracerChallenge.App.Library.Scenes
             );
 
             var rightWall = new Sphere(
+                "RightWall",
                 Matrix4x4.CreateScaling(10, 0.01, 10)
                     .RotateX(Math.PI / 2)
                     .RotateY(Math.PI / 4)
@@ -48,18 +51,21 @@ namespace RayTracerChallenge.App.Library.Scenes
             );
 
             var middle = new Sphere(
+                "MiddleSphere",
                 Matrix4x4.CreateTranslation(-0.5, 1, 0.5),
                 new Material(new Color(0.1, 1, 0.5), diffuse: 0.7, specular: 0.3)
 
             );
 
             var right = new Sphere(
+                "RightSphere",
                 Matrix4x4.CreateScaling(0.5, 0.5, 0.5).Translate(1.5, 0.5, -0.5),
                 new Material(new Color(0.5, 1, 0.1), diffuse: 0.7, specular: 0.3)
 
             );
 
             var left = new Sphere(
+                "LeftSphere",
                 Matrix4x4.CreateScaling(0.33, 0.33, 0.33).Translate(-1.5, 0.33, -0.75),
                 new Material(new Color(1, 0.8, 0.1), diffuse: 0.7, specular: 0.3)
 

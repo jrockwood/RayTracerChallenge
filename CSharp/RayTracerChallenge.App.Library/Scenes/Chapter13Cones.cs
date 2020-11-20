@@ -36,6 +36,7 @@ namespace RayTracerChallenge.App.Library.Scenes
                 specular: 0));
 
             var blueCylinder = new Cone(
+                "BlueCylinder",
                 minimumY: 0,
                 maximumY: 0.75,
                 isClosed: true,

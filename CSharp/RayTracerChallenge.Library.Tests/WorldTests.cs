@@ -23,7 +23,7 @@ namespace RayTracerChallenge.Library.Tests
             var light = new PointLight(new Point(-10, 10, -10), Colors.White);
             var sphere1 = new Sphere(
                 material: new Material(new Color(0.8, 1.0, 0.6), diffuse: 0.7, specular: 0.2));
-            var sphere2 = new Sphere(Matrix4x4.CreateScaling(0.5, 0.5, 0.5));
+            var sphere2 = new Sphere(transform: Matrix4x4.CreateScaling(0.5, 0.5, 0.5));
             var world = new World(light, sphere1, sphere2);
 
             world.Lights.Should().HaveCount(1).And.ContainInOrder(light);
@@ -75,7 +75,7 @@ namespace RayTracerChallenge.Library.Tests
         public void ShadeHit_should_shade_an_intersection_in_shadow()
         {
             var sphere1 = new Sphere();
-            var sphere2 = new Sphere(Matrix4x4.CreateTranslation(0, 0, 10));
+            var sphere2 = new Sphere(transform: Matrix4x4.CreateTranslation(0, 0, 10));
             var world = World.CreateDefaultWorld()
                 .ChangeLights(new PointLight(new Point(0, 0, -10), Colors.White))
                 .AddShapes(sphere1, sphere2);
@@ -96,7 +96,7 @@ namespace RayTracerChallenge.Library.Tests
         public void ShadeHit_should_calculate_the_reflected_color_for_a_reflective_material()
         {
             var world = World.CreateDefaultWorld();
-            var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
+            var floor = new Plane("Floor", Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
             world = world.AddShapes(floor);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
@@ -117,10 +117,14 @@ namespace RayTracerChallenge.Library.Tests
         public void ShadeHit_should_calculate_the_shade_color_with_a_transparent_material()
         {
             var floor = new Plane(
+                "Floor",
                 Matrix4x4.CreateTranslation(0, -1, 0),
                 new Material(transparency: 0.5, refractiveIndex: 1.5));
 
-            var ball = new Sphere(Matrix4x4.CreateTranslation(0, -3.5, -0.5), new Material(Colors.Red, ambient: 0.5));
+            var ball = new Sphere(
+                "s",
+                Matrix4x4.CreateTranslation(0, -3.5, -0.5),
+                new Material(Colors.Red, ambient: 0.5));
             var world = World.CreateDefaultWorld().AddShapes(floor, ball);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
@@ -134,10 +138,14 @@ namespace RayTracerChallenge.Library.Tests
         public void ShadeHit_should_calculate_the_shade_color_with_a_reflective_and_transparent_material()
         {
             var floor = new Plane(
+                "Floor",
                 Matrix4x4.CreateTranslation(0, -1, 0),
                 new Material(reflective: 0.5, transparency: 0.5, refractiveIndex: 1.5));
 
-            var ball = new Sphere(Matrix4x4.CreateTranslation(0, -3.5, -0.5), new Material(Colors.Red, ambient: 0.5));
+            var ball = new Sphere(
+                "Ball",
+                Matrix4x4.CreateTranslation(0, -3.5, -0.5),
+                new Material(Colors.Red, ambient: 0.5));
             var world = World.CreateDefaultWorld().AddShapes(floor, ball);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
@@ -184,8 +192,8 @@ namespace RayTracerChallenge.Library.Tests
         [Test]
         public void ColorAt_should_avoid_infinite_recursion_with_two_parallel_mirrors()
         {
-            var lower = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 1));
-            var upper = new Plane(Matrix4x4.CreateTranslation(0, 1, 0), new Material(reflective: 1));
+            var lower = new Plane("Lower", Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 1));
+            var upper = new Plane("Upper", Matrix4x4.CreateTranslation(0, 1, 0), new Material(reflective: 1));
             var world = World.CreateDefaultWorld()
                 .ChangeLights(new PointLight(Point.Zero, Colors.White))
                 .ChangeShapes(lower, upper);
@@ -255,7 +263,7 @@ namespace RayTracerChallenge.Library.Tests
         public void ReflectedColor_should_calculate_the_reflected_color_for_a_reflective_material()
         {
             var world = World.CreateDefaultWorld();
-            var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
+            var floor = new Plane("Floor", Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
             world = world.AddShapes(floor);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
@@ -270,7 +278,7 @@ namespace RayTracerChallenge.Library.Tests
         public void ReflectedColor_should_only_allow_a_maximum_recursion_depth()
         {
             var world = World.CreateDefaultWorld();
-            var floor = new Plane(Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
+            var floor = new Plane("Floor", Matrix4x4.CreateTranslation(0, -1, 0), new Material(reflective: 0.5));
             world = world.AddShapes(floor);
 
             var ray = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));

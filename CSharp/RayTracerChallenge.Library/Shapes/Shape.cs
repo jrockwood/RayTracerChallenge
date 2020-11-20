@@ -24,8 +24,9 @@ namespace RayTracerChallenge.Library.Shapes
         //// Constructors
         //// ===========================================================================================================
 
-        protected Shape(Matrix4x4? transform = null, Material? material = null)
+        protected Shape(string? name = null, Matrix4x4? transform = null, Material? material = null)
         {
+            Name = name;
             Transform = transform ?? Matrix4x4.Identity;
             _material = material ?? new Material();
         }
@@ -35,6 +36,8 @@ namespace RayTracerChallenge.Library.Shapes
         //// ===========================================================================================================
 
         public abstract BoundingBox BoundingBox { get; }
+
+        public string? Name { get; set; }
 
         public Matrix4x4 Transform { get; set; }
 
@@ -67,6 +70,11 @@ namespace RayTracerChallenge.Library.Shapes
         public Shape ChangeMaterial(Func<Material, Material> setter)
         {
             return ChangeMaterial(setter(Material));
+        }
+
+        public override string ToString()
+        {
+            return Name ?? GetType().Name;
         }
 
         public Point WorldToObject(Point point)

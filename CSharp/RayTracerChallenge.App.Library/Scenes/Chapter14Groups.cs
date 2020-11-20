@@ -27,6 +27,7 @@ namespace RayTracerChallenge.App.Library.Scenes
         {
             // Shapes
             var backdrop = new Plane(
+                "Backdrop",
                 Matrix4x4.CreateRotationX(Math.PI / 2).Translate(0, 0, 100),
                 new Material(Colors.White, ambient: 1, diffuse: 0, specular: 0));
 
@@ -64,7 +65,7 @@ namespace RayTracerChallenge.App.Library.Scenes
 
         private static Group CreateLeg(Matrix4x4 transform)
         {
-            var end = new Sphere(Matrix4x4.CreateScaling(0.25, 0.25, 0.25).Translate(0, 0, -1));
+            var end = new Sphere("Leg", Matrix4x4.CreateScaling(0.25, 0.25, 0.25).Translate(0, 0, -1));
             var edge = new Cylinder(
                 minimumY: 0,
                 maximumY: 1,

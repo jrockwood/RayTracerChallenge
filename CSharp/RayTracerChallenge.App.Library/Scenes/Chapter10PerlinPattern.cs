@@ -32,18 +32,22 @@ namespace RayTracerChallenge.App.Library.Scenes
 
             // Shapes
             var floor = new Plane(
+                "Floor",
                 Matrix4x4.CreateRotationY(Math.PI / 4),
                 new Material(pattern: floorPattern, specular: 0));
 
             var left = new Sphere(
+                "Left",
                 Matrix4x4.CreateScaling(0.33, 0.33, 0.33).Translate(-2, 0.33, -0.75),
                 new Material(pattern: floorPattern, diffuse: 0.7, specular: 0.3));
 
             var middle = new Sphere(
+                "Middle",
                 Matrix4x4.CreateTranslation(-0.5, 1, 0.5),
                 new Material(pattern: floorPattern, diffuse: 0.7, specular: 0.3));
 
             var right = new Sphere(
+                "Right",
                 Matrix4x4.CreateScaling(0.5, 0.5, 0.5).Translate(1.5, 0.5, -0.5),
                 new Material(pattern: floorPattern, diffuse: 0.7, specular: 0.3));
 

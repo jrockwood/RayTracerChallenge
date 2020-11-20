@@ -44,7 +44,7 @@ namespace RayTracerChallenge.Library.Tests.Patterns
         [Test]
         public void ColorOnShapeAt_should_use_the_shape_transformation()
         {
-            var shape = new Sphere(Matrix4x4.CreateScaling(2, 2, 2));
+            var shape = new Sphere(transform: Matrix4x4.CreateScaling(2, 2, 2));
             var pattern = new TestPattern();
             Color color = pattern.ColorOnShapeAt(shape, new Point(2, 3, 4));
             color.Should().Be(new Color(1, 1.5, 2));
@@ -62,7 +62,7 @@ namespace RayTracerChallenge.Library.Tests.Patterns
         [Test]
         public void ColorOnShapeAt_should_use_both_the_shape_and_pattern_transformation()
         {
-            var shape = new Sphere(Matrix4x4.CreateScaling(2, 2, 2));
+            var shape = new Sphere(transform: Matrix4x4.CreateScaling(2, 2, 2));
             var pattern = new TestPattern(Matrix4x4.CreateTranslation(0.5, 1, 1.5));
             Color color = pattern.ColorOnShapeAt(shape, new Point(2.5, 3, 3.5));
             color.Should().Be(new Color(0.75, 0.5, 0.25));

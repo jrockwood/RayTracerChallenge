@@ -80,7 +80,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var g1 = new Group(transform: Matrix4x4.CreateRotationY(Math.PI / 2));
             var g2 = new Group(transform: Matrix4x4.CreateScaling(2, 2, 2));
             g1.AddChild(g2);
-            var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
+            var s = new Sphere(transform: Matrix4x4.CreateTranslation(5, 0, 0));
             g2.AddChild(s);
 
             Point p = s.WorldToObject(new Point(-2, 0, -10));
@@ -93,7 +93,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var g1 = new Group(transform: Matrix4x4.CreateRotationY(Math.PI / 2));
             var g2 = new Group(transform: Matrix4x4.CreateScaling(1, 2, 3));
             g1.AddChild(g2);
-            var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
+            var s = new Sphere(transform: Matrix4x4.CreateTranslation(5, 0, 0));
             g2.AddChild(s);
 
             Vector normal = s.NormalToWorld(new Vector(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3));
@@ -106,7 +106,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
             var g1 = new Group(transform: Matrix4x4.CreateRotationY(Math.PI / 2));
             var g2 = new Group(transform: Matrix4x4.CreateScaling(1, 2, 3));
             g1.AddChild(g2);
-            var s = new Sphere(Matrix4x4.CreateTranslation(5, 0, 0));
+            var s = new Sphere(transform: Matrix4x4.CreateTranslation(5, 0, 0));
             g2.AddChild(s);
 
             Vector normal = s.NormalAt(new Point(1.7321, 1.1547, -5.5774));
@@ -117,7 +117,7 @@ namespace RayTracerChallenge.Library.Tests.Shapes
     public sealed class TestShape : Shape
     {
         public TestShape(Matrix4x4? transform = null, Material? material = null)
-            : base(transform, material)
+            : base("Test", transform, material)
         {
         }
 

@@ -28,18 +28,21 @@ namespace RayTracerChallenge.App.Library.Scenes
             var floor = new Plane(material: new Material(new Color(1, 0.9, 0.9)).WithSpecular(0));
 
             var middle = new Sphere(
+                "Middle",
                 Matrix4x4.CreateTranslation(-0.5, 1, 0.5),
                 new Material(new Color(0.1, 1, 0.5), diffuse: 0.7, specular: 0.3)
 
             );
 
             var right = new Sphere(
+                "Right",
                 Matrix4x4.CreateScaling(0.5, 0.5, 0.5).Translate(1.5, 0.5, -0.5),
                 new Material(new Color(0.5, 1, 0.1), diffuse: 0.7, specular: 0.3)
 
             );
 
             var left = new Sphere(
+                "Left",
                 Matrix4x4.CreateScaling(0.33, 0.33, 0.33).Translate(-1.5, 0.33, -0.75),
                 new Material(new Color(1, 0.8, 0.1), diffuse: 0.7, specular: 0.3)
 
