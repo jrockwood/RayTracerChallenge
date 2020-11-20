@@ -49,7 +49,7 @@ namespace RayTracerChallenge.Library.Shapes
 
         public bool IsShadowHidden { get; set; }
 
-        public Group? Parent { get; set; }
+        public Shape? Parent { get; set; }
 
         //// ===========================================================================================================
         //// Methods
